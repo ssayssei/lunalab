@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>전생 테스트 · 달빛 연구소</title>
+<meta name="description" content="나의 전생은 누구였을까? 질문 10개로 알아보는 전생 테스트">
+<meta property="og:title" content="나의 전생은? 👑 · 달빛 연구소">
+<meta property="og:description" content="질문 10개로 알아보는 나의 전생">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Noto+Serif+KR:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0f0b1e;--bg2:#1b1433;--gold:#e3c27a;--gold2:#b8954a;--ink:#efe8ff;--dim:#a99cc9}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%}
+body{font-family:"Noto Serif KR",serif;color:var(--ink);
+  background:radial-gradient(ellipse at 50% -10%,#3a2a6b 0%,var(--bg2) 35%,var(--bg) 75%);background-attachment:fixed;overflow-x:hidden}
+#stars{position:fixed;inset:0;pointer-events:none;z-index:0}
+.wrap{position:relative;z-index:1;max-width:620px;margin:0 auto;padding:62px 16px 60px}
+.home{position:absolute;top:14px;left:16px;color:var(--dim);text-decoration:none;font-size:13px;border:1px solid rgba(227,194,122,.25);padding:6px 12px;border-radius:999px;transition:.2s}
+.home:hover{color:var(--gold);border-color:var(--gold)}
+.panel{background:rgba(255,255,255,.04);border:1px solid rgba(227,194,122,.22);border-radius:18px;padding:26px 22px;backdrop-filter:blur(4px);animation:fade .45s ease}
+@keyframes fade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.hidden{display:none!important}
+.center{text-align:center}
+.lab-no{font-family:"Cinzel",serif;font-size:12px;letter-spacing:.25em;color:var(--gold2)}
+h1{margin:10px 0 6px;font-size:clamp(24px,6vw,32px);color:var(--gold);text-shadow:0 0 16px rgba(227,194,122,.3)}
+.intro-ani{font-size:34px;letter-spacing:6px;margin:18px 0}
+.intro-ani span{display:inline-block;animation:bob 2.4s ease-in-out infinite}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+.desc{color:var(--dim);line-height:1.8;font-size:15px;margin:0 0 22px}
+.btn{display:inline-block;border:none;cursor:pointer;font:inherit;font-weight:700;font-size:16px;padding:13px 28px;border-radius:12px;color:#1a1230;background:linear-gradient(135deg,#f3dc9f,var(--gold2));box-shadow:0 6px 20px rgba(227,194,122,.25);transition:.2s;text-decoration:none}
+.btn:hover{transform:translateY(-2px);box-shadow:0 10px 26px rgba(227,194,122,.35)}
+.btn.ghost{background:transparent;color:var(--gold);border:1px solid var(--gold2);box-shadow:none}
+.btn.sm{font-size:14px;padding:10px 18px}
+/* progress */
+.prog-top{display:flex;justify-content:space-between;align-items:center;font-size:13px;color:var(--dim);margin-bottom:8px}
+.back{background:none;border:none;color:var(--dim);font:inherit;font-size:13px;cursor:pointer;padding:0}
+.back:hover{color:var(--gold)}
+.back:disabled{visibility:hidden}
+.bar{height:6px;border-radius:99px;background:rgba(255,255,255,.08);overflow:hidden;margin-bottom:22px}
+.bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--gold2),#f3dc9f);border-radius:99px;transition:width .35s}
+.qnum{font-family:"Cinzel",serif;color:var(--gold);letter-spacing:.15em;font-size:13px}
+.qtext{font-size:19px;font-weight:700;line-height:1.6;margin:8px 0 20px;word-break:keep-all}
+.opts{display:flex;flex-direction:column;gap:10px}
+.opt{text-align:left;border:1px solid rgba(227,194,122,.3);background:rgba(0,0,0,.2);color:var(--ink);padding:14px 16px;border-radius:12px;cursor:pointer;font:inherit;font-size:15px;line-height:1.5;transition:.18s;word-break:keep-all}
+.opt:hover{border-color:var(--gold);background:rgba(227,194,122,.08);transform:translateX(3px)}
+.opt.sel{background:linear-gradient(135deg,var(--gold),var(--gold2));color:#1a1230;border-color:transparent;font-weight:700}
+/* loading */
+.loading{padding:50px 0}
+.loading .spin{font-size:46px;display:inline-block;animation:spin 1.2s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading p{color:var(--dim);margin-top:16px}
+/* result */
+.r-label{color:var(--dim);font-size:14px}
+.r-emoji{font-size:96px;line-height:1;margin:14px 0 6px;filter:drop-shadow(0 0 22px rgba(227,194,122,.35));animation:pop .6s cubic-bezier(.3,1.6,.5,1)}
+@keyframes pop{from{transform:scale(.3);opacity:0}to{transform:scale(1);opacity:1}}
+.r-title{color:#f1dca8;font-size:15px;margin:4px 0 2px}
+.r-name{font-size:30px;color:var(--gold);margin:0;font-weight:700}
+.tags{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:14px 0 4px}
+.tags span{font-size:13px;padding:4px 11px;border-radius:999px;background:rgba(227,194,122,.14);color:#f1dca8}
+.r-desc{line-height:1.85;font-size:15px;margin:16px 0 4px;word-break:keep-all}
+.box{border-left:3px solid var(--gold);padding:12px 14px;margin-top:14px;background:rgba(0,0,0,.18);border-radius:0 12px 12px 0}
+.box h3{margin:0 0 4px;font-size:15px;color:var(--gold)}
+.box p{margin:0;line-height:1.75;font-size:14px;word-break:keep-all}
+.match{display:flex;gap:10px;margin-top:14px}
+.match div{flex:1;text-align:center;padding:12px 8px;border-radius:12px;background:rgba(0,0,0,.22);font-size:13px;color:var(--dim)}
+.match b{display:block;font-size:30px;margin:4px 0 2px}
+.match em{font-style:normal;color:var(--ink);font-size:14px;font-weight:700}
+.scores{margin-top:18px}
+.scores h3{font-size:15px;color:var(--gold);margin:0 0 10px}
+.srow{display:flex;align-items:center;gap:10px;margin-bottom:8px;font-size:14px}
+.srow .nm{width:86px;flex-shrink:0}
+.srow .sb{flex:1;height:8px;border-radius:99px;background:rgba(255,255,255,.08);overflow:hidden}
+.srow .sb i{display:block;height:100%;background:linear-gradient(90deg,var(--gold2),#f3dc9f);border-radius:99px;width:0;transition:width .9s ease}
+.srow .pc{width:40px;text-align:right;color:var(--dim);font-size:13px}
+.actions{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:24px}
+.toast{position:fixed;left:50%;bottom:30px;transform:translateX(-50%) translateY(20px);background:#2a2050;border:1px solid var(--gold2);color:var(--ink);padding:10px 18px;border-radius:999px;font-size:14px;opacity:0;transition:.3s;z-index:10;pointer-events:none}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.all{margin-top:28px}
+.all h3{text-align:center;color:var(--gold);font-size:15px;margin:0 0 12px}
+.all-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.all-grid button{background:rgba(0,0,0,.2);border:1px solid rgba(227,194,122,.2);border-radius:12px;padding:10px 4px;color:var(--ink);font:inherit;font-size:12px;cursor:pointer;transition:.2s}
+.all-grid button:hover,.all-grid button.on{border-color:var(--gold);background:rgba(227,194,122,.1)}
+.all-grid b{display:block;font-size:26px;font-weight:400}
+.foot{text-align:center;color:#6f6390;font-size:12px;margin-top:30px}
+@media (max-width:480px){.qtext{font-size:17px}.r-emoji{font-size:80px}.panel{padding:22px 16px}}
+</style>
+</head>
+<body>
+<canvas id="stars"></canvas>
+<div class="wrap">
+  <a class="home" href="./">← 달빛 연구소</a>
+
+  <!-- 시작 -->
+  <section id="sIntro" class="panel center">
+    <div class="lab-no">LUNA LAB · No.03</div>
+    <h1>나의 전생은 누구였을까?</h1>
+    <div class="intro-ani">
+      <span style="animation-delay:0.0s">👑</span><span style="animation-delay:0.2s">🧙</span><span style="animation-delay:0.4s">🏴‍☠️</span><span style="animation-delay:0.6s">🐫</span><br><span style="animation-delay:0.8s">🎨</span><span style="animation-delay:1.0s">⚔️</span><span style="animation-delay:1.2s">🍶</span><span style="animation-delay:1.4s">🐈‍⬛</span>
+    </div>
+    <p class="desc">달빛이 비추는 밤, 영혼의 기억을 거슬러 올라가요.<br>질문 10개에 답하면 당신의 전생을 알려 드릴게요.<br>먼저 떠오르는 걸 골라 주세요!</p>
+    <button class="btn" id="startBtn">전생 보러 가기 👑</button>
+  </section>
+
+  <!-- 질문 -->
+  <section id="sQuiz" class="panel hidden">
+    <div class="prog-top"><button class="back" id="backBtn">← 이전</button><span id="progTxt">1 / 10</span></div>
+    <div class="bar"><i id="barFill"></i></div>
+    <div class="qnum" id="qNum">Q1</div>
+    <div class="qtext" id="qText"></div>
+    <div class="opts" id="opts"></div>
+  </section>
+
+  <!-- 분석 중 -->
+  <section id="sLoad" class="panel center loading hidden">
+    <span class="spin">🌙</span>
+    <p>달빛 아래서 분석하는 중…</p>
+  </section>
+
+  <!-- 결과 -->
+  <section id="sResult" class="panel hidden">
+    <div class="center">
+      <div class="r-label" id="rLabel">당신의 전생은</div>
+      <div class="r-emoji" id="rEmoji"></div>
+      <div class="r-title" id="rTitle"></div>
+      <h2 class="r-name" id="rName"></h2>
+      <div class="tags" id="rTags"></div>
+    </div>
+    <p class="r-desc" id="rDesc"></p>
+    <div class="box"><h3>✦ 이번 생에 남은 흔적</h3><p id="rGood"></p></div>
+    <div class="box"><h3>☾ 이번 생의 숙제</h3><p id="rBad"></p></div>
+    <div class="match">
+      <div>전생의 인연<b id="mBestE"></b><em id="mBest"></em></div>
+      <div>전생의 라이벌<b id="mWorstE"></b><em id="mWorst"></em></div>
+    </div>
+    <div class="scores" id="scoreBox"><h3>나의 전생 기억 조각</h3><div id="scoreRows"></div></div>
+    <div class="actions">
+      <button class="btn sm" id="saveBtn">🖼️ 결과 이미지 저장</button>
+      <button class="btn sm ghost" id="shareBtn">🔗 결과 링크 복사</button>
+      <button class="btn sm ghost" id="retryBtn">↺ 다시 하기</button>
+    </div>
+    <div class="all">
+      <h3>다른 전생도 구경하기</h3>
+      <div class="all-grid" id="allGrid"></div>
+    </div>
+  </section>
+
+  <div class="foot">✦ LUNA LAB 달빛 연구소 ✦ 재미로 보는 테스트예요</div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+/* ---------- 전생 데이터 ---------- */
+const A = {
+  king:{e:"👑",n:"조선의 왕",t:"1400년대 · 한양 경복궁",tags:["타고난 리더","책임감","카리스마"],
+    d:"당신의 전생은 백성을 다스리던 조선의 왕이었어요. 매일 아침 수많은 상소문을 읽고 어려운 결정을 내리던 자리였죠. 그래서인지 이번 생에서도 무리 속에 있으면 자연스럽게 중심에 서고, 사람들이 당신의 결정을 기다려요.",
+    g:"위기 때 오히려 침착해지는 대범함과, '내가 책임질게'라고 말할 수 있는 그릇이 남아 있어요.",
+    b:"전생의 버릇처럼 모든 걸 혼자 짊어지려 해요. 이번 생에는 믿을 만한 신하, 아니 친구에게 나눠 맡겨 보세요.",
+    best:"painter",worst:"pirate"},
+  wizard:{e:"🧙",n:"중세의 마법사",t:"1200년대 · 안개 낀 탑",tags:["직감 만렙","지식 탐구","신비주의"],
+    d:"당신의 전생은 높은 탑에서 별을 읽고 약초를 다루던 마법사였어요. 남들이 모르는 세상의 비밀을 알고 싶어 밤새 낡은 책을 넘기곤 했죠. 이번 생에서도 '왜?'라는 질문이 멈추지 않고, 이상하게 촉이 잘 맞아요.",
+    g:"깊이 파고드는 탐구심과 정확한 직감이 남아 있어요. 당신의 '느낌이 좀 싸한데'는 대부분 맞아요.",
+    b:"혼자 생각에 빠져 세상과 멀어질 수 있어요. 탑에서 내려와 사람들과 지식을 나눠 보세요.",
+    best:"cat",worst:"gladiator"},
+  pirate:{e:"🏴‍☠️",n:"대항해시대 해적 선장",t:"1600년대 · 카리브해",tags:["자유로운 영혼","모험가","의리"],
+    d:"당신의 전생은 거친 바다를 누비던 해적선의 선장이었어요. 지도에 없는 섬을 찾아 떠나고, 선원들과 생사를 함께했죠. 그래서 이번 생에서도 답답한 틀에 갇히는 걸 못 견디고, 떠나고 싶은 마음이 불쑥불쑥 올라와요.",
+    g:"두려움 없이 새로운 곳에 뛰어드는 용기와, 내 사람은 끝까지 지키는 뜨거운 의리가 남아 있어요.",
+    b:"지루함을 못 참고 충동적으로 결정할 때가 있어요. 출항 전에 지도는 한 번 확인하세요.",
+    best:"gladiator",worst:"king"},
+  merchant:{e:"🐫",n:"실크로드 대상인",t:"700년대 · 사막의 오아시스",tags:["사업가 기질","협상왕","현실 감각"],
+    d:"당신의 전생은 낙타 행렬을 이끌고 동서양을 오가던 대상인이었어요. 비단과 향신료를 팔며 여러 나라 말로 흥정을 하던 수완가였죠. 이번 생에서도 숫자 감각이 좋고, 사람 사이에서 이익을 맞추는 데 능해요.",
+    g:"기회를 알아보는 눈과 누구와도 말이 통하는 협상력이 남아 있어요. 어디서든 굶어 죽지는 않을 타입이에요.",
+    b:"모든 걸 손익으로 계산하면 마음이 메말라요. 가끔은 이유 없이 베푸는 것도 남는 장사예요.",
+    best:"jumo",worst:"cat"},
+  painter:{e:"🎨",n:"조선의 궁중 화원",t:"1700년대 · 도화서",tags:["예술 감각","섬세함","완벽주의"],
+    d:"당신의 전생은 왕의 초상과 궁궐의 풍경을 그리던 도화서의 화원이었어요. 붓끝 하나에도 온 마음을 쏟던 장인이었죠. 그래서 이번 생에서도 아름다운 것에 쉽게 마음을 빼앗기고, 작은 디테일까지 눈에 들어와요.",
+    g:"남들이 지나치는 아름다움을 발견하는 눈과, 무언가를 만들어 낼 때의 놀라운 몰입력이 남아 있어요.",
+    b:"완벽하지 않으면 보여 주기 싫어하는 마음이 커요. 이번 생에는 미완성도 작품이라는 걸 기억하세요.",
+    best:"king",worst:"merchant"},
+  gladiator:{e:"⚔️",n:"로마의 검투사",t:"100년대 · 콜로세움",tags:["불굴의 의지","정면 승부","열정"],
+    d:"당신의 전생은 수만 관중 앞에서 싸우던 로마의 검투사였어요. 쓰러져도 다시 일어나 끝내 자유를 얻어 낸 전사였죠. 이번 생에서도 한번 마음먹으면 끝을 보고, 불공평한 일을 보면 참지 못해요.",
+    g:"어떤 시련에도 꺾이지 않는 근성과 정면으로 부딪히는 용기가 남아 있어요.",
+    b:"모든 걸 싸워서 이기려 하면 지쳐요. 이번 생에는 칼을 내려놓고 쉬는 법도 배워 보세요.",
+    best:"pirate",worst:"wizard"},
+  jumo:{e:"🍶",n:"조선 저잣거리 주막 주인",t:"1800년대 · 한양 저잣거리",tags:["인싸 DNA","정 많음","눈치 백단"],
+    d:"당신의 전생은 오가는 나그네와 장사꾼으로 늘 북적이던 주막의 주인이었어요. 국밥 한 그릇에 사람들의 사연을 다 들어 주던 동네의 소식통이었죠. 이번 생에서도 사람을 좋아하고, 어디서든 금방 정을 붙여요.",
+    g:"처음 본 사람도 편하게 만드는 친화력과 사람 마음을 읽는 눈치가 남아 있어요.",
+    b:"남의 사정만 챙기다 정작 내 끼니를 거르기 쉬워요. 이번 생에는 나한테도 국밥 한 그릇 대접하세요.",
+    best:"merchant",worst:"wizard"},
+  cat:{e:"🐈‍⬛",n:"이집트 신전의 고양이",t:"기원전 1300년경 · 나일강 신전",tags:["고귀한 영혼","마이웨이","관찰자"],
+    d:"놀라지 마세요. 당신의 전생은 신처럼 모셔지던 이집트 신전의 고양이였어요. 사제들의 극진한 대접을 받으며 신전의 모든 일을 조용히 지켜봤죠. 그래서인지 이번 생에서도 혼자만의 시간이 소중하고, 은근히 대접받는 걸 좋아해요.",
+    g:"쉽게 흔들리지 않는 여유와 모든 걸 꿰뚫어 보는 관찰력이 남아 있어요.",
+    b:"마음에 들지 않으면 아예 등을 돌려 버려요. 이번 생에는 먼저 다가가는 연습도 해 보세요.",
+    best:"wizard",worst:"merchant"}
+};
+const ORDER=["king","wizard","pirate","merchant","painter","gladiator","jumo","cat"];
+
+/* ---------- 질문 데이터 (보기마다 전생 점수) ---------- */
+const Q = [
+  {q:"처음 가 본 곳인데 이상하게 익숙한 장소는?",o:[
+    ["고즈넉한 궁궐과 고궁 🏯",{king:2,painter:1}],
+    ["끝없이 펼쳐진 바다와 항구 ⚓",{pirate:2,gladiator:1}],
+    ["오래된 도서관이나 성당 🕯️",{wizard:2,cat:1}],
+    ["사람들로 북적이는 전통시장 🏮",{merchant:2,jumo:1}]]},
+  {q:"친구들 사이에서 나는?",o:[
+    ["어디 갈지 정하는 결정 담당 👆",{king:2,gladiator:1}],
+    ["사람들을 모으는 분위기 메이커 🎉",{jumo:2,pirate:1}],
+    ["조용히 다 지켜보는 관찰자 👀",{cat:2,wizard:1}],
+    ["아이디어와 감성 담당 💡",{painter:2,wizard:1}]]},
+  {q:"갑자기 큰돈이 생겼다! 나는?",o:[
+    ["일단 사람들한테 한턱 쏜다 🍻",{jumo:2,king:1}],
+    ["불려야지! 투자 공부부터 📈",{merchant:3}],
+    ["갖고 싶던 예쁜 물건을 산다 💎",{painter:2,cat:1}],
+    ["바로 비행기 표 끊고 떠난다 ✈️",{pirate:2,merchant:1}]]},
+  {q:"제일 끌리는 영화 장르는?",o:[
+    ["권력 다툼이 펼쳐지는 사극 🎭",{king:2,merchant:1}],
+    ["마법과 모험이 가득한 판타지 🪄",{wizard:2,painter:1}],
+    ["손에 땀을 쥐는 액션 💥",{gladiator:3}],
+    ["잔잔한 힐링 영화 🍵",{cat:2,jumo:1}]]},
+  {q:"억울한 일을 당했다!",o:[
+    ["그 자리에서 정면 승부 🔥",{gladiator:2,king:1}],
+    ["조용히 기억해 둔다… 🐾",{cat:2,wizard:1}],
+    ["증거와 논리로 차근차근 따진다 📜",{merchant:2,king:1}],
+    ["친구들한테 털어놓고 푼다 🗣️",{jumo:2,painter:1}]]},
+  {q:"이상하게 자신 있는 것은?",o:[
+    ["사람을 설득하는 말솜씨 🤝",{merchant:2,jumo:1}],
+    ["그리기·꾸미기 같은 손재주 🖌️",{painter:2,cat:1}],
+    ["체력과 몸 쓰는 일 💪",{gladiator:2,pirate:1}],
+    ["소름 돋게 잘 맞는 촉 🔮",{wizard:2,cat:1}]]},
+  {q:"규칙에 대한 나의 생각은?",o:[
+    ["규칙은 내가 만든다 😎",{king:2,pirate:1}],
+    ["남한테 피해만 안 주면 신경 안 씀 🙄",{cat:2,painter:1}],
+    ["규칙? 깨라고 있는 거지 🏴",{pirate:2,gladiator:1}],
+    ["왜 그런 규칙인지 알아야 따른다 🤔",{wizard:2,merchant:1}]]},
+  {q:"나의 이상형에 가까운 사람은?",o:[
+    ["나를 믿고 따라와 주는 사람 🫡",{king:2,jumo:1}],
+    ["어디든 같이 떠나 줄 사람 🗺️",{pirate:2,gladiator:1}],
+    ["밤새 대화가 통하는 사람 🌌",{wizard:2,merchant:1}],
+    ["감성이 잘 맞는 사람 🌸",{painter:2,cat:1}]]},
+  {q:"혼자 있는 시간이 생기면?",o:[
+    ["너무 좋아, 이게 충전이지 🛋️",{cat:2,wizard:1}],
+    ["30분이면 심심해서 누굴 부른다 📞",{jumo:2,pirate:1}],
+    ["뭔가를 만들거나 그린다 ✏️",{painter:2,cat:1}],
+    ["운동하거나 밖으로 나간다 🏃",{gladiator:2,pirate:1}]]},
+  {q:"밤하늘을 보면 드는 생각은?",o:[
+    ["저 별들도 언젠가 다 내 것 ✨",{pirate:2,king:1}],
+    ["우주의 비밀이 궁금해진다 🔭",{wizard:2,cat:1}],
+    ["내일 할 일 정리… 📝",{merchant:2,gladiator:1}],
+    ["예쁘다, 사진 찍어 둬야지 📸",{painter:1,jumo:2}]]}
+];
+
+/* ---------- 상태 ---------- */
+const $=id=>document.getElementById(id);
+let idx=0, answers=[], locked=false, lastScores=null;
+function show(id){["sIntro","sQuiz","sLoad","sResult"].forEach(s=>$(s).classList.toggle("hidden",s!==id));scrollTo({top:0,behavior:"smooth"});}
+
+function renderQ(){
+  const item=Q[idx];
+  $("progTxt").textContent=`${idx+1} / ${Q.length}`;
+  $("barFill").style.width=`${idx/Q.length*100}%`;
+  $("qNum").textContent=`Q${idx+1}`;
+  $("qText").textContent=item.q;
+  $("backBtn").disabled=idx===0;
+  const box=$("opts");box.innerHTML="";
+  item.o.forEach((op,i)=>{
+    const b=document.createElement("button");b.className="opt";b.textContent=op[0];
+    if(answers[idx]===i) b.classList.add("sel");
+    b.onclick=()=>pick(i,b);box.appendChild(b);
+  });
+  $("sQuiz").style.animation="none";void $("sQuiz").offsetWidth;$("sQuiz").style.animation="";
+}
+function pick(i,el){
+  if(locked) return; locked=true;
+  answers[idx]=i;
+  [...$("opts").children].forEach(c=>c.classList.remove("sel"));el.classList.add("sel");
+  setTimeout(()=>{
+    locked=false;
+    if(idx<Q.length-1){idx++;renderQ();}
+    else{$("barFill").style.width="100%";show("sLoad");setTimeout(finish,1600);}
+  },260);
+}
+function calc(){
+  const s={};ORDER.forEach(k=>s[k]=0);
+  answers.forEach((a,qi)=>{const pts=Q[qi].o[a][1];for(const k in pts)s[k]+=pts[k];});
+  return s;
+}
+function finish(){
+  const s=calc();
+  // 동점이면 마지막 질문들에서 더 많이 고른 쪽 우선
+  const recent={};ORDER.forEach(k=>recent[k]=0);
+  answers.forEach((a,qi)=>{const pts=Q[qi].o[a][1];for(const k in pts)recent[k]+=pts[k]*(qi+1);});
+  const top=[...ORDER].sort((a,b)=>s[b]-s[a]||recent[b]-recent[a])[0];
+  lastScores=s;
+  history.replaceState(null,"",`?r=${top}`);
+  showResult(top,s);
+}
+function showResult(key,scores){
+  const a=A[key];
+  $("rLabel").textContent=scores?"당신의 전생은":"이 전생은";
+  $("rEmoji").textContent=a.e;$("rTitle").textContent=a.t;$("rName").textContent=a.n;
+  $("rTags").innerHTML=a.tags.map(t=>`<span>#${t}</span>`).join("");
+  $("rDesc").textContent=a.d;$("rGood").textContent=a.g;$("rBad").textContent=a.b;
+  $("mBestE").textContent=A[a.best].e;$("mBest").textContent=A[a.best].n;
+  $("mWorstE").textContent=A[a.worst].e;$("mWorst").textContent=A[a.worst].n;
+  const sb=$("scoreBox");
+  if(scores){
+    sb.classList.remove("hidden");
+    const total=Object.values(scores).reduce((x,y)=>x+y,0)||1;
+    const top3=[...ORDER].sort((x,y)=>scores[y]-scores[x]).slice(0,3);
+    $("scoreRows").innerHTML=top3.map(k=>`<div class="srow"><span class="nm">${A[k].e} ${A[k].n}</span><span class="sb"><i data-w="${Math.round(scores[k]/total*100)}"></i></span><span class="pc">${Math.round(scores[k]/total*100)}%</span></div>`).join("");
+    setTimeout(()=>document.querySelectorAll(".srow .sb i").forEach(i=>i.style.width=Math.min(100,i.dataset.w*1.6)+"%"),80);
+  } else sb.classList.add("hidden");
+  $("retryBtn").textContent=scores?"↺ 다시 하기":"👑 내 전생도 보기";
+  $("allGrid").innerHTML=ORDER.map(k=>`<button data-k="${k}" class="${k===key?"on":""}"><b>${A[k].e}</b>${A[k].n}</button>`).join("");
+  $("allGrid").querySelectorAll("button").forEach(b=>b.onclick=()=>{
+    const k=b.dataset.k; showResult(k, k===currentTop()?lastScores:null);
+  });
+  show("sResult");
+}
+function currentTop(){return new URLSearchParams(location.search).get("r");}
+
+/* ---------- 버튼 ---------- */
+$("startBtn").onclick=()=>{idx=0;answers=[];show("sQuiz");renderQ();};
+$("backBtn").onclick=()=>{if(idx>0){idx--;renderQ();}};
+$("retryBtn").onclick=()=>{history.replaceState(null,"",location.pathname);lastScores=null;idx=0;answers=[];show("sQuiz");renderQ();};
+
+function toast(m){const t=$("toast");t.textContent=m;t.classList.add("show");clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove("show"),2000);}
+$("shareBtn").onclick=async()=>{
+  const k=currentTop()||"cat";
+  const url=`${location.origin}${location.pathname}?r=${k}`;
+  const text=`내 전생은 ${A[k].e} ${A[k].n}${((A[k].n.charCodeAt(A[k].n.length-1)-0xAC00)%28)?"이었대":"였대"}! 너의 전생은 뭐야? 👑`;
+  try{
+    if(navigator.share&&/Mobi|Android|iPhone/i.test(navigator.userAgent)){await navigator.share({title:"전생 테스트 · 달빛 연구소",text,url});return;}
+    await navigator.clipboard.writeText(`${text}\n${url}`);toast("링크를 복사했어요! 🔗");
+  }catch(e){
+    const ta=document.createElement("textarea");ta.value=`${text}\n${url}`;document.body.appendChild(ta);ta.select();
+    try{document.execCommand("copy");toast("링크를 복사했어요! 🔗");}catch(_){toast("복사에 실패했어요");}
+    ta.remove();
+  }
+};
+
+/* ---------- 결과 이미지 저장 (캔버스 직접 그리기) ---------- */
+function wrap(ctx,text,x,y,maxW,lh){
+  let line="",lines=[];
+  for(const ch of text){const t=line+ch;if(ctx.measureText(t).width>maxW&&line){lines.push(line);line=ch;}else line=t;}
+  if(line)lines.push(line);
+  lines.forEach((l,i)=>ctx.fillText(l,x,y+i*lh));return y+lines.length*lh;
+}
+$("saveBtn").onclick=async()=>{
+  const k=$("rName").textContent?ORDER.find(x=>A[x].n===$("rName").textContent):"cat";
+  const a=A[k];
+  try{await document.fonts.ready;}catch(e){}
+  const W=1080,H=1350,c=document.createElement("canvas");c.width=W;c.height=H;const x=c.getContext("2d");
+  const g=x.createRadialGradient(W/2,-100,50,W/2,300,1300);g.addColorStop(0,"#3a2a6b");g.addColorStop(.35,"#1b1433");g.addColorStop(1,"#0f0b1e");
+  x.fillStyle=g;x.fillRect(0,0,W,H);
+  for(let i=0;i<180;i++){x.globalAlpha=Math.random()*.6+.2;x.fillStyle="#fff6dc";x.beginPath();x.arc(Math.random()*W,Math.random()*H,Math.random()*2+.4,0,6.28);x.fill();}
+  x.globalAlpha=1;
+  x.strokeStyle="rgba(227,194,122,.45)";x.lineWidth=3;x.strokeRect(50,50,W-100,H-100);
+  x.textAlign="center";
+  x.fillStyle="#b8954a";x.font='700 30px "Cinzel", serif';x.fillText("LUNA LAB  ·  달빛 연구소",W/2,130);
+  x.fillStyle="#a99cc9";x.font='400 36px "Noto Serif KR", serif';x.fillText("나의 전생은",W/2,215);
+  x.font='220px "Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif';x.fillText(a.e,W/2,470);
+  x.fillStyle="#f1dca8";x.font='600 38px "Noto Serif KR", serif';x.fillText(a.t,W/2,560);
+  x.fillStyle="#e3c27a";x.font='700 76px "Noto Serif KR", serif';x.fillText(a.n,W/2,665);
+  x.font='600 32px "Noto Serif KR", serif';x.fillStyle="#f1dca8";x.fillText(a.tags.map(t=>"#"+t).join("   "),W/2,735);
+  x.textAlign="left";x.fillStyle="#efe8ff";x.font='400 34px "Noto Serif KR", serif';
+  let y=wrap(x,a.d,130,830,W-260,54);
+  y+=30;
+  x.textAlign="center";x.font='400 30px "Noto Serif KR", serif';x.fillStyle="#a99cc9";
+  x.fillText(`전생의 인연 ${A[a.best].e} ${A[a.best].n}   ·   전생의 라이벌 ${A[a.worst].e} ${A[a.worst].n}`,W/2,Math.max(y+20,1160));
+  x.fillStyle="#6f6390";x.font='400 26px "Noto Serif KR", serif';x.fillText("ssayssei.github.io/lunalab",W/2,1255);
+  const link=document.createElement("a");link.download=`달빛연구소_전생테스트_${a.n}.png`;
+  link.href=c.toDataURL("image/png");document.body.appendChild(link);link.click();link.remove();
+  toast("이미지를 저장했어요! 🖼️");
+};
+
+/* ---------- 공유 링크로 들어온 경우 ---------- */
+(function(){const r=currentTop();if(r&&A[r])showResult(r,null);})();
+
+/* ---------- 별 배경 ---------- */
+(function(){
+  const cv=$("stars"),ctx=cv.getContext("2d");let st=[];
+  function rs(){cv.width=innerWidth;cv.height=innerHeight;
+    st=Array.from({length:Math.floor(innerWidth*innerHeight/6000)},()=>({x:Math.random()*cv.width,y:Math.random()*cv.height,r:Math.random()*1.3+.2,p:Math.random()*6.28}));}
+  function draw(t){ctx.clearRect(0,0,cv.width,cv.height);
+    for(const s of st){ctx.globalAlpha=.35+.45*Math.sin(t/900+s.p);ctx.fillStyle="#fff6dc";ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,6.28);ctx.fill();}
+    requestAnimationFrame(draw);}
+  addEventListener("resize",rs);rs();requestAnimationFrame(draw);
+})();
+</script>
+</body>
+</html>
