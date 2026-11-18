@@ -45,6 +45,10 @@ h1{margin:10px 0 6px;font-size:clamp(24px,6vw,32px);color:var(--gold);text-shado
 .opts{display:flex;flex-direction:column;gap:10px}
 .opt{text-align:left;border:1px solid rgba(227,194,122,.3);background:rgba(0,0,0,.2);color:var(--ink);padding:14px 16px;border-radius:12px;cursor:pointer;font:inherit;font-size:15px;line-height:1.5;transition:.18s;word-break:keep-all}
 .opt:hover{border-color:var(--gold);background:rgba(227,194,122,.08);transform:translateX(3px)}
+.opt .badge{float:right;font-size:12px;font-weight:700;background:#1a1230;color:var(--gold);border-radius:999px;padding:1px 8px;margin-left:8px}
+.qhint{font-size:13px;color:var(--dim);margin:-10px 0 16px}
+.qnext{margin-top:18px;text-align:center}
+.qnext .btn:disabled{opacity:.35;cursor:default;transform:none;box-shadow:none}
 .opt.sel{background:linear-gradient(135deg,var(--gold),var(--gold2));color:#1a1230;border-color:transparent;font-weight:700}
 /* loading */
 .loading{padding:50px 0}
@@ -100,7 +104,7 @@ h1{margin:10px 0 6px;font-size:clamp(24px,6vw,32px);color:var(--gold);text-shado
     <div class="intro-ani">
       <span style="animation-delay:0.0s">👑</span><span style="animation-delay:0.2s">🧙</span><span style="animation-delay:0.4s">🏴‍☠️</span><span style="animation-delay:0.6s">🐫</span><br><span style="animation-delay:0.8s">🎨</span><span style="animation-delay:1.0s">⚔️</span><span style="animation-delay:1.2s">🍶</span><span style="animation-delay:1.4s">🐈‍⬛</span>
     </div>
-    <p class="desc">달빛이 비추는 밤, 영혼의 기억을 거슬러 올라가요.<br>질문 10개에 답하면 당신의 전생을 알려 드릴게요.<br>먼저 떠오르는 걸 골라 주세요!</p>
+    <p class="desc">달빛이 비추는 밤, 영혼의 기억을 거슬러 올라가요.<br>질문 10개에 답하면 당신의 전생을 알려 드릴게요.<br>먼저 떠오르는 걸 골라 주세요!<br>애매할 땐 2개까지 골라도 괜찮아요 ✌️</p>
     <button class="btn" id="startBtn">전생 보러 가기 👑</button>
   </section>
 
@@ -110,7 +114,9 @@ h1{margin:10px 0 6px;font-size:clamp(24px,6vw,32px);color:var(--gold);text-shado
     <div class="bar"><i id="barFill"></i></div>
     <div class="qnum" id="qNum">Q1</div>
     <div class="qtext" id="qText"></div>
+    <div class="qhint">딱 맞는 게 없으면 <b>2개까지</b> 골라도 돼요 ✌️</div>
     <div class="opts" id="opts"></div>
+    <div class="qnext"><button class="btn sm" id="nextBtn" disabled>다음 →</button></div>
   </section>
 
   <!-- 분석 중 -->
@@ -262,7 +268,7 @@ const Q = [
 
 /* ---------- 상태 ---------- */
 const $=id=>document.getElementById(id);
-let idx=0, answers=[], locked=false, lastScores=null;
+let idx=0, answers=[], lastScores=null;
 function show(id){["sIntro","sQuiz","sLoad","sResult"].forEach(s=>$(s).classList.toggle("hidden",s!==id));scrollTo({top:0,behavior:"smooth"});}
 
 function renderQ(){
@@ -272,34 +278,54 @@ function renderQ(){
   $("qNum").textContent=`Q${idx+1}`;
   $("qText").textContent=item.q;
   $("backBtn").disabled=idx===0;
+  renderOpts();
+  $("sQuiz").style.animation="none";void $("sQuiz").offsetWidth;$("sQuiz").style.animation="";
+}
+function renderOpts(){
+  const item=Q[idx], cur=answers[idx]||[];
   const box=$("opts");box.innerHTML="";
   item.o.forEach((op,i)=>{
     const b=document.createElement("button");b.className="opt";b.textContent=op[0];
-    if(answers[idx]===i) b.classList.add("sel");
-    b.onclick=()=>pick(i,b);box.appendChild(b);
+    if(cur.includes(i)){
+      b.classList.add("sel");
+      if(cur.length>1){const s=document.createElement("span");s.className="badge";s.textContent="반반";b.prepend(s);}
+    }
+    b.onclick=()=>pick(i);box.appendChild(b);
   });
-  $("sQuiz").style.animation="none";void $("sQuiz").offsetWidth;$("sQuiz").style.animation="";
+  const nb=$("nextBtn");
+  nb.disabled=!cur.length;
+  nb.textContent=idx===Q.length-1?"결과 보기 🌙":"다음 →";
 }
-function pick(i,el){
-  if(locked) return; locked=true;
-  answers[idx]=i;
-  [...$("opts").children].forEach(c=>c.classList.remove("sel"));el.classList.add("sel");
-  setTimeout(()=>{
-    locked=false;
-    if(idx<Q.length-1){idx++;renderQ();}
-    else{$("barFill").style.width="100%";show("sLoad");setTimeout(finish,1600);}
-  },260);
+// 최대 2개 선택: 다시 누르면 해제, 3번째는 막기
+function pick(i){
+  const cur=answers[idx]?[...answers[idx]]:[];
+  const p=cur.indexOf(i);
+  if(p>-1) cur.splice(p,1);
+  else if(cur.length>=2){toast("최대 2개까지 고를 수 있어요 ✌️");return;}
+  else cur.push(i);
+  answers[idx]=cur;
+  renderOpts();
+}
+function goNext(){
+  if(!(answers[idx]&&answers[idx].length)) return;
+  if(idx<Q.length-1){idx++;renderQ();}
+  else{$("barFill").style.width="100%";show("sLoad");setTimeout(finish,1600);}
+}
+// 2개 골랐으면 각 보기 점수를 반씩 나눠서 더함
+function addPts(target,qi,arr,mul){
+  const w=1/arr.length;
+  arr.forEach(a=>{const pts=Q[qi].o[a][1];for(const k in pts)target[k]+=pts[k]*w*mul;});
 }
 function calc(){
   const s={};ORDER.forEach(k=>s[k]=0);
-  answers.forEach((a,qi)=>{const pts=Q[qi].o[a][1];for(const k in pts)s[k]+=pts[k];});
+  answers.forEach((arr,qi)=>addPts(s,qi,arr,1));
   return s;
 }
 function finish(){
   const s=calc();
   // 동점이면 마지막 질문들에서 더 많이 고른 쪽 우선
   const recent={};ORDER.forEach(k=>recent[k]=0);
-  answers.forEach((a,qi)=>{const pts=Q[qi].o[a][1];for(const k in pts)recent[k]+=pts[k]*(qi+1);});
+  answers.forEach((arr,qi)=>addPts(recent,qi,arr,qi+1));
   const top=[...ORDER].sort((a,b)=>s[b]-s[a]||recent[b]-recent[a])[0];
   lastScores=s;
   history.replaceState(null,"",`?r=${top}`);
@@ -332,6 +358,7 @@ function currentTop(){return new URLSearchParams(location.search).get("r");}
 
 /* ---------- 버튼 ---------- */
 $("startBtn").onclick=()=>{idx=0;answers=[];show("sQuiz");renderQ();};
+$("nextBtn").onclick=goNext;
 $("backBtn").onclick=()=>{if(idx>0){idx--;renderQ();}};
 $("retryBtn").onclick=()=>{history.replaceState(null,"",location.pathname);lastScores=null;idx=0;answers=[];show("sQuiz");renderQ();};
 
