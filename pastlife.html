@@ -135,7 +135,7 @@ h1{margin:10px 0 6px;font-size:clamp(24px,6vw,32px);color:var(--gold);text-shado
       <div class="tags" id="rTags"></div>
     </div>
     <p class="r-desc" id="rDesc"></p>
-    <div class="box"><h3>🔎 현생에서 이런 모습, 있지 않나요?</h3><ul class="life" id="rLife"></ul></div>
+    <div class="box"><h3 id="rLifeH">🔎 현생에서 이런 모습, 있지 않나요?</h3><ul class="life" id="rLife"></ul></div>
     <div class="box"><h3>✦ 전생에서 물려받은 장점</h3><p id="rGood"></p></div>
     <div class="box"><h3>☾ 이번 생에서 조심할 점</h3><p id="rBad"></p></div>
     <div class="match">
@@ -210,6 +210,9 @@ const A = {
     b:"표현을 아끼면 차갑다는 오해를 받을 수 있어요. 고마운 마음은 가끔 말로 꺼내 보세요.",
     best:"wizard",worst:"merchant"}
 };
+const W_ = {"king": {"place": "경복궁", "room": "침전", "ppl": "신하들", "intro": "전생에 당신은 경복궁에서 나라를 다스리던 왕이었어요."}, "wizard": {"place": "안개 낀 탑", "room": "탑 꼭대기 서재", "ppl": "제자들", "intro": "전생에 당신은 안개 낀 탑에서 책을 읽던 마법사였어요."}, "pirate": {"place": "카리브해", "room": "선장실", "ppl": "선원들", "intro": "전생에 당신은 카리브해를 누비던 해적 선장이었어요."}, "merchant": {"place": "오아시스 시장", "room": "천막", "ppl": "상단 사람들", "intro": "전생에 당신은 사막의 오아시스를 오가던 대상인이었어요."}, "painter": {"place": "도화서", "room": "화실", "ppl": "동료 화원들", "intro": "전생에 당신은 도화서에서 그림을 그리던 궁중 화원이었어요."}, "gladiator": {"place": "콜로세움", "room": "숙소", "ppl": "동료 검투사들", "intro": "전생에 당신은 콜로세움의 이름난 검투사였어요."}, "jumo": {"place": "저잣거리", "room": "주막 뒷방", "ppl": "단골손님들", "intro": "전생에 당신은 한양 저잣거리에서 주막을 꾸리던 주인이었어요."}, "cat": {"place": "나일강 신전", "room": "신전 그늘", "ppl": "사제들", "intro": "놀라지 마세요. 전생에 당신은 나일강 신전에서 모셔지던 고양이였어요."}};
+/* 보기마다 [전생 이야기 문장, 현생 흔적] — 같은 전생이어도 고른 답에 따라 이야기가 달라져요 */
+const S_ = [[["하루 일과가 끝나면 아무도 들이지 않고 {room:에서} 혼자 쉬는 시간을 가장 아꼈어요.", "약속이 취소되면 속으로 '오히려 좋아' 한다"], ["한가한 날이면 먼저 {ppl:을} 불러 모아 왁자지껄한 시간을 보냈어요.", "약속이 깨지면 바로 다른 사람한테 연락한다"], ["함께할 사람이 없어도, 가고 싶은 곳이 생기면 혼자서라도 길을 나섰어요.", "혼자라도 가고 싶은 곳은 간다"], ["남들이 쉬는 날에도 밀린 일을 조용히 정리하며 다음을 준비했어요.", "빈 시간이 생기면 미뤄 둔 일부터 처리한다"]], [["{ppl:이} 우왕좌왕할 때면 결국 날짜와 할 일을 정해 주는 건 당신이었어요.", "단톡방에서 결국 날짜·장소를 정리하는 사람이다"], ["당신이 한마디 하면 {ppl:이} 배꼽을 잡고 웃었어요.", "단톡방 리액션·드립 담당이다"], ["말수는 적었지만, {ppl:이} 하는 이야기는 하나도 놓치지 않고 다 듣고 있었어요.", "단톡방은 읽기만 해도 내용은 다 알고 있다"], ["{place:의} 풍경을 눈에 담아 두었다가 그림처럼 남기는 걸 좋아했어요.", "사진이랑 짤 퀄리티는 내가 책임진다"]], [["큰일이 생기면 누가 시키지 않아도 앞에 나서서 사람들을 이끌었어요.", "정신 차려 보면 리더를 맡고 있다"], ["무슨 일이든 먼저 기록을 뒤지고 원리를 따져 본 뒤에야 움직였어요.", "자료 조사·분석은 내 담당이다"], ["같은 일을 해도 당신 손을 거치면 유난히 보기 좋게 마무리됐어요.", "마무리와 꾸미기는 결국 내 손을 거친다"], ["맡은 몫은 누구보다 빠르게 끝내 놓고 조용히 다음을 기다렸어요.", "내 파트는 빠르고 깔끔하게 끝낸다"]], [["받은 보수는 허투루 쓰지 않고 차곡차곡 모아 두었어요.", "월급이 들어오면 적금·투자부터 확인한다"], ["보수를 받으면 눈여겨봐 둔 예쁜 물건을 하나씩 사 모으는 게 낙이었어요.", "장바구니에 담아 둔 걸 월급날 결제한다"], ["보수를 받는 날이면 {ppl}에게 한턱 크게 내곤 했어요.", "월급날엔 고생한 나랑 친구들한테 한턱 쏜다"], ["보수가 모이면 아직 가 보지 못한 먼 곳으로 떠날 계획부터 세웠어요.", "월급날 항공권부터 검색해 본다"]], [["부당한 일을 보면 그 자리에서 바로 맞서는 걸로 유명했어요.", "억울하면 그 자리에서 바로 말한다"], ["무례한 이와는 다투는 대신 조용히 선을 긋고 다시는 곁에 두지 않았어요.", "선 넘는 사람과는 조용히 거리를 둔다"], ["억울한 일이 생기면 증거를 하나하나 모아 논리로 이겨 냈어요.", "억울하면 증거부터 모아서 따진다"], ["속상한 일이 있으면 마음 맞는 이에게 털어놓으며 훌훌 털어 냈어요.", "속상하면 친구한테 털어놓으면서 푼다"]], [["마음이 무거운 날엔 땀이 날 때까지 몸을 움직여서 털어 냈어요.", "스트레스는 운동으로 땀 빼서 푼다"], ["지친 날엔 아무것도 하지 않고 하루 종일 늘어져 있는 게 최고의 회복이었어요.", "지치면 누워서 아무것도 안 한다"], ["복잡한 마음은 손으로 무언가를 만들면서 차분하게 가라앉혔어요.", "스트레스를 받으면 손으로 뭔가를 만든다"], ["답답할 땐 말도 없이 훌쩍 길을 떠났다가 돌아오곤 했어요.", "답답하면 무작정 어디론가 떠난다"]], [["처음 보는 일도 겁내지 않고 일단 부딪혀서 배웠어요.", "처음 하는 일도 일단 해 보면서 배운다"], ["새로운 일을 맡으면 원리부터 완전히 이해해야 손을 댔어요.", "원리를 알아야 시작할 수 있다"], ["새 일을 맡으면 무엇이 남는지부터 셈해 보는 영리함이 있었어요.", "새 일은 '이걸로 뭘 얻지?'부터 따진다"], ["새 일이 생기면 전체 그림을 그리고 사람마다 역할을 나눠 맡겼어요.", "처음 하는 일도 계획표부터 짠다"]], [["{ppl:은} 당신의 예감이 무섭게 맞는다며 수군거렸어요.", "'너 촉 진짜 무섭다'는 말을 듣는다"], ["{ppl:은} 지칠 때면 늘 당신 곁으로 와서 쉬어 갔어요.", "'너랑 있으면 편해'라는 말을 자주 듣는다"], ["한번 시작한 일은 끝을 볼 때까지 놓지 않는 사람으로 통했어요.", "'너 진짜 끈기 있다'는 말을 듣는다"], ["당신이 고른 물건은 늘 {ppl:의} 부러움을 샀어요.", "'센스 좋다, 이거 어디서 샀어?' 소리를 듣는다"]], [["혼자 있는 시간은 당신에게 외로움이 아니라 충전이었어요.", "혼자 있는 시간이 곧 충전이다"], ["혼자 있는 걸 못 견뎌서 늘 사람들 틈에 섞여 있었어요.", "혼자 30분이면 심심해서 누굴 부른다"], ["틈이 나면 아껴 둔 취미에 푹 빠져 시간 가는 줄 몰랐어요.", "혼자 시간엔 미뤄 둔 취미를 한다"], ["남는 시간엔 쉬지 않고 실력을 갈고닦았어요.", "혼자 시간엔 공부나 자기계발을 한다"]], [["밤이 되면 내일 할 일을 미리 점검하고 일찍 잠자리에 들었어요.", "밤엔 내일 일정 확인하고 잘 준비한다"], ["밤이 깊어도 쉽게 잠들지 않고 이것저것 구경하며 늦게까지 깨어 있었어요.", "밤 12시에도 영상 무한 스크롤 중이다"], ["모두가 잠든 밤이면 생각이 많아져 홀로 별을 올려다보곤 했어요.", "밤만 되면 생각이 많아진다"], ["한밤중에 출출해지면 몰래 밖으로 나가 먹을 걸 찾아다녔어요.", "밤에 갑자기 야식 사러 나간다"]]];
 const ORDER=["king","wizard","pirate","merchant","painter","gladiator","jumo","cat"];
 
 /* ---------- 질문 데이터 (보기마다 전생 점수) ---------- */
@@ -328,6 +331,7 @@ function finish(){
   answers.forEach((arr,qi)=>addPts(recent,qi,arr,qi+1));
   const top=[...ORDER].sort((a,b)=>s[b]-s[a]||recent[b]-recent[a])[0];
   lastScores=s;
+  lastStory=makeStory(top);
   history.replaceState(null,"",`?r=${top}`);
   showResult(top,s);
 }
@@ -336,7 +340,10 @@ function showResult(key,scores){
   $("rLabel").textContent=scores?"당신의 전생은":"이 전생은";
   $("rEmoji").textContent=a.e;$("rTitle").textContent=a.t;$("rName").textContent=a.n;
   $("rTags").innerHTML=a.tags.map(t=>`<span>#${t}</span>`).join("");
-  $("rDesc").textContent=a.d;$("rLife").innerHTML=a.life.map(t=>`<li>${t}</li>`).join("");$("rGood").textContent=a.g;$("rBad").textContent=a.b;
+  const mine=!!(scores&&lastStory);
+  $("rDesc").textContent=mine?lastStory.text:a.d;
+  $("rLifeH").textContent=mine?"🔗 현생과 이어진 흔적 (내가 고른 답)":"🔎 현생에서 이런 모습, 있지 않나요?";
+  $("rLife").innerHTML=(mine?lastStory.traces:a.life).map(t=>`<li>${t}</li>`).join("");$("rGood").textContent=a.g;$("rBad").textContent=a.b;
   $("mBestE").textContent=A[a.best].e;$("mBest").textContent=A[a.best].n;
   $("mWorstE").textContent=A[a.worst].e;$("mWorst").textContent=A[a.worst].n;
   const sb=$("scoreBox");
@@ -354,13 +361,35 @@ function showResult(key,scores){
   });
   show("sResult");
 }
+
+/* ---------- 고른 답으로 나만의 전생 이야기 만들기 ---------- */
+function hasBatchim(w){const c=w.charCodeAt(w.length-1);return c>=0xAC00&&c<=0xD7A3&&(c-0xAC00)%28>0;}
+const JOSA={"은":["은","는"],"이":["이","가"],"을":["을","를"],"과":["과","와"],"의":["의","의"],"에서":["에서","에서"]};
+function fill(t,w){return t.replace(/\{(\w+)(?::([^}]+))?\}/g,(_,k,j)=>{const v=w[k];if(!j)return v;const p=JOSA[j]||[j,j];return v+(hasBatchim(v)?p[0]:p[1]);});}
+function makeStory(top){
+  const w=W_[top];
+  // 문항마다 고른 보기(2개면 결과 전생 점수가 더 높은 쪽)를 하나씩 뽑고, 결과 전생과 관련 깊은 순으로 정렬
+  const picks=answers.map((arr,qi)=>{
+    const best=[...arr].sort((a,b)=>(Q[qi].o[b][1][top]||0)-(Q[qi].o[a][1][top]||0))[0];
+    return {qi,oi:best,w:(Q[qi].o[best][1][top]||0)};
+  }).filter(Boolean).sort((a,b)=>b.w-a.w||a.qi-b.qi);
+  const storyP=picks.slice(0,4).sort((a,b)=>a.qi-b.qi);
+  const traceP=picks.slice(4,7).sort((a,b)=>a.qi-b.qi);
+  const lines=storyP.map(p=>fill(S_[p.qi][p.oi][0],w));
+  return {
+    text:[w.intro,...lines,"그 기억이 아직 영혼 어딘가에 남아서, 지금의 당신에게도 조금씩 묻어나요."].join(" "),
+    short:[w.intro,...lines.slice(0,2)].join(" "),
+    traces:[...storyP,...traceP].map(p=>S_[p.qi][p.oi][1])
+  };
+}
+let lastStory=null;
 function currentTop(){return new URLSearchParams(location.search).get("r");}
 
 /* ---------- 버튼 ---------- */
 $("startBtn").onclick=()=>{idx=0;answers=[];show("sQuiz");renderQ();};
 $("nextBtn").onclick=goNext;
 $("backBtn").onclick=()=>{if(idx>0){idx--;renderQ();}};
-$("retryBtn").onclick=()=>{history.replaceState(null,"",location.pathname);lastScores=null;idx=0;answers=[];show("sQuiz");renderQ();};
+$("retryBtn").onclick=()=>{history.replaceState(null,"",location.pathname);lastScores=null;lastStory=null;idx=0;answers=[];show("sQuiz");renderQ();};
 
 function toast(m){const t=$("toast");t.textContent=m;t.classList.add("show");clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove("show"),2000);}
 $("shareBtn").onclick=async()=>{
@@ -402,7 +431,8 @@ $("saveBtn").onclick=async()=>{
   x.fillStyle="#e3c27a";x.font='700 76px "Noto Serif KR", serif';x.fillText(a.n,W/2,665);
   x.font='600 32px "Noto Serif KR", serif';x.fillStyle="#f1dca8";x.fillText(a.tags.map(t=>"#"+t).join("   "),W/2,735);
   x.textAlign="left";x.fillStyle="#efe8ff";x.font='400 30px "Noto Serif KR", serif';
-  let y=wrap(x,a.d,120,810,W-240,47);
+  const mineImg=lastStory&&currentTop()===k;
+  let y=wrap(x,mineImg?lastStory.short:a.d,120,810,W-240,47);
   y+=30;
   x.textAlign="center";x.font='400 30px "Noto Serif KR", serif';x.fillStyle="#a99cc9";
   x.fillText(`전생의 인연 ${A[a.best].e} ${A[a.best].n}   ·   전생의 라이벌 ${A[a.worst].e} ${A[a.worst].n}`,W/2,Math.max(y+20,1160));
