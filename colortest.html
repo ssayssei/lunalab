@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>색깔 심리테스트 · 달빛 연구소</title>
+<meta name="description" content="하루의 순간마다 떠오르는 색으로 알아보는 나의 마음 색 심리테스트">
+<meta property="og:title" content="나의 마음은 무슨 색일까? 🎨 · 달빛 연구소">
+<meta property="og:description" content="하루의 순간마다 떠오르는 색으로 알아보는 나의 마음 색">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Noto+Serif+KR:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0f0b1e;--bg2:#1b1433;--gold:#e3c27a;--gold2:#b8954a;--ink:#efe8ff;--dim:#a99cc9}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%}
+body{font-family:"Noto Serif KR",serif;color:var(--ink);
+  background:radial-gradient(ellipse at 50% -10%,#3a2a6b 0%,var(--bg2) 35%,var(--bg) 75%);background-attachment:fixed;overflow-x:hidden}
+#stars{position:fixed;inset:0;pointer-events:none;z-index:0}
+.wrap{position:relative;z-index:1;max-width:620px;margin:0 auto;padding:62px 16px 60px}
+.home{position:absolute;top:14px;left:16px;color:var(--dim);text-decoration:none;font-size:13px;border:1px solid rgba(227,194,122,.25);padding:6px 12px;border-radius:999px;transition:.2s}
+.home:hover{color:var(--gold);border-color:var(--gold)}
+.panel{background:rgba(255,255,255,.04);border:1px solid rgba(227,194,122,.22);border-radius:18px;padding:26px 22px;backdrop-filter:blur(4px);animation:fade .45s ease}
+@keyframes fade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.hidden{display:none!important}
+.center{text-align:center}
+.lab-no{font-family:"Cinzel",serif;font-size:12px;letter-spacing:.25em;color:var(--gold2)}
+h1{margin:10px 0 6px;font-size:clamp(24px,6vw,32px);color:var(--gold);text-shadow:0 0 16px rgba(227,194,122,.3)}
+.intro-ani{font-size:34px;letter-spacing:6px;margin:18px 0}
+.intro-ani span{display:inline-block;animation:bob 2.4s ease-in-out infinite}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+.desc{color:var(--dim);line-height:1.8;font-size:15px;margin:0 0 22px}
+.btn{display:inline-block;border:none;cursor:pointer;font:inherit;font-weight:700;font-size:16px;padding:13px 28px;border-radius:12px;color:#1a1230;background:linear-gradient(135deg,#f3dc9f,var(--gold2));box-shadow:0 6px 20px rgba(227,194,122,.25);transition:.2s;text-decoration:none}
+.btn:hover{transform:translateY(-2px);box-shadow:0 10px 26px rgba(227,194,122,.35)}
+.btn.ghost{background:transparent;color:var(--gold);border:1px solid var(--gold2);box-shadow:none}
+.btn.sm{font-size:14px;padding:10px 18px}
+/* progress */
+.prog-top{display:flex;justify-content:space-between;align-items:center;font-size:13px;color:var(--dim);margin-bottom:8px}
+.back{background:none;border:none;color:var(--dim);font:inherit;font-size:13px;cursor:pointer;padding:0}
+.back:hover{color:var(--gold)}
+.back:disabled{visibility:hidden}
+.bar{height:6px;border-radius:99px;background:rgba(255,255,255,.08);overflow:hidden;margin-bottom:22px}
+.bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--gold2),#f3dc9f);border-radius:99px;transition:width .35s}
+.qnum{font-family:"Cinzel",serif;color:var(--gold);letter-spacing:.15em;font-size:13px}
+.qtext{font-size:19px;font-weight:700;line-height:1.6;margin:8px 0 20px;word-break:keep-all}
+.opts{display:flex;flex-direction:column;gap:10px}
+.opt{text-align:left;border:1px solid rgba(227,194,122,.3);background:rgba(0,0,0,.2);color:var(--ink);padding:14px 16px;border-radius:12px;cursor:pointer;font:inherit;font-size:15px;line-height:1.5;transition:.18s;word-break:keep-all}
+.opt:hover{border-color:var(--gold);background:rgba(227,194,122,.08);transform:translateX(3px)}
+.opt.sel{background:linear-gradient(135deg,var(--gold),var(--gold2));color:#1a1230;border-color:transparent;font-weight:700}
+.opt .badge{float:right;font-size:12px;font-weight:700;background:#1a1230;color:var(--gold);border-radius:999px;padding:1px 8px;margin-left:8px}
+.qhint{font-size:13px;color:var(--dim);margin:-10px 0 16px}
+.qnext{margin-top:18px;text-align:center}
+.qnext .btn:disabled{opacity:.35;cursor:default;transform:none;box-shadow:none}
+/* loading */
+.loading{padding:50px 0}
+.loading .spin{font-size:46px;display:inline-block;animation:spin 1.2s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading p{color:var(--dim);margin-top:16px}
+/* result */
+.r-label{color:var(--dim);font-size:14px}
+.r-emoji{font-size:96px;line-height:1;margin:14px 0 6px;filter:drop-shadow(0 0 22px rgba(227,194,122,.35));animation:pop .6s cubic-bezier(.3,1.6,.5,1)}
+@keyframes pop{from{transform:scale(.3);opacity:0}to{transform:scale(1);opacity:1}}
+.r-title{color:#f1dca8;font-size:15px;margin:4px 0 2px}
+.r-name{font-size:30px;color:var(--gold);margin:0;font-weight:700}
+.tags{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:14px 0 4px}
+.tags span{font-size:13px;padding:4px 11px;border-radius:999px;background:rgba(227,194,122,.14);color:#f1dca8}
+.r-desc{line-height:1.85;font-size:15px;margin:16px 0 4px;word-break:keep-all}
+.box{border-left:3px solid var(--gold);padding:12px 14px;margin-top:14px;background:rgba(0,0,0,.18);border-radius:0 12px 12px 0}
+.box h3{margin:0 0 4px;font-size:15px;color:var(--gold)}
+.box p{margin:0;line-height:1.75;font-size:14px;word-break:keep-all}
+.match{display:flex;gap:10px;margin-top:14px}
+.match div{flex:1;text-align:center;padding:12px 8px;border-radius:12px;background:rgba(0,0,0,.22);font-size:13px;color:var(--dim)}
+.match b{display:block;font-size:30px;margin:4px 0 2px}
+.match em{font-style:normal;color:var(--ink);font-size:14px;font-weight:700}
+.scores{margin-top:18px}
+.scores h3{font-size:15px;color:var(--gold);margin:0 0 10px}
+.srow{display:flex;align-items:center;gap:10px;margin-bottom:8px;font-size:14px}
+.srow .nm{width:86px;flex-shrink:0}
+.srow .sb{flex:1;height:8px;border-radius:99px;background:rgba(255,255,255,.08);overflow:hidden}
+.srow .sb i{display:block;height:100%;background:linear-gradient(90deg,var(--gold2),#f3dc9f);border-radius:99px;width:0;transition:width .9s ease}
+.srow .pc{width:40px;text-align:right;color:var(--dim);font-size:13px}
+.actions{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:24px}
+.toast{position:fixed;left:50%;bottom:30px;transform:translateX(-50%) translateY(20px);background:#2a2050;border:1px solid var(--gold2);color:var(--ink);padding:10px 18px;border-radius:999px;font-size:14px;opacity:0;transition:.3s;z-index:10;pointer-events:none}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.all{margin-top:28px}
+.all h3{text-align:center;color:var(--gold);font-size:15px;margin:0 0 12px}
+.all-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.all-grid button{background:rgba(0,0,0,.2);border:1px solid rgba(227,194,122,.2);border-radius:12px;padding:10px 4px;color:var(--ink);font:inherit;font-size:12px;cursor:pointer;transition:.2s}
+.all-grid button:hover,.all-grid button.on{border-color:var(--gold);background:rgba(227,194,122,.1)}
+.all-grid b{display:block;font-size:26px;font-weight:400}
+.foot{text-align:center;color:#6f6390;font-size:12px;margin-top:30px}
+@media (max-width:480px){.qtext{font-size:17px}.r-emoji{font-size:80px}.panel{padding:22px 16px}}
+
+.intro-dots{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;max-width:260px;margin:22px auto}
+.intro-dots span{width:30px;height:30px;border-radius:50%;animation:bob 2.4s ease-in-out infinite;box-shadow:0 0 14px rgba(255,255,255,.15)}
+.cgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.cbtn{position:relative;display:flex;flex-direction:column;align-items:center;gap:8px;padding:14px 6px 12px;border-radius:14px;border:1px solid rgba(227,194,122,.25);background:rgba(0,0,0,.2);color:var(--ink);font:inherit;font-size:14px;cursor:pointer;transition:.18s}
+.cbtn:hover{border-color:var(--gold);transform:translateY(-2px)}
+.cbtn .sw{width:42px;height:42px;border-radius:50%;box-shadow:inset 0 -4px 8px rgba(0,0,0,.25),0 0 0 3px rgba(255,255,255,.08);transition:.2s}
+.cbtn.sel{border-color:var(--gold);background:rgba(227,194,122,.14);font-weight:700}
+.cbtn.sel .sw{box-shadow:inset 0 -4px 8px rgba(0,0,0,.25),0 0 0 3px #1b1433,0 0 0 5px var(--gold),0 0 18px rgba(227,194,122,.5)}
+.cbtn .badge{position:absolute;top:6px;right:6px;font-size:11px;font-weight:700;background:var(--gold);color:#1a1230;border-radius:999px;padding:1px 7px}
+.r-orb{width:130px;height:130px;border-radius:50%;margin:18px auto 10px;animation:pop .6s cubic-bezier(.3,1.6,.5,1)}
+.dot{display:inline-block;width:12px;height:12px;border-radius:50%;margin-right:5px;vertical-align:-1px}
+.mdot{display:block;width:34px;height:34px;border-radius:50%;margin:6px auto 4px}
+.gdot{display:block;width:26px;height:26px;border-radius:50%;margin:2px auto 6px}
+.life{margin:6px 0 0;padding-left:18px}.life li{line-height:1.75;font-size:14px;margin-bottom:4px;word-break:keep-all}
+.flow,.future{margin-top:20px}
+.flow h3,.future h3{font-size:15px;color:var(--gold);margin:0 0 10px}
+.frow{padding:10px 12px;border-radius:12px;background:rgba(0,0,0,.18);margin-bottom:8px}
+.fh{display:flex;justify-content:space-between;gap:8px;font-size:14px;font-weight:700;flex-wrap:wrap}
+.fc{font-weight:600;color:#f1dca8}
+.frow p{margin:4px 0 0;font-size:13px;color:var(--dim);line-height:1.6;word-break:keep-all}
+.future{border:1px solid var(--gold2);border-radius:14px;padding:16px;background:linear-gradient(160deg,rgba(227,194,122,.10),rgba(255,255,255,.02))}
+.future p{margin:6px 0;line-height:1.75;font-size:14px;word-break:keep-all}
+.future .note{color:#f1dca8}
+.all-grid.c9{grid-template-columns:repeat(5,1fr)}
+@media (max-width:480px){.all-grid.c9{grid-template-columns:repeat(3,1fr)}}
+</style>
+</head>
+<body>
+<canvas id="stars"></canvas>
+<div class="wrap">
+  <a class="home" href="./">← 달빛 연구소</a>
+
+  <section id="sIntro" class="panel center">
+    <div class="lab-no">LUNA LAB · No.04</div>
+    <h1>나의 마음은 무슨 색일까?</h1>
+    <div class="intro-dots" id="introDots"></div>
+    <p class="desc">하루의 순간마다 떠오르는 색을 골라 주세요.<br>깊게 생각하지 말고, 눈 감고 제일 먼저 떠오르는 색으로!<br>애매할 땐 2개까지 골라도 괜찮아요 ✌️</p>
+    <button class="btn" id="startBtn">색깔 찾으러 가기 🎨</button>
+  </section>
+
+  <section id="sQuiz" class="panel hidden">
+    <div class="prog-top"><button class="back" id="backBtn">← 이전</button><span id="progTxt">1 / 8</span></div>
+    <div class="bar"><i id="barFill"></i></div>
+    <div class="qnum" id="qNum">Q1</div>
+    <div class="qtext" id="qText"></div>
+    <div class="qhint">딱 맞는 색이 없으면 <b>2개까지</b> 골라도 돼요 ✌️</div>
+    <div class="cgrid" id="opts"></div>
+    <div class="qnext"><button class="btn sm" id="nextBtn" disabled>다음 →</button></div>
+  </section>
+
+  <section id="sLoad" class="panel center loading hidden">
+    <span class="spin">🎨</span>
+    <p>마음의 색을 섞는 중…</p>
+  </section>
+
+  <section id="sResult" class="panel hidden">
+    <div class="center">
+      <div class="r-label" id="rLabel">지금 당신의 마음 색은</div>
+      <div class="r-orb" id="rOrb"></div>
+      <div class="r-title" id="rTitle"></div>
+      <h2 class="r-name" id="rName"></h2>
+      <div class="tags" id="rTags"></div>
+    </div>
+    <p class="r-desc" id="rDesc"></p>
+    <div class="box"><h3>🔎 현실에서 이런 모습, 있지 않나요?</h3><ul class="life" id="rLife"></ul></div>
+    <div class="box"><h3>✦ 이 색의 장점</h3><p id="rGood"></p></div>
+    <div class="box"><h3>☾ 이런 점은 조심해요</h3><p id="rBad"></p></div>
+    <div class="match">
+      <div>잘 맞는 색<b id="mBestE"></b><em id="mBest"></em></div>
+      <div>채워 주면 좋은 색<b id="mNeedE"></b><em id="mNeed"></em></div>
+    </div>
+
+    <div id="myBox">
+      <div class="flow">
+        <h3>🌈 나의 하루 색 흐름</h3>
+        <div id="flowRows"></div>
+      </div>
+      <div class="future" id="futureBox"></div>
+      <div class="scores"><h3>나의 마음 색 성분표</h3><div id="scoreRows"></div></div>
+    </div>
+
+    <div class="actions">
+      <button class="btn sm" id="saveBtn">🖼️ 결과 이미지 저장</button>
+      <button class="btn sm ghost" id="shareBtn">🔗 결과 링크 복사</button>
+      <button class="btn sm ghost" id="retryBtn">↺ 다시 하기</button>
+    </div>
+    <div class="all">
+      <h3>다른 색깔도 구경하기</h3>
+      <div class="all-grid c9" id="allGrid"></div>
+    </div>
+  </section>
+
+  <div class="foot">✦ LUNA LAB 달빛 연구소 ✦ 재미로 보는 테스트예요</div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+/* ---------- 색 데이터 ---------- */
+const C = {
+  red:{h:"#e5484d",e:"❤️",n:"빨강",t:"일단 시작부터 하고 보는 열정 엔진",tags:["추진력","직진","승부욕"],
+    d:"고민은 짧게, 시작은 빠르게! 하고 싶은 게 생기면 일단 저지르고 보는 타입이에요. 에너지가 넘쳐서 같이 있는 사람까지 덩달아 힘이 나요. 다만 화도 열정만큼 빨리 올라왔다가 빨리 식어요.",
+    life:["'해 볼까?' 하고 생각한 날 바로 결제하거나 신청한다","운동이든 게임이든 하다 보면 은근 승부욕이 올라온다","답답한 회의에서 '그래서 결론이 뭐예요?'가 목까지 차오른다"],
+    g:"추진력이 좋아서 남들이 고민만 할 때 이미 결과를 만들어 내요.",
+    b:"에너지를 한 번에 다 쓰면 금방 방전돼요. 오늘 할 일은 오늘까지만!",
+    kw:"에너지가 넘치거나, 뜨겁게 달아오른 상태",
+    wish:"미뤄 둔 걸 드디어 시작하고 싶은 마음이에요. 1년 뒤엔 '그때 해 보길 잘했다'고 말하고 싶은 거예요.",
+    best:"blue",need:"lime"},
+  orange:{h:"#f5873a",e:"🧡",n:"주황",t:"어딜 가든 분위기를 데우는 난로",tags:["활기","사교적","긍정 회로"],
+    d:"사람들 사이에 있을 때 제일 빛나는 타입이에요. 모임에 가면 어색한 공기를 먼저 깨고, 힘든 일도 '그래도 이건 좋았다'를 찾아내요. 당신이 웃으면 주변도 따라 웃게 돼요.",
+    life:["단톡방이 조용하면 괜히 먼저 말을 꺼낸다","맛집 가자는 말에 '오 좋아!'가 0.5초 만에 나간다","힘든 얘기도 끝엔 꼭 웃긴 걸로 마무리한다"],
+    g:"긍정적인 에너지로 어떤 자리든 편하게 만들어요. 사람 복이 많은 타입이에요.",
+    b:"늘 밝아 보여야 한다는 부담이 있을 수 있어요. 안 괜찮은 날엔 안 괜찮다고 해도 돼요.",
+    kw:"사람들과 어울리고 싶은, 활기찬 상태",
+    wish:"더 즐겁고 사람 냄새 나는 1년을 원해요. 새로운 사람, 새로운 경험이 필요한 때예요.",
+    best:"sky",need:"blue"},
+  yellow:{h:"#f5c518",e:"💛",n:"노랑",t:"작은 행복을 잘 찾는 햇살 충전형",tags:["소확행","안도감","따뜻함"],
+    d:"거창한 것보다 퇴근 후 따뜻한 밥 한 끼, 포근한 이불 같은 작은 행복에서 힘을 얻는 타입이에요. 내 공간, 내 사람 곁에 있을 때 마음의 불이 다시 켜져요. 주변 사람들은 당신 옆에 있으면 편하다고 해요.",
+    life:["집에 도착해서 씻고 누우면 '이게 행복이지' 소리가 절로 나온다","편의점 신상 간식 하나에도 기분이 좋아진다","친한 사람들과는 별말 안 해도 편하다"],
+    g:"일상 속 행복을 잘 찾아서 쉽게 무너지지 않아요. 회복력이 좋은 사람이에요.",
+    b:"편한 것만 찾다 보면 새로운 기회를 놓칠 수 있어요. 가끔은 낯선 것에도 손을 뻗어 보세요.",
+    kw:"마음이 놓이고 따뜻해진 상태",
+    wish:"걱정은 줄이고 웃을 일은 늘리고 싶어요. 마음 편한 1년이 목표예요.",
+    best:"blue",need:"red"},
+  lime:{h:"#9bd34a",e:"💚",n:"연두",t:"쉬면서 다시 자라는 새싹형",tags:["회복","성장","여유"],
+    d:"한 번에 확 바뀌기보다 조금씩, 꾸준히 자라는 타입이에요. 지치면 억지로 버티지 않고 잠깐 쉬었다가 다시 시작할 줄 알아요. 새로 배우는 걸 좋아해서 늘 뭔가 하나씩은 키우고 있어요.",
+    life:["관심 있는 강의나 책을 일단 사 두고 천천히 본다","주말에 산책이나 카페에서 멍때리면 충전이 된다","작년보다 나아진 점을 찾으면 은근 뿌듯하다"],
+    g:"조급해하지 않고 내 속도로 가는 힘이 있어요. 시간이 지날수록 단단해져요.",
+    b:"'천천히'가 '나중에'가 되지 않게 조심! 작은 마감일을 스스로 정해 보세요.",
+    kw:"숨 돌리며 회복하는 중인 상태",
+    wish:"새로 배우고 자라고 싶어요. 1년 뒤엔 한 뼘 성장한 나를 기대하고 있어요.",
+    best:"yellow",need:"red"},
+  sky:{h:"#6cc4f0",e:"🩵",n:"하늘",t:"답답하면 숨부터 트고 보는 자유로운 바람",tags:["자유","홀가분","즉흥"],
+    d:"틀에 갇히는 걸 제일 답답해하는 타입이에요. 머리가 복잡하면 일단 밖으로 나가고, 계획 없이 떠난 날이 오히려 제일 기억에 남아요. 가볍고 시원한 성격 덕분에 같이 있으면 편해요.",
+    life:["일하다 답답하면 창밖 하늘을 한 번씩 보게 된다","항공권·여행지 검색을 이유 없이 자주 한다","정해진 루트보다 발길 닿는 대로 걷는 게 좋다"],
+    g:"상황에 얽매이지 않는 유연함이 있어요. 새로운 환경에도 빨리 적응해요.",
+    b:"답답하다고 다 내려놓고 떠나면 할 일이 쌓여요. 떠나기 전에 딱 하나만 정리하고 가요.",
+    kw:"가볍고 홀가분해지고 싶은 상태",
+    wish:"답답한 것들에서 벗어나 가볍게 살고 싶어요. 여행이나 환경 변화가 필요하다는 신호예요.",
+    best:"orange",need:"blue"},
+  blue:{h:"#3d6fe0",e:"💙",n:"파랑",t:"말 안 해도 믿을 수 있는 차분한 바다",tags:["신뢰","차분함","책임감"],
+    d:"겉으로 크게 티 내지 않지만 속은 깊고 단단한 타입이에요. 맡은 일은 조용히 끝까지 해내고, 친구들이 고민 있을 때 제일 먼저 찾는 사람이 당신이에요. 넓은 인맥보다 오래가는 관계 몇 개가 더 소중해요.",
+    life:["감정이 올라와도 일단 한 번 삼키고 말한다","친구가 '너한테만 말하는 건데'로 시작하는 얘기를 자주 듣는다","약속 시간보다 조금 일찍 도착해 있는 편이다"],
+    g:"흔들리지 않는 안정감이 있어서 사람들이 믿고 기대요.",
+    b:"속으로만 삭이다 보면 혼자 지쳐요. 힘들 땐 믿는 사람한테 먼저 기대 보세요.",
+    kw:"차분하고 믿음직한, 안정된 상태",
+    wish:"흔들리지 않는 안정감을 원해요. 일도 관계도 단단하게 자리 잡은 1년을 바라고 있어요.",
+    best:"yellow",need:"orange"},
+  purple:{h:"#9b6ade",e:"💜",n:"보라",t:"남들과 같은 건 싫은 나만의 색 보유자",tags:["개성","감성","변화"],
+    d:"남들이 다 하는 것보다 '나다운' 걸 찾는 타입이에요. 생각이 깊고 감성이 풍부해서, 새벽에 갑자기 이것저것 계획을 세우기도 해요. 지금보다 더 특별한 무언가가 되고 싶다는 마음이 늘 있어요.",
+    life:["새벽에 갑자기 '나 이거 해 볼까?' 하고 검색을 시작한다","유행템보다 나한테 어울리는 걸 고른다","남들은 모르는 나만의 취향 리스트가 있다"],
+    g:"남들이 생각 못 한 아이디어를 내는 창의력이 있어요. 변화에 강해요.",
+    b:"생각만 크게 하고 실행이 늦어질 수 있어요. 작은 것부터 하나씩 현실로 꺼내 보세요.",
+    kw:"생각이 깊어지고 감성이 올라온 상태",
+    wish:"지금과는 다른, 나다운 무언가를 하고 싶어요. 변화와 나만의 특별함을 원하고 있어요.",
+    best:"lime",need:"yellow"},
+  pink:{h:"#f28bb5",e:"🩷",n:"분홍",t:"다정함이 기본값인 마음 부자",tags:["다정함","배려","애정"],
+    d:"주변 사람을 잘 챙기고 다정한 말이 자연스럽게 나오는 타입이에요. 친구 생일, 좋아하는 것까지 잘 기억해 두고, 작은 선물로 마음을 표현하는 걸 좋아해요. 사랑을 주는 만큼 받는 것도 중요한 사람이에요.",
+    life:["친구가 지나가듯 한 말을 기억했다가 챙겨 준다","귀여운 걸 보면 사진부터 찍고 공유한다","누가 서운해 보이면 계속 신경 쓰인다"],
+    g:"따뜻한 배려 덕분에 당신 곁에는 좋은 사람이 모여요.",
+    b:"남을 챙기느라 내 마음은 뒷전이 되기 쉬워요. 나한테도 다정하게 대해 주세요.",
+    kw:"다정하고 몽글몽글한 상태",
+    wish:"서로 아껴 주는 관계가 더 많아지길 바라요. 사랑받고 사랑하는 1년을 원해요.",
+    best:"sky",need:"blue"},
+  gray:{h:"#9a9aa6",e:"🩶",n:"회색",t:"감정 절전 모드로 버티는 현실주의자",tags:["현실적","무던함","에너지 절약"],
+    d:"감정을 크게 쓰지 않고 담담하게 하루를 버텨 내는 타입이에요. 좋은 일에도 나쁜 일에도 크게 흔들리지 않아서 어른스럽다는 말을 들어요. 다만 요즘 '재미'라는 색이 조금 빠져 있을 수 있어요.",
+    life:["회사(학교)에서는 '네, 알겠습니다' 모드로 지낸다","딱히 싫은 것도 좋은 것도 없는 날이 많다","주말에 뭐 했냐고 물으면 '그냥 쉬었어'가 대부분이다"],
+    g:"쉽게 감정에 휩쓸리지 않아서 위기 상황에서도 현실적인 판단을 해요.",
+    b:"회색이 오래가면 마음이 지쳐요. 작은 거라도 좋아하는 색 하나를 일상에 더해 보세요.",
+    kw:"감정을 아끼는 절전 모드 상태",
+    wish:"튀지 않고 조용히, 무탈하게 지나가는 1년을 원해요. 지금은 쉬는 게 필요하다는 신호일 수도 있어요.",
+    best:"yellow",need:"orange"}
+};
+const ORDER=["red","orange","yellow","lime","sky","blue","purple","pink","gray"];
+
+/* ---------- 질문 (보기는 9가지 색 공통) ---------- */
+const Q = [
+  {i:"🌅",c:"아침에 눈 떴을 때",q:"아침에 알람 끄고 눈을 떴을 때 떠오르는 색은?"},
+  {i:"🏢",c:"회사·학교에 있을 때",q:"회사(학교)에 있을 때 내 마음은 무슨 색이야?"},
+  {i:"😤",c:"짜증 나는 일이 생겼을 때",q:"일이 꼬이거나 짜증 나는 일이 생겼을 때 내 마음은?"},
+  {i:"🚇",c:"퇴근길",q:"퇴근(하교)길 버스·지하철 안에서 내 마음은?"},
+  {i:"🏠",c:"집에 도착했을 때",q:"집에 도착해서 씻고 딱 누웠을 때 내 마음은?"},
+  {i:"🫂",c:"소중한 사람을 떠올릴 때",q:"제일 친한 친구나 좋아하는 사람을 떠올리면 무슨 색이야?"},
+  {i:"🌙",c:"잠들기 직전",q:"잠들기 직전, 불 끄고 누웠을 때 내 마음은?"},
+  {i:"✨",c:"1년 뒤의 나",q:"1년 뒤의 나는 무슨 색이었으면 좋겠어?",future:true}
+];
+
+
+/* ---------- 상태 ---------- */
+const $=id=>document.getElementById(id);
+let idx=0, answers=[], lastScores=null, lastAnswers=null;
+function show(id){["sIntro","sQuiz","sLoad","sResult"].forEach(s=>$(s).classList.toggle("hidden",s!==id));scrollTo({top:0,behavior:"smooth"});}
+const dot=(k,cls="dot")=>`<i class="${cls}" style="background:${C[k].h}"></i>`;
+
+$("introDots").innerHTML=ORDER.map((k,i)=>`<span style="animation-delay:${i*.15}s;background:${C[k].h}"></span>`).join("");
+
+function renderQ(){
+  const item=Q[idx];
+  $("progTxt").textContent=`${idx+1} / ${Q.length}`;
+  $("barFill").style.width=`${idx/Q.length*100}%`;
+  $("qNum").textContent=`Q${idx+1}`;
+  $("qText").textContent=`${item.i} ${item.q}`;
+  $("backBtn").disabled=idx===0;
+  renderOpts();
+  $("sQuiz").style.animation="none";void $("sQuiz").offsetWidth;$("sQuiz").style.animation="";
+}
+function renderOpts(){
+  const cur=answers[idx]||[];
+  const box=$("opts");box.innerHTML="";
+  ORDER.forEach((k,i)=>{
+    const b=document.createElement("button");b.className="cbtn";
+    b.innerHTML=`<i class="sw" style="background:${C[k].h}"></i><span>${C[k].n}</span>`;
+    if(cur.includes(i)){
+      b.classList.add("sel");
+      if(cur.length>1){const s=document.createElement("span");s.className="badge";s.textContent="반반";b.appendChild(s);}
+    }
+    b.onclick=()=>pick(i);box.appendChild(b);
+  });
+  const nb=$("nextBtn");
+  nb.disabled=!cur.length;
+  nb.textContent=idx===Q.length-1?"결과 보기 🌙":"다음 →";
+}
+// 최대 2개 선택: 다시 누르면 해제, 3번째는 막기
+function pick(i){
+  const cur=answers[idx]?[...answers[idx]]:[];
+  const p=cur.indexOf(i);
+  if(p>-1) cur.splice(p,1);
+  else if(cur.length>=2){toast("최대 2개까지 고를 수 있어요 ✌️");return;}
+  else cur.push(i);
+  answers[idx]=cur;
+  renderOpts();
+}
+function goNext(){
+  if(!(answers[idx]&&answers[idx].length)) return;
+  if(idx<Q.length-1){idx++;renderQ();}
+  else{$("barFill").style.width="100%";show("sLoad");setTimeout(finish,1600);}
+}
+// 2개 골랐으면 반씩 나눠서 더함 (1년 뒤 질문은 '지금의 색'에서 제외)
+function addPts(target,qi,arr,mul){
+  if(Q[qi].future) return;
+  const w=1/arr.length;
+  arr.forEach(a=>target[ORDER[a]]+=w*mul);
+}
+function calc(){
+  const s={};ORDER.forEach(k=>s[k]=0);
+  answers.forEach((arr,qi)=>addPts(s,qi,arr,1));
+  return s;
+}
+function finish(){
+  const s=calc();
+  const recent={};ORDER.forEach(k=>recent[k]=0);
+  answers.forEach((arr,qi)=>addPts(recent,qi,arr,qi+1));
+  const top=[...ORDER].sort((a,b)=>s[b]-s[a]||recent[b]-recent[a])[0];
+  lastScores=s;lastAnswers=answers.map(a=>[...a]);
+  history.replaceState(null,"",`?r=${top}`);
+  showResult(top,true);
+}
+function showResult(key,mine){
+  const a=C[key];
+  $("rLabel").textContent=mine?"지금 당신의 마음 색은":"이 색깔 유형은";
+  $("rOrb").style.background=`radial-gradient(circle at 35% 30%,#ffffffcc 0%,${a.h} 45%,${a.h} 70%,#00000055 100%)`;
+  $("rOrb").style.boxShadow=`0 0 50px ${a.h}88,0 0 100px ${a.h}44`;
+  $("rOrb").style.animation="none";void $("rOrb").offsetWidth;$("rOrb").style.animation="";
+  $("rTitle").textContent=a.t;$("rName").textContent=`${a.e} ${a.n}`;$("rName").style.color=a.h;
+  $("rTags").innerHTML=a.tags.map(t=>`<span>#${t}</span>`).join("");
+  $("rDesc").textContent=a.d;
+  $("rLife").innerHTML=a.life.map(t=>`<li>${t}</li>`).join("");
+  $("rGood").textContent=a.g;$("rBad").textContent=a.b;
+  $("mBestE").innerHTML=dot(a.best,"mdot");$("mBest").textContent=C[a.best].n;
+  $("mNeedE").innerHTML=dot(a.need,"mdot");$("mNeed").textContent=C[a.need].n;
+  const my=$("myBox");
+  if(mine&&lastAnswers){
+    my.classList.remove("hidden");
+    // 하루 흐름
+    $("flowRows").innerHTML=Q.filter(q=>!q.future).map((q,qi)=>{
+      const ks=lastAnswers[qi].map(i=>ORDER[i]);
+      return `<div class="frow"><div class="fh"><span>${q.i} ${q.c}</span><span class="fc">${ks.map(k=>dot(k)+C[k].n).join(" + ")}</span></div>
+        <p>${ks.map(k=>C[k].kw).join(", 그리고 ")+"예요."}</p></div>`;
+    }).join("");
+    // 1년 뒤
+    const fi=Q.findIndex(q=>q.future), fk=lastAnswers[fi].map(i=>ORDER[i]);
+    $("futureBox").innerHTML=`<h3>✨ 1년 뒤 되고 싶은 색 · ${fk.map(k=>dot(k)+C[k].n).join(" + ")}</h3>`+
+      fk.map(k=>`<p>${C[k].wish}</p>`).join("")+
+      (fk.includes(key)?`<p class="note">지금의 마음 색과 되고 싶은 색이 같아요. 지금 모습 그대로를 더 단단히 하고 싶은 거예요 👍</p>`:
+       `<p class="note">지금은 ${dot(key)}${a.n}, 1년 뒤엔 ${fk.map(k=>C[k].n).join("·")}! 지금과 다른 색을 고른 건 변화를 바라는 마음이 있다는 뜻이에요.</p>`);
+    // 성분표
+    const total=Object.values(lastScores).reduce((x,y)=>x+y,0)||1;
+    const top3=[...ORDER].sort((x,y)=>lastScores[y]-lastScores[x]).filter(k=>lastScores[k]>0).slice(0,3);
+    $("scoreRows").innerHTML=top3.map(k=>`<div class="srow"><span class="nm">${dot(k)}${C[k].n}</span><span class="sb"><i data-w="${Math.round(lastScores[k]/total*100)}" style="background:${C[k].h}"></i></span><span class="pc">${Math.round(lastScores[k]/total*100)}%</span></div>`).join("");
+    setTimeout(()=>document.querySelectorAll(".srow .sb i").forEach(i=>i.style.width=Math.min(100,i.dataset.w*1.6)+"%"),80);
+  } else my.classList.add("hidden");
+  $("retryBtn").textContent=lastAnswers?"↺ 다시 하기":"🎨 나도 테스트하기";
+  $("allGrid").innerHTML=ORDER.map(k=>`<button data-k="${k}" class="${k===key?"on":""}">${dot(k,"gdot")}${C[k].n}</button>`).join("");
+  $("allGrid").querySelectorAll("button").forEach(b=>b.onclick=()=>{
+    const k=b.dataset.k; showResult(k, !!lastAnswers&&k===currentTop());
+  });
+  show("sResult");
+}
+function currentTop(){return new URLSearchParams(location.search).get("r");}
+
+$("startBtn").onclick=()=>{idx=0;answers=[];show("sQuiz");renderQ();};
+$("nextBtn").onclick=goNext;
+$("backBtn").onclick=()=>{if(idx>0){idx--;renderQ();}};
+$("retryBtn").onclick=()=>{history.replaceState(null,"",location.pathname);lastScores=null;lastAnswers=null;idx=0;answers=[];show("sQuiz");renderQ();};
+
+function toast(m){const t=$("toast");t.textContent=m;t.classList.add("show");clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove("show"),2000);}
+$("shareBtn").onclick=async()=>{
+  const k=currentTop()||"yellow";
+  const url=`${location.origin}${location.pathname}?r=${k}`;
+  const text=`내 마음 색은 ${C[k].e} ${C[k].n}! 너의 마음은 무슨 색이야? 🎨`;
+  try{
+    if(navigator.share&&/Mobi|Android|iPhone/i.test(navigator.userAgent)){await navigator.share({title:"색깔 심리테스트 · 달빛 연구소",text,url});return;}
+    await navigator.clipboard.writeText(`${text}\n${url}`);toast("링크를 복사했어요! 🔗");
+  }catch(e){
+    const ta=document.createElement("textarea");ta.value=`${text}\n${url}`;document.body.appendChild(ta);ta.select();
+    try{document.execCommand("copy");toast("링크를 복사했어요! 🔗");}catch(_){toast("복사에 실패했어요");}
+    ta.remove();
+  }
+};
+
+/* ---------- 결과 이미지 저장 ---------- */
+function wrap(ctx,text,x,y,maxW,lh){
+  let line="",lines=[];
+  for(const ch of text){const t=line+ch;if(ctx.measureText(t).width>maxW&&line){lines.push(line);line=ch;}else line=t;}
+  if(line)lines.push(line);
+  lines.forEach((l,i)=>ctx.fillText(l,x,y+i*lh));return y+lines.length*lh;
+}
+$("saveBtn").onclick=async()=>{
+  const k=ORDER.find(x=>$("rName").textContent.endsWith(C[x].n))||"yellow";
+  const a=C[k], mine=!$("myBox").classList.contains("hidden");
+  try{await document.fonts.ready;}catch(e){}
+  const W=1080,H=1350,c=document.createElement("canvas");c.width=W;c.height=H;const x=c.getContext("2d");
+  const g=x.createRadialGradient(W/2,-100,50,W/2,300,1300);g.addColorStop(0,"#3a2a6b");g.addColorStop(.35,"#1b1433");g.addColorStop(1,"#0f0b1e");
+  x.fillStyle=g;x.fillRect(0,0,W,H);
+  for(let i=0;i<180;i++){x.globalAlpha=Math.random()*.6+.2;x.fillStyle="#fff6dc";x.beginPath();x.arc(Math.random()*W,Math.random()*H,Math.random()*2+.4,0,6.28);x.fill();}
+  x.globalAlpha=1;
+  x.strokeStyle="rgba(227,194,122,.45)";x.lineWidth=3;x.strokeRect(50,50,W-100,H-100);
+  x.textAlign="center";
+  x.fillStyle="#b8954a";x.font='700 30px "Cinzel", serif';x.fillText("LUNA LAB  ·  달빛 연구소",W/2,130);
+  x.fillStyle="#a99cc9";x.font='400 36px "Noto Serif KR", serif';x.fillText("나의 마음 색은",W/2,205);
+  x.save();x.shadowColor=a.h;x.shadowBlur=80;
+  const og=x.createRadialGradient(W/2-35,330-40,10,W/2,330,120);og.addColorStop(0,"#ffffffdd");og.addColorStop(.45,a.h);og.addColorStop(1,a.h);
+  x.fillStyle=og;x.beginPath();x.arc(W/2,340,115,0,6.28);x.fill();x.restore();
+  x.fillStyle="#f1dca8";let tf=38;do{x.font=`600 ${tf}px "Noto Serif KR", serif`;tf-=2;}while(x.measureText(a.t).width>W-180&&tf>24);x.fillText(a.t,W/2,530);
+  x.fillStyle=a.h;x.font='700 88px "Noto Serif KR", serif';x.fillText(a.n,W/2,635);
+  x.font='600 32px "Noto Serif KR", serif';x.fillStyle="#f1dca8";x.fillText(a.tags.map(t=>"#"+t).join("   "),W/2,700);
+  x.textAlign="left";x.fillStyle="#efe8ff";x.font='400 32px "Noto Serif KR", serif';
+  let y=wrap(x,a.d,120,780,W-240,50);
+  if(mine&&lastAnswers){
+    // 하루 색 흐름 띠
+    y=Math.max(y+30,1050);
+    x.textAlign="center";x.fillStyle="#a99cc9";x.font='400 28px "Noto Serif KR", serif';x.fillText("나의 하루 색 흐름",W/2,y);
+    const day=Q.map((q,i)=>({q,ks:lastAnswers[i].map(j=>ORDER[j])}));
+    const n=day.length,sw=110,gap=(W-200-sw*n)/(n-1);
+    day.forEach((d,i)=>{
+      const cx=100+i*(sw+gap)+sw/2,cy=y+70;
+      d.ks.forEach((kk,j)=>{x.fillStyle=C[kk].h;x.beginPath();
+        if(d.ks.length===1)x.arc(cx,cy,36,0,6.28);else x.arc(cx,cy,36,j?-Math.PI/2:Math.PI/2,j?Math.PI/2:Math.PI*1.5);x.fill();});
+      if(d.q.future){x.strokeStyle="#e3c27a";x.lineWidth=3;x.beginPath();x.arc(cx,cy,44,0,6.28);x.stroke();}
+      x.font='30px "Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif';x.fillStyle="#fff";x.fillText(d.q.i,cx,cy+90);
+    });
+  }
+  x.textAlign="center";x.fillStyle="#6f6390";x.font='400 26px "Noto Serif KR", serif';x.fillText("ssayssei.github.io/lunalab",W/2,1255);
+  const link=document.createElement("a");link.download=`달빛연구소_색깔테스트_${a.n}.png`;
+  link.href=c.toDataURL("image/png");document.body.appendChild(link);link.click();link.remove();
+  toast("이미지를 저장했어요! 🖼️");
+};
+
+/* ---------- 공유 링크로 들어온 경우 ---------- */
+(function(){const r=currentTop();if(r&&C[r])showResult(r,false);})();
+
+/* ---------- 별 배경 ---------- */
+(function(){
+  const cv=$("stars"),ctx=cv.getContext("2d");let st=[];
+  function rs(){cv.width=innerWidth;cv.height=innerHeight;
+    st=Array.from({length:Math.floor(innerWidth*innerHeight/6000)},()=>({x:Math.random()*cv.width,y:Math.random()*cv.height,r:Math.random()*1.3+.2,p:Math.random()*6.28}));}
+  function draw(t){ctx.clearRect(0,0,cv.width,cv.height);
+    for(const s of st){ctx.globalAlpha=.35+.45*Math.sin(t/900+s.p);ctx.fillStyle="#fff6dc";ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,6.28);ctx.fill();}
+    requestAnimationFrame(draw);}
+  addEventListener("resize",rs);rs();requestAnimationFrame(draw);
+})();
+</script>
+</body>
+</html>
