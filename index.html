@@ -6,7 +6,7 @@
 <title>달빛 연구소 · LUNA LAB</title>
 <meta name="description" content="달빛 아래서 오늘의 나를 연구하는 곳. 타로와 심리 테스트를 무료로 즐겨 보세요.">
 <meta property="og:title" content="달빛 연구소 · LUNA LAB">
-<meta property="og:description" content="달빛 아래서 오늘의 나를 연구하는 곳 🌙 타로 · 동물 · 전생 · 색깔 테스트">
+<meta property="og:description" content="달빛 아래서 오늘의 나를 연구하는 곳 🌙 타로 · 동물 · 전생 · 색깔 테스트 · 달빛 야시장">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Noto+Serif+KR:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
@@ -40,6 +40,20 @@ h1{font-family:"Cinzel",serif;letter-spacing:.2em;color:var(--gold);margin:0;fon
 .lab.soon{cursor:default;border-style:dashed;opacity:.6}
 .lab.soon:hover{transform:none;box-shadow:none;border-color:rgba(227,194,122,.25)}
 .lab.soon .go{background:transparent;color:var(--dim);border:1px solid rgba(169,156,201,.4)}
+.market{display:block;text-decoration:none;color:var(--ink);margin-bottom:26px;border-radius:20px;padding:24px 22px;position:relative;overflow:hidden;
+  background:linear-gradient(135deg,rgba(242,140,60,.16),rgba(227,194,122,.08) 55%,rgba(255,255,255,.03));border:1px solid rgba(242,170,90,.45);transition:.25s}
+.market:hover{transform:translateY(-4px);border-color:#f2b26a;box-shadow:0 14px 34px rgba(0,0,0,.4),0 0 28px rgba(242,150,70,.22)}
+.market .lamps{position:absolute;top:10px;right:16px;font-size:20px;letter-spacing:8px}
+.market .lamps span{display:inline-block;animation:sw 2.6s ease-in-out infinite}
+.market .lamps span:nth-child(2){animation-delay:.4s}.market .lamps span:nth-child(3){animation-delay:.8s}
+@keyframes sw{0%,100%{transform:rotate(-6deg)}50%{transform:rotate(6deg)}}
+.market .new{display:inline-block;font-size:11px;font-weight:700;color:#1a1230;background:#f2b26a;border-radius:999px;padding:2px 9px;margin-left:6px;vertical-align:2px}
+.market h2{margin:6px 0 6px;font-size:22px;color:#f6c98a}
+.market p{margin:0;color:var(--dim);font-size:14px;line-height:1.7}
+.shops{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.shops span{font-size:13px;padding:6px 12px;border-radius:999px;background:rgba(0,0,0,.25);border:1px solid rgba(242,170,90,.35)}
+.shops span.first{background:linear-gradient(135deg,#f3dc9f,var(--gold2));color:#1a1230;font-weight:700;border-color:transparent}
+.sec{font-family:"Cinzel",serif;font-size:13px;letter-spacing:.25em;color:var(--gold2);margin:0 0 12px}
 .foot{text-align:center;color:#6f6390;font-size:12px;margin-top:40px;line-height:1.8}
 </style>
 </head>
@@ -50,9 +64,19 @@ h1{font-family:"Cinzel",serif;letter-spacing:.2em;color:var(--gold);margin:0;fon
     <div class="moon"></div>
     <h1>LUNA LAB</h1>
     <div class="ko-title">달빛 연구소</div>
-    <div class="sub">달빛 아래서 오늘의 나를 연구합니다.<br>궁금한 실험실을 골라 들어가 보세요.</div>
+    <div class="sub">달빛 아래서 오늘의 나를 연구합니다.<br>궁금한 실험실을 골라 들어가 보세요. 출출하면 야시장도 열려 있어요 🏮</div>
   </header>
 
+  <a class="market" href="market.html">
+    <div class="lamps"><span>🏮</span><span>🏮</span><span>🏮</span></div>
+    <div class="no">NIGHT MARKET<span class="new">NEW</span></div>
+    <h2>🏮 달빛 야시장</h2>
+    <p>달이 뜨면 연구소 옆 골목에 야시장이 열려요.<br>오늘 메뉴도 점치고, 포장마차도 운영해 보세요!</p>
+    <div class="shops"><span class="first">🔮 오늘 뭐 먹지?</span><span>🐟 붕어빵 포장마차</span><span>🌶️ 마라탕 가게 (준비 중)</span></div>
+    <span class="go" style="background:linear-gradient(135deg,#f6c98a,#c98a3e)">야시장 구경 가기 🏮</span>
+  </a>
+
+  <p class="sec">✦ LABORATORY ✦</p>
   <div class="grid">
     <a class="lab" href="tarot.html">
       <div class="no">LAB No.01</div>

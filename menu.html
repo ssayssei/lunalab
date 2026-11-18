@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>오늘 뭐 먹지? · 달빛 야시장 메뉴 점집</title>
+<meta name="description" content="날씨, 기분, 신경 쓰는 것만 고르면 오늘의 점심·저녁 메뉴를 뽑아 드려요">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Jua&family=Gowun+Dodum&display=swap" rel="stylesheet">
+<style>
+:root{--gold:#e3c27a;--gold2:#b8954a;--ink:#efe8ff;--dim:#a99cc9;--line:rgba(227,194,122,.25)}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%}
+body{font-family:"Gowun Dodum",system-ui,sans-serif;color:var(--ink);background:radial-gradient(ellipse at 50% -10%,#3a2a6b 0%,#1b1433 35%,#0f0b1e 75%) fixed;overflow-x:hidden}
+#stars{position:fixed;inset:0;pointer-events:none;z-index:0}
+.wrap{position:relative;z-index:1;max-width:560px;margin:0 auto;padding:18px 14px 50px}
+.home{display:inline-block;color:var(--dim);text-decoration:none;font-size:13px;border:1px solid var(--line);padding:6px 12px;border-radius:999px;margin-bottom:12px}
+.home:hover{color:var(--gold);border-color:var(--gold)}
+.panel{background:rgba(255,255,255,.04);border:1px solid var(--line);border-radius:18px;padding:20px 18px;margin-bottom:12px}
+.center{text-align:center}
+.hidden{display:none!important}
+.lab{font-family:"Cinzel",serif;letter-spacing:.25em;font-size:12px;color:var(--gold2)}
+h1,h2,h3{font-family:"Jua",sans-serif;font-weight:400;margin:0}
+h1{font-size:30px;color:var(--gold);margin-top:6px;text-shadow:0 0 16px rgba(227,194,122,.3)}
+.lamp{display:flex;justify-content:center;gap:18px;font-size:22px;margin-bottom:6px}
+.lamp span{display:inline-block;animation:sw 2.6s ease-in-out infinite}
+.lamp span:nth-child(2){animation-delay:.4s}.lamp span:nth-child(3){animation-delay:.8s}
+@keyframes sw{0%,100%{transform:rotate(-6deg)}50%{transform:rotate(6deg)}}
+.q{font-family:"Jua";font-size:18px;color:var(--gold);margin:0 0 4px}
+.qs{font-size:13px;color:var(--dim);margin:0 0 10px}
+.chips{display:flex;flex-wrap:wrap;gap:7px}
+.chip{font-family:"Jua";font-size:15px;border:1px solid var(--line);background:rgba(0,0,0,.22);color:var(--ink);border-radius:999px;padding:8px 13px;cursor:pointer;transition:.15s;-webkit-tap-highlight-color:transparent}
+.chip:hover{border-color:var(--gold)}
+.chip.on{background:linear-gradient(135deg,#f3dc9f,var(--gold2));color:#1a1230;border-color:transparent}
+.seg{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.seg .chip{text-align:center;font-size:17px;padding:11px}
+.btn{font-family:"Jua",sans-serif;font-size:18px;border:none;border-radius:14px;padding:13px 26px;cursor:pointer;background:linear-gradient(135deg,#f3dc9f,var(--gold2));color:#1a1230;box-shadow:0 6px 20px rgba(227,194,122,.25);transition:transform .08s}
+.btn:active{transform:scale(.97)}
+.btn.ghost{background:transparent;color:var(--gold);border:1px solid var(--gold2);box-shadow:none}
+.btn.sm{font-size:15px;padding:10px 16px}
+.row{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:14px}
+.ball{font-size:84px;line-height:1;margin:6px 0;filter:drop-shadow(0 0 22px rgba(227,194,122,.35))}
+.ball.spin{animation:shake .12s linear infinite}
+@keyframes shake{0%{transform:translateX(-3px) rotate(-4deg)}50%{transform:translateX(3px) rotate(4deg)}100%{transform:translateX(-3px) rotate(-4deg)}}
+.ball.pop{animation:pop .55s cubic-bezier(.3,1.6,.5,1)}
+@keyframes pop{from{transform:scale(.3);opacity:0}to{transform:scale(1);opacity:1}}
+.rname{font-family:"Jua";font-size:34px;color:var(--gold);margin:2px 0}
+.rcat{font-size:13px;color:var(--dim)}
+.tags{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:12px 0 4px}
+.tags span{font-size:13px;padding:4px 11px;border-radius:999px;background:rgba(227,194,122,.14);color:#f1dca8}
+.say{line-height:1.8;font-size:15px;margin:12px 0 0;word-break:keep-all}
+.alts{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px}
+.alts button{background:rgba(0,0,0,.22);border:1px solid var(--line);border-radius:12px;padding:10px;color:var(--ink);font:inherit;font-size:14px;cursor:pointer}
+.alts button:hover{border-color:var(--gold)}
+.alts b{display:block;font-size:26px;font-weight:400}
+.ex{font-size:12px;color:var(--dim);margin-top:10px}
+.toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%) translateY(20px);background:#2a2050;border:1px solid var(--gold2);color:var(--ink);padding:9px 18px;border-radius:999px;font-size:14px;opacity:0;transition:.3s;z-index:10;pointer-events:none}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.foot{text-align:center;color:#6f6390;font-size:12px;margin-top:24px}
+</style>
+</head>
+<body>
+<canvas id="stars"></canvas>
+<div class="wrap">
+  <a class="home" href="market.html">← 달빛 야시장</a>
+
+  <section class="panel center">
+    <div class="lamp"><span>🏮</span><span>🏮</span><span>🏮</span></div>
+    <div class="lab">LUNA LAB · NIGHT MARKET</div>
+    <h1>오늘 뭐 먹지? 🔮</h1>
+    <p class="qs" style="margin:6px 0 0">야시장 메뉴 점집이 오늘의 한 끼를 점쳐 드려요.<br>고르기 귀찮은 건 건너뛰어도 괜찮아요!</p>
+  </section>
+
+  <section class="panel">
+    <p class="q">🍽️ 언제 먹어요?</p>
+    <div class="seg" id="meal">
+      <button class="chip" data-v="L">☀️ 점심 메추</button>
+      <button class="chip" data-v="D">🌙 저녁 메추</button>
+    </div>
+  </section>
+
+  <section class="panel">
+    <p class="q">🌦️ 오늘 날씨는?</p>
+    <p class="qs">하나만 골라 주세요</p>
+    <div class="chips" id="wx"></div>
+  </section>
+
+  <section class="panel">
+    <p class="q">💭 오늘의 기분은?</p>
+    <p class="qs">하나만 골라 주세요</p>
+    <div class="chips" id="mood"></div>
+  </section>
+
+  <section class="panel">
+    <p class="q">✅ 메뉴 고를 때 신경 쓰는 것</p>
+    <p class="qs">여러 개 골라도 돼요</p>
+    <div class="chips" id="care"></div>
+  </section>
+
+  <div class="row" style="margin:6px 0 14px"><button class="btn" id="go">메뉴 점치기 🔮</button></div>
+
+  <section class="panel center hidden" id="res">
+    <p class="rcat" id="rTop">오늘의 메뉴는…</p>
+    <div class="ball" id="rE">🔮</div>
+    <div class="rname" id="rN"></div>
+    <div class="rcat" id="rC"></div>
+    <div class="tags" id="rT"></div>
+    <p class="say" id="rS"></p>
+    <div class="alts" id="rA"></div>
+    <div class="row">
+      <button class="btn sm" id="again">🎲 다시 뽑기</button>
+      <button class="btn sm ghost" id="nope">🙅 이거 말고!</button>
+      <button class="btn sm ghost" id="copy">🔗 결과 복사</button>
+    </div>
+    <p class="ex" id="ex"></p>
+  </section>
+
+  <div class="foot">✦ LUNA LAB 달빛 연구소 · 달빛 야시장 ✦ 재미로 보는 메뉴 점이에요</div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const $=id=>document.getElementById(id);
+const WX=[["clear","☀️ 맑음"],["hot","🥵 더움"],["cold","🥶 추움"],["rain","☔ 비"],["snow","❄️ 눈"]];
+const MOOD=[["happy","😆 신나"],["tired","😪 피곤해"],["sad","🥲 꿀꿀해"],["stress","😤 스트레스"],["normal","😐 그냥 그래"],["flutter","🥰 설레"]];
+const CARE=[["solo","🙋 혼밥"],["cheap","💰 가성비"],["fast","⚡ 빨리"],["light","🥗 가볍게"],["hearty","💪 든든하게"],["spicy","🌶️ 매콤"],["soup","🍲 국물"],["noodle","🍜 면"],["rice","🍚 밥"],["meat","🥩 고기"],["delivery","🛵 배달"]];
+const LABEL={clear:"맑은 날",hot:"더운 날",cold:"추운 날",rain:"비 오는 날",snow:"눈 오는 날",happy:"신나는 날",tired:"피곤한 날",sad:"꿀꿀한 날",stress:"스트레스 받은 날",normal:"무난한 날",flutter:"설레는 날",solo:"혼밥 OK",cheap:"가성비",fast:"빨리 먹기",light:"가볍게",hearty:"든든하게",spicy:"매콤",soup:"국물",noodle:"면",rice:"밥",meat:"고기",delivery:"배달 가능"};
+const FOOD=[
+["김치찌개","🍲","한식","LD cold rain snow tired sad soup rice hearty cheap solo spicy"],
+["된장찌개","🍲","한식","LD cold rain tired normal soup rice cheap solo light"],
+["순대국밥","🍲","한식","LD cold rain snow tired soup rice hearty cheap solo fast"],
+["설렁탕","🍲","한식","L cold snow tired soup rice hearty solo"],
+["감자탕","🍲","한식","D cold snow tired soup meat hearty"],
+["부대찌개","🍲","한식","LD cold rain snow stress soup spicy hearty meat"],
+["칼국수","🍜","한식","LD rain cold sad tired soup noodle cheap solo"],
+["수제비","🥣","한식","LD rain cold sad soup cheap solo"],
+["삼계탕","🍗","한식","LD hot tired soup meat hearty"],
+["냉면","🍜","한식","LD hot clear noodle light fast"],
+["콩국수","🥣","한식","L hot noodle light solo"],
+["비빔국수","🍜","한식","L hot clear spicy noodle cheap fast light solo"],
+["비빔밥","🍚","한식","L clear normal rice light solo cheap"],
+["제육볶음","🍚","한식","L tired stress spicy rice meat hearty cheap solo fast"],
+["백반","🍚","한식","L normal tired rice cheap solo hearty"],
+["삼겹살","🥓","한식","D happy stress flutter clear meat hearty"],
+["족발","🍖","한식","D tired happy meat delivery hearty"],
+["보쌈","🍖","한식","D tired normal meat delivery hearty"],
+["곱창","🔥","한식","D stress happy meat spicy hearty"],
+["닭갈비","🌶️","한식","D stress happy spicy meat hearty rice"],
+["쭈꾸미볶음","🐙","한식","D stress spicy hearty rice"],
+["파전에 막걸리","🥞","한식","D rain happy hearty"],
+["죽","🥣","한식","LD sad tired light soup solo"],
+["짬뽕","🍜","중식","LD rain cold stress soup noodle spicy delivery hearty"],
+["짜장면","🍜","중식","LD clear happy normal noodle cheap fast delivery solo"],
+["탕수육","🥢","중식","D happy flutter meat delivery hearty"],
+["마라탕","🌶️","중식","LD cold snow stress spicy soup noodle solo"],
+["마라샹궈","🌶️","중식","D stress happy spicy meat hearty"],
+["훠궈","🍲","중식","D cold snow happy spicy soup meat hearty"],
+["돈가스","🍛","일식","L happy normal clear meat hearty solo fast"],
+["카레","🍛","일식","LD normal rice cheap solo fast"],
+["초밥","🍣","일식","LD happy flutter clear light"],
+["라멘","🍜","일식","LD cold rain snow tired soup noodle hearty solo"],
+["우동","🍜","일식","LD rain cold sad soup noodle light fast cheap solo"],
+["규동","🍚","일식","L tired rice meat fast cheap solo"],
+["연어덮밥","🍚","일식","L flutter clear rice light solo"],
+["샤브샤브","🍲","일식","D cold snow flutter soup light meat"],
+["떡볶이","🌶️","분식","LD stress sad happy spicy cheap delivery"],
+["김밥","🍙","분식","L fast cheap solo light clear"],
+["라면","🍜","분식","LD rain snow tired sad soup noodle cheap fast solo spicy"],
+["쫄면","🍜","분식","L hot spicy noodle cheap solo"],
+["햄버거","🍔","양식","LD happy tired fast delivery meat solo"],
+["피자","🍕","양식","D happy flutter delivery hearty"],
+["파스타","🍝","양식","LD flutter happy clear noodle"],
+["오므라이스","🍳","양식","L normal sad rice solo"],
+["샌드위치","🥪","양식","L fast light solo clear cheap"],
+["샐러드","🥗","양식","L hot clear light solo"],
+["치킨","🍗","양식","D happy stress meat delivery hearty"],
+["타코","🌮","양식","D happy flutter clear meat"],
+["포케","🥗","아시안","L hot clear light rice solo"],
+["쌀국수","🍜","아시안","LD rain tired soup noodle light solo"],
+["팟타이","🍜","아시안","LD happy flutter noodle"]
+].map(([n,e,c,t])=>{const a=t.split(" ");return{n,e,c,meal:a[0],tags:new Set(a.slice(1))};});
+
+const SAY={
+  happy:["기분 좋은 날엔 맛있는 걸로 축하해야죠!","오늘 같은 날은 맛있게 먹고 더 신나기!"],
+  tired:["오늘 고생 많았어요. 든든하게 충전해요.","피곤할 땐 고민 말고 이거 먹고 쉬어요."],
+  sad:["꿀꿀한 날엔 따뜻한 한 끼가 위로가 돼요.","맛있는 거 먹으면 기분이 조금은 나아질 거예요."],
+  stress:["스트레스는 맛있는 걸로 날려 버려요!","오늘 쌓인 건 이걸로 싹 풀어요."],
+  normal:["무난한 날엔 무난하게 맛있는 걸로!","고민할 시간에 이거 먹으러 가요."],
+  flutter:["설레는 날엔 기분 내기 좋은 메뉴로!","오늘 같은 날 딱 어울리는 한 끼예요."],
+  none:["야시장 점집이 별빛을 읽어 보니 이게 나왔어요.","오늘의 운명 메뉴예요. 믿고 가 봐요!"]
+};
+let st={meal:new Date().getHours()<15?"L":"D",wx:null,mood:null,care:new Set(),ex:new Set(),last:null};
+function chips(box,list,multi,key){
+  $(box).innerHTML=list.map(([v,l])=>`<button class="chip" data-v="${v}">${l}</button>`).join("");
+  $(box).querySelectorAll(".chip").forEach(b=>b.onclick=()=>{
+    const v=b.dataset.v;
+    if(multi){st.care.has(v)?st.care.delete(v):st.care.add(v);b.classList.toggle("on");}
+    else{st[key]=st[key]===v?null:v;$(box).querySelectorAll(".chip").forEach(x=>x.classList.toggle("on",x.dataset.v===st[key]));}
+  });
+}
+chips("wx",WX,false,"wx");chips("mood",MOOD,false,"mood");chips("care",CARE,true);
+function drawMeal(){$("meal").querySelectorAll(".chip").forEach(b=>b.classList.toggle("on",b.dataset.v===st.meal));}
+$("meal").querySelectorAll(".chip").forEach(b=>b.onclick=()=>{st.meal=b.dataset.v;st.ex.clear();drawMeal();});
+drawMeal();
+
+function score(f){
+  let s=1,why=[];
+  if(st.wx&&f.tags.has(st.wx)){s+=3;why.push(st.wx);}
+  if(st.mood&&f.tags.has(st.mood)){s+=3;why.push(st.mood);}
+  st.care.forEach(c=>{if(f.tags.has(c)){s+=2;why.push(c);}else if(["spicy","light","soup","noodle","rice","meat"].includes(c))s-=1.5;});
+  return{f,s,why};
+}
+function pick(){
+  const pool=FOOD.filter(f=>f.meal.includes(st.meal)&&!st.ex.has(f.n)).map(score).sort((a,b)=>b.s-a.s);
+  if(!pool.length)return null;
+  const top=pool[0].s,cand=pool.filter(x=>x.s>=top-2);
+  let r=Math.random()*cand.reduce((a,b)=>a+b.s,0);
+  let chosen=cand[0];for(const c of cand){r-=c.s;if(r<=0){chosen=c;break;}}
+  const alts=pool.filter(x=>x!==chosen).slice(0,2);
+  return{chosen,alts};
+}
+function show(res){
+  const {chosen:c,alts}=res;st.last=c;
+  $("rE").className="ball pop";$("rE").textContent=c.f.e;
+  $("rTop").textContent=(st.meal==="L"?"☀️ 오늘의 점심":"🌙 오늘의 저녁")+"은…";
+  $("rN").textContent=c.f.n;$("rC").textContent=c.f.c;
+  $("rT").innerHTML=(c.why.length?c.why:["오늘의 운명"]).map(w=>`<span>#${LABEL[w]||w}</span>`).join("");
+  const lines=SAY[st.mood||"none"];$("rS").textContent=lines[Math.floor(Math.random()*lines.length)];
+  $("rA").innerHTML=alts.map(a=>`<button data-n="${a.f.n}"><b>${a.f.e}</b>${a.f.n}</button>`).join("");
+  $("rA").querySelectorAll("button").forEach(b=>b.onclick=()=>{const a=alts.find(x=>x.f.n===b.dataset.n);show({chosen:a,alts:alts.filter(x=>x!==a).concat([c])});});
+  $("ex").textContent=st.ex.size?"제외한 메뉴: "+[...st.ex].join(", "):"마음에 드는 다른 후보를 누르면 그걸로 바꿀 수 있어요";
+}
+function roll(){
+  const res=pick();
+  $("res").classList.remove("hidden");
+  if(!res){$("rE").className="ball";$("rE").textContent="🤔";$("rN").textContent="후보가 다 떨어졌어요";$("rC").textContent="";$("rT").innerHTML="";$("rS").textContent="제외한 메뉴를 초기화할게요. 다시 뽑아 주세요!";$("rA").innerHTML="";st.ex.clear();$("ex").textContent="";return;}
+  $("res").scrollIntoView({behavior:"smooth",block:"start"});
+  const el=$("rE"),nm=$("rN");el.className="ball spin";$("rT").innerHTML="";$("rS").textContent="";$("rA").innerHTML="";$("rC").textContent="";$("rTop").textContent="점괘를 읽는 중…";
+  let i=0;const pool=FOOD.filter(f=>f.meal.includes(st.meal));
+  const iv=setInterval(()=>{const f=pool[Math.floor(Math.random()*pool.length)];el.textContent=f.e;nm.textContent=f.n;if(++i>12){clearInterval(iv);show(res);}},85);
+}
+$("go").onclick=roll;$("again").onclick=roll;
+$("nope").onclick=()=>{if(st.last)st.ex.add(st.last.f.n);roll();};
+function toast(m){const t=$("toast");t.textContent=m;t.classList.add("show");clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove("show"),1800);}
+$("copy").onclick=async()=>{
+  if(!st.last)return;
+  const txt=`🔮 달빛 야시장 메뉴 점집\n${st.meal==="L"?"오늘의 점심":"오늘의 저녁"}은 ${st.last.f.e} ${st.last.f.n}!\n${st.last.why.map(w=>"#"+LABEL[w]).join(" ")}`;
+  try{await navigator.clipboard.writeText(txt);toast("결과를 복사했어요! 🔗");}catch(e){toast("복사가 안 됐어요. 화면을 캡처해 주세요!");}
+};
+(function(){const cv=$("stars"),ctx=cv.getContext("2d");let s=[];
+function rs(){cv.width=innerWidth;cv.height=innerHeight;s=Array.from({length:Math.floor(innerWidth*innerHeight/6000)},()=>({x:Math.random()*cv.width,y:Math.random()*cv.height,r:Math.random()*1.3+.2,p:Math.random()*6.28}));}
+function draw(t){ctx.clearRect(0,0,cv.width,cv.height);for(const p of s){ctx.globalAlpha=.35+.45*Math.sin(t/900+p.p);ctx.fillStyle="#fff6dc";ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,6.28);ctx.fill();}requestAnimationFrame(draw);}
+addEventListener("resize",rs);rs();requestAnimationFrame(draw);})();
+</script>
+</body>
+</html>
