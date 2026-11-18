@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>한결같음 지수 · 달빛 연구소</title>
+<meta name="description" content="상황이 바뀌어도 나는 나일까? 질문 15개로 알아보는 나의 한결같음 지수">
+<meta property="og:title" content="나의 한결같음 지수는? 💎 · 달빛 연구소">
+<meta property="og:description" content="질문 15개로 알아보는 나의 한결같음 지수">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Noto+Serif+KR:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0f0b1e;--bg2:#1b1433;--gold:#e3c27a;--gold2:#b8954a;--ink:#efe8ff;--dim:#a99cc9}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%}
+body{font-family:"Noto Serif KR",serif;color:var(--ink);background:radial-gradient(ellipse at 50% -10%,#3a2a6b 0%,var(--bg2) 35%,var(--bg) 75%);background-attachment:fixed;overflow-x:hidden}
+#stars{position:fixed;inset:0;pointer-events:none;z-index:0}
+.wrap{position:relative;z-index:1;max-width:620px;margin:0 auto;padding:62px 16px 60px}
+.home{position:absolute;top:14px;left:16px;color:var(--dim);text-decoration:none;font-size:13px;border:1px solid rgba(227,194,122,.25);padding:6px 12px;border-radius:999px;transition:.2s}
+.home:hover{color:var(--gold);border-color:var(--gold)}
+.panel{background:rgba(255,255,255,.04);border:1px solid rgba(227,194,122,.22);border-radius:18px;padding:26px 22px;backdrop-filter:blur(4px);animation:fade .45s ease}
+@keyframes fade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.hidden{display:none!important}
+.center{text-align:center}
+.lab-no{font-family:"Cinzel",serif;font-size:12px;letter-spacing:.25em;color:var(--gold2)}
+h1{margin:10px 0 6px;font-size:clamp(24px,6vw,32px);color:var(--gold);text-shadow:0 0 16px rgba(227,194,122,.3)}
+.intro-ani{font-size:34px;letter-spacing:6px;margin:18px 0}
+.intro-ani span{display:inline-block;animation:bob 2.4s ease-in-out infinite}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+.desc{color:var(--dim);line-height:1.8;font-size:15px;margin:0 0 22px}
+.btn{display:inline-block;border:none;cursor:pointer;font:inherit;font-weight:700;font-size:16px;padding:13px 28px;border-radius:12px;color:#1a1230;background:linear-gradient(135deg,#f3dc9f,var(--gold2));box-shadow:0 6px 20px rgba(227,194,122,.25);transition:.2s;text-decoration:none}
+.btn:hover{transform:translateY(-2px);box-shadow:0 10px 26px rgba(227,194,122,.35)}
+.btn.ghost{background:transparent;color:var(--gold);border:1px solid var(--gold2);box-shadow:none}
+.btn.sm{font-size:14px;padding:10px 18px}
+.prog-top{display:flex;justify-content:space-between;align-items:center;font-size:13px;color:var(--dim);margin-bottom:8px}
+.back{background:none;border:none;color:var(--dim);font:inherit;font-size:13px;cursor:pointer;padding:0}
+.back:hover{color:var(--gold)}
+.back:disabled{visibility:hidden}
+.bar{height:6px;border-radius:99px;background:rgba(255,255,255,.08);overflow:hidden;margin-bottom:22px}
+.bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--gold2),#f3dc9f);border-radius:99px;transition:width .35s}
+.qnum{font-family:"Cinzel",serif;color:var(--gold);letter-spacing:.15em;font-size:13px}
+.qtext{font-size:19px;font-weight:700;line-height:1.6;margin:8px 0 20px;word-break:keep-all}
+.opts{display:flex;flex-direction:column;gap:10px}
+.opt{text-align:left;border:1px solid rgba(227,194,122,.3);background:rgba(0,0,0,.2);color:var(--ink);padding:16px;border-radius:12px;cursor:pointer;font:inherit;font-size:15px;line-height:1.5;transition:.18s;word-break:keep-all}
+.opt:hover{border-color:var(--gold);background:rgba(227,194,122,.08);transform:translateX(3px)}
+.opt.sel{background:linear-gradient(135deg,var(--gold),var(--gold2));color:#1a1230;border-color:transparent;font-weight:700}
+.loading{padding:50px 0}
+.loading .spin{font-size:46px;display:inline-block;animation:spin 1.2s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading p{color:var(--dim);margin-top:16px}
+.r-label{color:var(--dim);font-size:14px}
+.gauge{position:relative;width:170px;height:170px;margin:16px auto 8px}
+.gauge svg{transform:rotate(-90deg)}
+.gauge .num{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.gauge .num b{font-family:"Cinzel",serif;font-size:42px;color:var(--gold);line-height:1}
+.gauge .num span{font-size:12px;color:var(--dim);margin-top:4px}
+.r-emoji{font-size:40px;line-height:1;margin:4px 0}
+.r-name{font-size:26px;color:var(--gold);margin:4px 0 0;font-weight:700}
+.r-title{color:#f1dca8;font-size:15px;margin:6px 0 2px}
+.r-desc{line-height:1.85;font-size:15px;margin:16px 0 4px;word-break:keep-all}
+.box{border-left:3px solid var(--gold);padding:12px 14px;margin-top:14px;background:rgba(0,0,0,.18);border-radius:0 12px 12px 0}
+.box h3{margin:0 0 8px;font-size:15px;color:var(--gold)}
+.box p{margin:0;line-height:1.75;font-size:14px;word-break:keep-all}
+.ax{padding:10px 12px;border-radius:12px;background:rgba(0,0,0,.18);margin-bottom:8px}
+.ax-h{display:flex;justify-content:space-between;gap:8px;font-size:14px;font-weight:700;flex-wrap:wrap}
+.ax-h em{font-style:normal;font-size:12px;padding:2px 9px;border-radius:999px}
+.ax-h em.ok{background:rgba(227,194,122,.2);color:#f1dca8}
+.ax-h em.mix{background:rgba(155,106,222,.22);color:#d6c6ff}
+.ax-bar{display:flex;align-items:center;gap:8px;margin-top:8px;font-size:12px;color:var(--dim)}
+.ax-bar .t{flex:1;height:8px;border-radius:99px;background:rgba(255,255,255,.08);position:relative;overflow:hidden}
+.ax-bar .t i{position:absolute;top:0;bottom:0;left:0;background:linear-gradient(90deg,var(--gold2),#f3dc9f);border-radius:99px;transition:width .9s ease}
+.ax p{margin:6px 0 0;font-size:13px;color:var(--dim);line-height:1.6;word-break:keep-all}
+.me{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:12px 0 4px}
+.me span{font-size:13px;padding:4px 11px;border-radius:999px;background:rgba(227,194,122,.14);color:#f1dca8}
+.actions{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:24px}
+.toast{position:fixed;left:50%;bottom:30px;transform:translateX(-50%) translateY(20px);background:#2a2050;border:1px solid var(--gold2);color:var(--ink);padding:10px 18px;border-radius:999px;font-size:14px;opacity:0;transition:.3s;z-index:10;pointer-events:none}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.tiers{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:24px}
+.tiers div{text-align:center;padding:10px 4px;border-radius:12px;background:rgba(0,0,0,.2);border:1px solid rgba(227,194,122,.15);font-size:12px;color:var(--dim)}
+.tiers div.on{border-color:var(--gold);background:rgba(227,194,122,.12);color:var(--ink)}
+.tiers b{display:block;font-size:24px;font-weight:400}
+.foot{text-align:center;color:#6f6390;font-size:12px;margin-top:30px}
+@media (max-width:480px){.qtext{font-size:17px}.panel{padding:22px 16px}}
+</style>
+</head>
+<body>
+<canvas id="stars"></canvas>
+<div class="wrap">
+  <a class="home" href="./">← 달빛 연구소</a>
+
+  <section id="sIntro" class="panel center">
+    <div class="lab-no">LUNA LAB · No.05</div>
+    <h1>나의 한결같음 지수는?</h1>
+    <div class="intro-ani"><span style="animation-delay:0s">💎</span><span style="animation-delay:.25s">🌊</span><span style="animation-delay:.5s">🌈</span><span style="animation-delay:.75s">🎲</span></div>
+    <p class="desc">상황이 바뀌어도 나는 나일까?<br>서로 다른 상황 질문 15개에 답하면<br>달빛 연구소가 당신이 얼마나 한결같은지 재 드려요.<br>정답은 없어요. 먼저 끌리는 쪽을 골라 주세요!</p>
+    <button class="btn" id="startBtn">측정 시작 💎</button>
+  </section>
+
+  <section id="sQuiz" class="panel hidden">
+    <div class="prog-top"><button class="back" id="backBtn">← 이전</button><span id="progTxt">1 / 15</span></div>
+    <div class="bar"><i id="barFill"></i></div>
+    <div class="qnum" id="qNum">Q1</div>
+    <div class="qtext" id="qText"></div>
+    <div class="opts" id="opts"></div>
+  </section>
+
+  <section id="sLoad" class="panel center loading hidden">
+    <span class="spin">💎</span>
+    <p>답변을 맞춰 보는 중…</p>
+  </section>
+
+  <section id="sResult" class="panel hidden">
+    <div class="center">
+      <div class="r-label">당신의 한결같음 지수는</div>
+      <div class="gauge">
+        <svg width="170" height="170" viewBox="0 0 170 170"><circle cx="85" cy="85" r="74" fill="none" stroke="rgba(255,255,255,.08)" stroke-width="12"/><circle id="gArc" cx="85" cy="85" r="74" fill="none" stroke="url(#gg)" stroke-width="12" stroke-linecap="round" stroke-dasharray="465" stroke-dashoffset="465" style="transition:stroke-dashoffset 1.2s ease"/><defs><linearGradient id="gg"><stop offset="0" stop-color="#b8954a"/><stop offset="1" stop-color="#f3dc9f"/></linearGradient></defs></svg>
+        <div class="num"><b id="gNum">0</b><span>%</span></div>
+      </div>
+      <div class="r-emoji" id="rEmoji"></div>
+      <h2 class="r-name" id="rName"></h2>
+      <div class="r-title" id="rTitle"></div>
+    </div>
+    <p class="r-desc" id="rDesc"></p>
+    <div class="box"><h3>🧭 한결같은 나 vs 상황 따라 바뀌는 나</h3><div id="axRows"></div></div>
+    <div class="box"><h3>✦ 그래서 나는 이런 사람</h3><div class="me" id="meTags"></div><p id="meTxt"></p></div>
+    <div class="tiers" id="tiers"></div>
+    <div class="actions">
+      <button class="btn sm" id="copyBtn">🔗 결과 복사</button>
+      <button class="btn sm ghost" id="retryBtn">↺ 다시 하기</button>
+    </div>
+  </section>
+
+  <div class="foot">✦ LUNA LAB 달빛 연구소 ✦ 재미로 보는 테스트예요</div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+/* 성향 5가지 · 각각 다른 상황 질문 3개로 몰래 확인해요 */
+const AX={
+  solo:{n:"혼자 vs 함께",a:"혼자",b:"함께",ae:"🛋️",be:"🎉",
+    ok:{a:"상황이 바뀌어도 혼자만의 시간을 지키는 사람이에요.",b:"어떤 상황에서도 사람들과 함께할 때 힘이 나요."},
+    mix:"평소엔 한쪽이지만, 상황에 따라 혼자이고 싶다가도 사람이 그리워져요."},
+  plan:{n:"계획 vs 즉흥",a:"계획",b:"즉흥",ae:"📋",be:"🎲",
+    ok:{a:"일이든 놀이든 미리 그려 둬야 마음이 편해요.",b:"언제나 그때그때 끌리는 대로 움직이는 게 편해요."},
+    mix:"중요한 건 계획하고, 나머진 즉흥으로! 상황 봐서 모드를 바꿔요."},
+  real:{n:"실속 vs 낭만",a:"실속",b:"낭만",ae:"🧮",be:"✨",
+    ok:{a:"돈도 선물도 꿈속 물건도, 결국 쓸모 있는 걸 골라요.",b:"어디서든 의미와 감성이 먼저인 낭만파예요."},
+    mix:"현실 감각은 있지만, 가끔은 낭만에 지갑을 열어요."},
+  talk:{n:"바로 말하기 vs 생각 후 말하기",a:"바로",b:"생각 후",ae:"🗣️",be:"🤔",
+    ok:{a:"상대가 누구든 할 말은 그 자리에서 해요.",b:"어떤 자리에서도 한 번 삼키고, 정리해서 말해요."},
+    mix:"편한 사이엔 바로, 조심스러운 자리에선 한 번 생각하고 말해요."},
+  safe:{n:"안정 vs 모험",a:"안정",b:"모험",ae:"🏠",be:"🧭",
+    ok:{a:"익숙하고 검증된 것에서 편안함을 느껴요.",b:"어디서든 새로운 걸 보면 가슴이 뛰어요."},
+    mix:"익숙한 게 좋다가도, 마음 한편엔 새로운 곳이 궁금해요."}
+};
+const AXK=Object.keys(AX);
+const Q=[
+ {ax:"solo",q:"주말 약속이 갑자기 취소됐다!",a:"오히려 좋아. 집에서 푹 쉰다 🛋️",b:"바로 다른 친구한테 연락한다 📱"},
+ {ax:"plan",q:"3일짜리 여행을 가게 됐다 ✈️",a:"시간대별 일정표부터 짠다",b:"숙소만 잡고 나머진 가서 정한다"},
+ {ax:"real",q:"갑자기 보너스 300만 원이 생겼다 💰",a:"일단 저축하거나 꼭 필요한 데 쓴다",b:"평소 꿈꾸던 경험에 쓴다"},
+ {ax:"talk",q:"회의에서 누가 이상한 의견을 냈다 🏢",a:"그 자리에서 바로 의견을 말한다",b:"일단 듣고, 나중에 정리해서 말한다"},
+ {ax:"safe",q:"점심 먹으러 나왔다 🍽️",a:"늘 가던 단골집으로 간다",b:"새로 생긴 가게에 도전한다"},
+ {ax:"plan",q:"퇴근 후 저녁 메뉴는? 🌙",a:"출근길에 이미 정해 뒀다",b:"집에 가는 길에 끌리는 걸로"},
+ {ax:"safe",q:"꿈속 열차가 종착역에 도착했다 🚂",a:"익숙한 우리 동네에서 내린다",b:"처음 보는 신비한 섬에서 내린다"},
+ {ax:"solo",q:"기분 좋은 소식이 생겼다! 🎊",a:"혼자 맛있는 거 먹으며 조용히 자축한다",b:"친구들한테 바로 알리고 만나자고 한다"},
+ {ax:"talk",q:"친구가 새 옷 어떠냐고 묻는데… 솔직히 별로다 👗",a:"\"음, 나는 그건 좀 별로야\" 솔직하게",b:"\"다른 색도 잘 어울릴 것 같아\" 돌려서"},
+ {ax:"real",q:"친구 생일 선물을 고른다 🎁",a:"실제로 잘 쓸 실용적인 물건",b:"받는 순간 감동할 특별한 물건"},
+ {ax:"plan",q:"갑자기 하루 휴가가 생겼다 🏖️",a:"하고 싶은 일 리스트부터 적는다",b:"일단 일어나서 발길 닿는 대로"},
+ {ax:"solo",q:"꿈속 열차에서 옆자리가 비어 있다 💺",a:"계속 비어 있었으면 좋겠다",b:"누가 앉으면 말 걸어 보고 싶다"},
+ {ax:"safe",q:"연봉이 똑같은 두 회사에서 제안이 왔다 💼",a:"분위기를 아는 익숙한 쪽",b:"새로운 걸 배울 수 있는 낯선 쪽"},
+ {ax:"real",q:"꿈속 오두막에서 물건을 딱 하나 가져갈 수 있다 🏠",a:"배를 채워 줄 따뜻한 빵",b:"달빛에 반짝이는 오르골"},
+ {ax:"talk",q:"줄 서 있는데 누가 새치기를 했다 🚶",a:"바로 \"저기, 줄 서 계신 거예요\" 말한다",b:"속으로 화나지만 일단 상황을 본다"}
+];
+const TIERS=[
+ {min:100,e:"💎",n:"다이아몬드형",t:"어떤 상황에서도 나는 나",d:"질문이 바뀌고 상황이 바뀌어도 답이 흔들리지 않았어요. 자기 자신을 정말 잘 아는 사람이에요. 주변 사람들은 당신을 '예측 가능해서 믿음직한 사람'이라고 생각해요. 한 번 정한 기준은 쉽게 바뀌지 않아요."},
+ {min:73,e:"🌊",n:"잔잔한 바다형",t:"중심은 단단, 물결은 살짝",d:"큰 줄기는 한결같지만, 상황에 따라 살짝 출렁이는 유연함도 있어요. 고집과 융통성의 균형이 좋은 타입! 대부분의 상황에서 나다운 선택을 하면서도, 필요할 땐 다른 모습도 꺼낼 줄 알아요."},
+ {min:45,e:"🌈",n:"무지개형",t:"상황마다 다른 색을 보여 주는 다재다능",d:"상황과 사람에 따라 꺼내는 모습이 달라요. 변덕이 아니라 '여러 가지 나'를 가진 거예요. 어디서든 잘 어울리고 적응이 빠르지만, 가끔은 '진짜 나는 뭘 좋아하지?' 하고 헷갈릴 수도 있어요."},
+ {min:0,e:"🎲",n:"예측 불가 주사위형",t:"매번 새로운 나, 자유로운 영혼",d:"같은 질문도 상황이 바뀌면 전혀 다른 답이 나와요. 틀에 갇히지 않고 그 순간의 마음을 따르는 자유로운 타입! 주변 사람들은 당신이 다음에 뭘 할지 늘 궁금해해요."}
+];
+const $=id=>document.getElementById(id);
+let idx=0,answers=[],locked=false,last=null;
+function show(id){["sIntro","sQuiz","sLoad","sResult"].forEach(s=>$(s).classList.toggle("hidden",s!==id));scrollTo({top:0,behavior:"smooth"});}
+function renderQ(){
+  const it=Q[idx];
+  $("progTxt").textContent=`${idx+1} / ${Q.length}`;$("barFill").style.width=`${idx/Q.length*100}%`;
+  $("qNum").textContent=`Q${idx+1}`;$("qText").textContent=it.q;$("backBtn").disabled=idx===0;
+  $("opts").innerHTML="";
+  ["a","b"].forEach(k=>{const b=document.createElement("button");b.className="opt"+(answers[idx]===k?" sel":"");b.textContent=it[k];b.onclick=()=>pick(k,b);$("opts").appendChild(b);});
+  $("sQuiz").style.animation="none";void $("sQuiz").offsetWidth;$("sQuiz").style.animation="";
+}
+function pick(k,el){
+  if(locked)return;locked=true;answers[idx]=k;
+  [...$("opts").children].forEach(c=>c.classList.remove("sel"));el.classList.add("sel");
+  setTimeout(()=>{locked=false;if(idx<Q.length-1){idx++;renderQ();}else{$("barFill").style.width="100%";show("sLoad");setTimeout(finish,1500);}},260);
+}
+function finish(){
+  const per={};AXK.forEach(k=>per[k]={a:0,b:0});
+  answers.forEach((v,i)=>per[Q[i].ax][v]++);
+  let sum=0;
+  const rows=AXK.map(k=>{const p=per[k],tot=p.a+p.b,maj=p.a>=p.b?"a":"b",cnt=Math.max(p.a,p.b);
+    const c=Math.round((cnt-tot/2)/(tot/2)*100);sum+=c;return{k,p,maj,cnt,tot,c};});
+  const score=Math.round(sum/AXK.length);
+  last={score,rows};render();
+}
+function render(){
+  const {score,rows}=last,t=TIERS.find(x=>score>=x.min);
+  $("rEmoji").textContent=t.e;$("rName").textContent=t.n;$("rTitle").textContent=t.t;$("rDesc").textContent=t.d;
+  $("gNum").textContent="0";
+  setTimeout(()=>{$("gArc").style.strokeDashoffset=465*(1-score/100);let n=0;const iv=setInterval(()=>{n=Math.min(score,n+3);$("gNum").textContent=n;if(n>=score)clearInterval(iv);},25);},120);
+  $("axRows").innerHTML=rows.map(r=>{const A=AX[r.k],ok=r.cnt===r.tot,side=r.maj==="a"?A.a:A.b,se=r.maj==="a"?A.ae:A.be;
+    return `<div class="ax"><div class="ax-h"><span>${A.n}</span><em class="${ok?"ok":"mix"}">${ok?"💎 한결같음":"🌈 상황 따라"}</em></div>
+      <div class="ax-bar"><span>${se} ${side} ${r.cnt}/${r.tot}</span><span class="t"><i style="width:0" data-w="${Math.round(r.cnt/r.tot*100)}"></i></span></div>
+      <p>${ok?A.ok[r.maj]:A.mix}</p></div>`;}).join("");
+  setTimeout(()=>document.querySelectorAll(".ax-bar .t i").forEach(i=>i.style.width=i.dataset.w+"%"),100);
+  const okRows=rows.filter(r=>r.cnt===r.tot),mixRows=rows.filter(r=>r.cnt!==r.tot);
+  $("meTags").innerHTML=rows.map(r=>{const A=AX[r.k];return `<span>#${r.maj==="a"?A.a:A.b}${r.cnt===r.tot?"":"(살짝)"}</span>`;}).join("");
+  $("meTxt").textContent=okRows.length===rows.length?"모든 성향에서 흔들림이 없었어요. 당신을 설명하는 해시태그는 상황이 바뀌어도 그대로예요!":
+    (okRows.length?`특히 ${okRows.map(r=>AX[r.k].n.split(" vs ")[r.maj==="a"?0:1]).join(", ")} 쪽은 어떤 상황에서도 변하지 않는 당신의 중심이에요. `:"")+
+    `${mixRows.map(r=>AX[r.k].n).join(", ")}은(는) 상황에 따라 달라지는 부분이에요.`;
+  $("tiers").innerHTML=TIERS.map(x=>`<div class="${x===t?"on":""}"><b>${x.e}</b>${x.n}</div>`).join("");
+  show("sResult");
+}
+$("startBtn").onclick=()=>{idx=0;answers=[];show("sQuiz");renderQ();};
+$("backBtn").onclick=()=>{if(idx>0){idx--;renderQ();}};
+$("retryBtn").onclick=()=>{idx=0;answers=[];show("sQuiz");renderQ();};
+function toast(m){const t=$("toast");t.textContent=m;t.classList.add("show");clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove("show"),2000);}
+$("copyBtn").onclick=async()=>{
+  const t=TIERS.find(x=>last.score>=x.min);
+  const txt=`💎 나의 한결같음 지수는 ${last.score}%! ${t.e} ${t.n}\n`+last.rows.map(r=>`${AX[r.k].n}: ${r.maj==="a"?AX[r.k].a:AX[r.k].b} ${r.cnt}/${r.tot}`).join("\n")+`\n너는 몇 %야? ${location.origin}${location.pathname}`;
+  try{await navigator.clipboard.writeText(txt);toast("결과를 복사했어요! 🔗");}catch(e){toast("복사가 안 됐어요. 화면을 캡처해 주세요!");}
+};
+(function(){const cv=$("stars"),ctx=cv.getContext("2d");let st=[];
+function rs(){cv.width=innerWidth;cv.height=innerHeight;st=Array.from({length:Math.floor(innerWidth*innerHeight/6000)},()=>({x:Math.random()*cv.width,y:Math.random()*cv.height,r:Math.random()*1.3+.2,p:Math.random()*6.28}));}
+function draw(t){ctx.clearRect(0,0,cv.width,cv.height);for(const s of st){ctx.globalAlpha=.35+.45*Math.sin(t/900+s.p);ctx.fillStyle="#fff6dc";ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,6.28);ctx.fill();}requestAnimationFrame(draw);}
+addEventListener("resize",rs);rs();requestAnimationFrame(draw);})();
+</script>
+</body>
+</html>
