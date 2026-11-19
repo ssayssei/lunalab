@@ -53,7 +53,7 @@ h1{margin:10px 0 6px;font-size:clamp(24px,6vw,32px);color:var(--gold);text-shado
 .loading p{color:var(--dim);margin-top:16px}
 .r-label{color:var(--dim);font-size:14px}
 .gauge{position:relative;width:170px;height:170px;margin:16px auto 8px}
-.gauge svg{transform:rotate(-90deg)}
+
 .gauge .num{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
 .gauge .num b{font-family:"Cinzel",serif;font-size:42px;color:var(--gold);line-height:1}
 .gauge .num span{font-size:12px;color:var(--dim);margin-top:4px}
@@ -132,7 +132,7 @@ h1{margin:10px 0 6px;font-size:clamp(24px,6vw,32px);color:var(--gold);text-shado
     <div class="center">
       <div class="r-label" id="rLabel">당신의 한결같음 지수는</div>
       <div class="gauge" id="gauge">
-        <svg width="170" height="170" viewBox="0 0 170 170"><circle cx="85" cy="85" r="74" fill="none" stroke="rgba(255,255,255,.08)" stroke-width="12"/><circle id="gArc" cx="85" cy="85" r="74" fill="none" stroke="url(#gg)" stroke-width="12" stroke-linecap="round" stroke-dasharray="465" stroke-dashoffset="465" style="transition:stroke-dashoffset 1.2s ease"/><defs><linearGradient id="gg"><stop offset="0" stop-color="#b8954a"/><stop offset="1" stop-color="#f3dc9f"/></linearGradient></defs></svg>
+        <svg width="170" height="170" viewBox="0 0 170 170"><circle cx="85" cy="85" r="74" fill="none" stroke="rgba(255,255,255,.08)" stroke-width="12"/><circle id="gArc" transform="rotate(-90 85 85)" cx="85" cy="85" r="74" fill="none" stroke="url(#gg)" stroke-width="12" stroke-linecap="round" stroke-dasharray="465" stroke-dashoffset="465" style="transition:stroke-dashoffset 1.2s ease"/><defs><linearGradient id="gg"><stop offset="0" stop-color="#b8954a"/><stop offset="1" stop-color="#f3dc9f"/></linearGradient></defs></svg>
         <div class="num"><b id="gNum">0</b><span>%</span></div>
       </div>
       <div class="r-emoji" id="rEmoji"></div>
@@ -337,7 +337,7 @@ addEventListener("resize",rs);rs();requestAnimationFrame(draw);})();
   const btn=document.createElement("button");btn.className="btn sm ghost";btn.id="fullSaveBtn";btn.textContent="📜 결과 전체 이미지 저장";
   acts.insertBefore(btn,acts.children[1]||null);
   const st=document.createElement("style");
-  st.textContent=".capturing .actions,.capturing .all,.capturing .home{display:none!important}.capturing{animation:none!important;backdrop-filter:none!important}.cap-head,.cap-foot{text-align:center;font-family:'Cinzel',serif;letter-spacing:.2em;color:#b8954a;font-size:13px}.cap-head{margin-bottom:14px}.cap-foot{margin-top:22px;letter-spacing:.05em;color:#8a7cb0}";
+  st.textContent=".capturing .actions,.capturing .all,.capturing .home{display:none!important}.capturing{animation:none!important;backdrop-filter:none!important}.cap-head,.cap-foot{text-align:center;font-family:'Cinzel',serif;letter-spacing:.2em;color:#b8954a;font-size:13px}.cap-head{margin-bottom:14px}.cap-foot{margin-top:22px;letter-spacing:.05em;color:#8a7cb0;font-family:'Noto Serif KR',serif}";
   document.head.appendChild(st);
   function load(src){return new Promise((res,rej)=>{if(window.html2canvas)return res();const s=document.createElement("script");s.src=src;s.onload=res;s.onerror=rej;document.head.appendChild(s);});}
   btn.onclick=async()=>{
