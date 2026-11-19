@@ -223,7 +223,7 @@ const ORDER=["dia","sea","rain","cham","dice"];
 const $=id=>document.getElementById(id);
 let idx=0,answers=[],locked=false,last=null;
 function show(id){["sIntro","sQuiz","sLoad","sResult"].forEach(s=>$(s).classList.toggle("hidden",s!==id));scrollTo({top:0,behavior:"smooth"});}
-const plain=t=>t.replace(/[\u{1F000}-\u{1FAFF}\u{2300}-\u{23FF}\u{2600}-\u{27BF}\u{2B00}-\u{2BFF}\u{FE0F}\u{200D}]/gu,"").replace(/\s+/g," ").trim();
+const plain=t=>t.replace(/[\u{1F000}-\u{1FAFF}\u{2300}-\u{23FF}\u{2600}-\u{27BF}\u{2B00}-\u{2BFF}\u{FE0F}\u{200D}]/gu,"").replace(/\s+/g," ").replace(/"([^"]*)"/g,"‘$1’").trim();
 function renderQ(){
   const it=Q[idx];
   $("progTxt").textContent=`${idx+1} / ${Q.length}`;$("barFill").style.width=`${idx/Q.length*100}%`;
