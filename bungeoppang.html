@@ -36,6 +36,7 @@ h1,h2,h3,.jua{font-family:"Jua",sans-serif;font-weight:400;margin:0}
 .cust.reg{border-color:var(--gold);background:rgba(242,181,68,.12)}
 .cust .nm{color:var(--dim);font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .cust .od{font-family:"Jua";font-size:17px}
+.line.c4 .od{font-size:14px;line-height:1.3}.line.c4 .cust{padding:7px 7px}
 .pb{height:5px;border-radius:3px;background:rgba(255,255,255,.1);margin-top:5px;overflow:hidden}
 .pb i{display:block;height:100%}
 .fl{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-bottom:8px}
@@ -87,6 +88,14 @@ h1,h2,h3,.jua{font-family:"Jua",sans-serif;font-weight:400;margin:0}
   <div class="row">
     <button class="btn" id="newBtn">새로 시작하기</button>
     <button class="btn ghost hidden" id="contBtn">이어서 하기</button>
+  </div>
+  <div style="margin-top:18px;padding:14px;border-radius:14px;border:1px dashed #ff7a5c;background:rgba(255,90,60,.08)">
+    <p class="jua" style="margin:0;color:#ff9b7d;font-size:18px">🔥 하드코어 모드</p>
+    <p class="dim" style="margin:6px 0 0;font-size:13px;line-height:1.7">손님이 쇽쇽! 대기 줄 4칸 · 더 빨리 익고 더 빨리 탐 · 손님 인내심 짧음<br>주문 개수 많음 · 탄 붕어빵 벌금 300원 · 칭호 기준 1.5배 (전설 18만 원)</p>
+    <div class="row" style="margin-top:10px">
+      <button class="btn" id="hardBtn" style="background:linear-gradient(135deg,#ff9b7d,#d9553b);color:#fff">하드코어 도전 🔥</button>
+      <button class="btn ghost hidden" id="contHardBtn">이어서 하기</button>
+    </div>
   </div>
   <details style="text-align:left;margin-top:16px;font-size:14px;line-height:1.75">
     <summary class="jua" style="cursor:pointer;color:var(--brown)">굽는 법 보기</summary>
@@ -179,10 +188,12 @@ const UP=[
 ];
 const DAYLEN=60,DAYS=7;
 let G=null;
-function fresh(){return{day:1,money:0,total:0,lv:{molds:0,grill:0,chair:0,helper:0},menu:["팥","슈크림"],regs:{},hist:[],wx:null};}
-function save(){try{localStorage.setItem("luna_nightmarket",JSON.stringify(G));}catch(e){}}
-function load(){try{const s=localStorage.getItem("luna_nightmarket");return s?JSON.parse(s):null;}catch(e){return null;}}
-function clear(){try{localStorage.removeItem("luna_nightmarket");}catch(e){}}
+let MODE="normal";
+const KEY=()=>MODE==="hard"?"luna_nightmarket_hard":"luna_nightmarket";
+function fresh(){return{hard:MODE==="hard",day:1,money:0,total:0,lv:{molds:0,grill:0,chair:0,helper:0},menu:["팥","슈크림"],regs:{},hist:[],wx:null};}
+function save(){try{localStorage.setItem(KEY(),JSON.stringify(G));}catch(e){}}
+function load(){try{const s=localStorage.getItem(KEY());return s?JSON.parse(s):null;}catch(e){return null;}}
+function clear(){try{localStorage.removeItem(KEY());}catch(e){}}
 function won(n){return Math.round(n).toLocaleString("ko-KR")+"원";}
 function toast(t){const el=$("toast");el.textContent=t;el.classList.add("show");clearTimeout(el._h);el._h=setTimeout(()=>el.classList.remove("show"),1600);}
 function show(id){["sStart","sDay","sPlay","sShop","sEnd"].forEach(s=>$(s).classList.toggle("hidden",s!==id));scrollTo({top:0,behavior:"smooth"});}
@@ -197,7 +208,7 @@ function regList(){return REGS.filter(r=>!r.need||G.menu.includes(r.need));}
 function dayIntro(){
   G.wx=G.wx||pickWx(G.day);save();
   const w=WX[G.wx];
-  $("dTitle").textContent=G.day+"일째 밤 / "+DAYS+"일";$("dIcon").textContent=w.e;$("dName").textContent=w.n;
+  $("dTitle").textContent=(G.hard?"🔥 하드코어 · ":"")+G.day+"일째 밤 / "+DAYS+"일";$("dIcon").textContent=w.e;$("dName").textContent=w.n;
   $("dDesc").textContent=w.d+(G.day>=4?" 날이 갈수록 손님이 많아져요!":"");
   const rs=regList();
   $("dRegs").innerHTML=G.day===1?'<div>💡 오늘부터 <b>단골손님</b>이 찾아와요. 단골이 만족하면 팁을 두 배로 주고, 화나면 다음 날 안 와요!</div>':
@@ -209,8 +220,9 @@ function dayIntro(){
 let S=null,raf=0;
 function cfg(){
   const g=G.lv.grill;return{
-    N:G.lv.molds?9:6,RAW:1.9,GOLD:3.2+g*0.55,CHAR:5.3+g*0.8,
-    pat:(1+G.lv.chair*.3)*WX[G.wx].pat,spawn:WX[G.wx].spawn*Math.max(.62,1-(G.day-1)*.06),qty:WX[G.wx].qty,tip:WX[G.wx].tip
+    N:G.lv.molds?9:6,RAW:G.hard?1.5:1.9,GOLD:(G.hard?2.55:3.2)+g*(G.hard?0.45:0.55),CHAR:(G.hard?4.2:5.3)+g*(G.hard?0.7:0.8),
+    pat:(1+G.lv.chair*.3)*WX[G.wx].pat*(G.hard?.72:1),spawn:WX[G.wx].spawn*Math.max(.62,1-(G.day-1)*.06)*(G.hard?.55:1),qty:WX[G.wx].qty,tip:WX[G.wx].tip,
+    cap:G.hard?4:3,burn:G.hard?300:200
   };
 }
 function openShop(){
@@ -218,7 +230,7 @@ function openShop(){
   const regsToday=regList().filter(r=>!(G.regs[r.id]&&G.regs[r.id].away)).map(r=>({r,at:8+Math.random()*(DAYLEN-20)}));
   regList().forEach(r=>{if(G.regs[r.id]&&G.regs[r.id].away)G.regs[r.id].away=false;});
   S={C,left:DAYLEN,last:performance.now(),spawnT:1,molds:[],cust:[],sel:G.menu[0],earn:0,tips:0,sold:0,perfect:0,burnt:0,waste:0,angry:0,happy:0,cid:0,regsToday,regResult:{},helperT:0};
-  $("pDay").textContent=G.day+"일째 밤";$("pWx").textContent=WX[G.wx].e;
+  $("pDay").textContent=(G.hard?"🔥 ":"")+G.day+"일째 밤";$("pWx").textContent=WX[G.wx].e;
   $("fl").innerHTML='<span class="dim" style="font-size:13px">넣을 속</span>'+G.menu.map(f=>`<button data-f="${f}" class="${f===S.sel?"on":""}">${FL[f].e} ${f}</button>`).join("");
   $("fl").querySelectorAll("button").forEach(b=>b.onclick=()=>{S.sel=b.dataset.f;$("fl").querySelectorAll("button").forEach(x=>x.classList.toggle("on",x===b));});
   const grid=$("grid");grid.innerHTML="";
@@ -239,19 +251,20 @@ function paint(m){
 function say(t){$("msg").textContent=t;}
 function drawLine(){
   const L=$("line");L.innerHTML="";
-  for(let i=0;i<3;i++){
+  L.style.gridTemplateColumns=`repeat(${S.C.cap},minmax(0,1fr))`;L.classList.toggle("c4",S.C.cap===4);
+  for(let i=0;i<S.C.cap;i++){
     const c=S.cust[i],d=document.createElement("div");d.className="cust"+(c&&c.reg?" reg":"");
-    if(c){const r=c.p/c.max;d.innerHTML=`<div class="nm">${c.reg?c.reg.e+" "+c.reg.n:"손님 "+c.id}</div><div class="od" style="color:${FL[c.f].col}">${FL[c.f].e} ${c.f} ${c.n}개</div><div class="pb"><i style="width:${Math.max(0,r*100)}%;background:${r<.3?"var(--red)":r<.6?"var(--gold)":"var(--green)"}"></i></div>`;}
+    if(c){const r=c.p/c.max;d.innerHTML=`<div class="nm">${c.reg?c.reg.e+" "+c.reg.n:"손님 "+c.id}</div><div class="od" style="color:${FL[c.f].col}">${FL[c.f].e} ${c.f}${S.C.cap===4?"<br>":" "}${c.n}개</div><div class="pb"><i style="width:${Math.max(0,r*100)}%;background:${r<.3?"var(--red)":r<.6?"var(--gold)":"var(--green)"}"></i></div>`;}
     else d.innerHTML='<div class="dim" style="text-align:center;padding-top:20px">빈 자리</div>';
     L.appendChild(d);
   }
 }
 function spawn(reg){
-  if(S.cust.length>=3)return false;
+  if(S.cust.length>=S.C.cap)return false;
   S.cid++;
   let f,n;
-  if(reg){f=reg.f;n=reg.q+S.C.qty;}
-  else{f=G.menu[Math.floor(Math.random()*G.menu.length)];n=1+Math.floor(Math.random()*3)+(Math.random()<.5?S.C.qty:0);}
+  if(reg){f=reg.f;n=reg.q+S.C.qty+(G.hard?1:0);}
+  else{f=G.menu[Math.floor(Math.random()*G.menu.length)];n=1+Math.floor(Math.random()*(G.hard?4:3))+(Math.random()<.5?S.C.qty:0);}
   const max=(9+n*3)*S.C.pat;
   S.cust.push({id:S.cid,f,n,p:max,max,reg});drawLine();return true;
 }
@@ -276,7 +289,7 @@ function takeOut(m,p){
       }else say(FL[m.f].e+" "+m.f+" 붕어빵 전달! "+c.n+"개 남았어요");
       drawLine();
     }else{S.waste++;say(m.f+" 붕어빵을 찾는 손님이 없어서 남았어요…");}
-  }else{S.burnt++;S.earn=Math.max(0,S.earn-200);say("앗 탔다… 재료값 -200원");}
+  }else{S.burnt++;S.earn=Math.max(0,S.earn-S.C.burn);say("앗 탔다… 재료값 -"+S.C.burn+"원");}
   m.st="empty";m.t=0;m.q1="";paint(m);upd();
 }
 function upd(){$("pTime").textContent=Math.ceil(Math.max(0,S.left));$("pEarn").textContent=won(S.earn+S.tips);$("pAng").textContent=S.angry+"명";}
@@ -327,11 +340,11 @@ function buy(id){
   save();toast(u.e+" "+u.n+" 구매 완료!");drawShop();
 }
 function finale(){
-  const t=G.total;let ic,ti,de;
-  if(t>=120000){ic="👑";ti="전설의 야시장 사장님";de="달 뜨는 밤마다 연구소 골목에 줄이 생겨요. 이제 사람들은 이 골목을 '붕어빵 은하수'라고 불러요!";}
-  else if(t>=85000){ic="🏆";ti="줄 서는 붕어빵 맛집";de="SNS에 '여기 붕어빵 미쳤다' 후기가 올라왔어요. 내일도 줄이 길 예정!";}
-  else if(t>=50000){ic="🥇";ti="동네 단골 붕어빵집";de="단골손님들이 '여기 없으면 겨울이 안 와' 라고 해요.";}
-  else{ic="🐣";ti="새내기 붕어빵 사장님";de="아직은 서툴지만 손맛은 확실해요. 다음 시즌엔 더 잘할 수 있어요!";}
+  const t=G.total,k=G.hard?1.5:1,hp=G.hard?"🔥 하드코어 ":"";let ic,ti,de;
+  if(t>=120000*k){ic="👑";ti=hp+"전설의 야시장 사장님";de=G.hard?"손님이 쉴 새 없이 몰려와도 끄떡없었어요. 이제 야시장 사람들은 당신을 '붕어빵의 신'이라고 불러요!":"달 뜨는 밤마다 연구소 골목에 줄이 생겨요. 이제 사람들은 이 골목을 '붕어빵 은하수'라고 불러요!";}
+  else if(t>=85000*k){ic="🏆";ti=hp+"줄 서는 붕어빵 맛집";de="SNS에 '여기 붕어빵 미쳤다' 후기가 올라왔어요. 내일도 줄이 길 예정!";}
+  else if(t>=50000*k){ic="🥇";ti=hp+"동네 단골 붕어빵집";de="단골손님들이 '여기 없으면 겨울이 안 와' 라고 해요.";}
+  else{ic="🐣";ti=hp+"새내기 붕어빵 사장님";de=G.hard?"하드코어는 역시 하드했어요! 업그레이드 순서를 바꿔서 다시 도전해 봐요.":"아직은 서툴지만 손맛은 확실해요. 다음 시즌엔 더 잘할 수 있어요!";}
   const best=G.hist.reduce((a,b)=>b.total>a.total?b:a,G.hist[0]);
   const loves=regList().map(r=>({r,l:(G.regs[r.id]||{}).love||0})).sort((a,b)=>b.l-a.l)[0];
   $("eIcon").textContent=ic;$("eTitle").textContent=ti;$("eDesc").textContent=de;
@@ -340,16 +353,19 @@ function finale(){
 }
 
 /* ---------- 버튼 ---------- */
-$("newBtn").onclick=()=>{G=fresh();save();dayIntro();};
-$("contBtn").onclick=()=>{G=load();if(!G){G=fresh();}if(G.day>DAYS)finale();else dayIntro();};
+$("newBtn").onclick=()=>{MODE="normal";G=fresh();save();dayIntro();};
+$("hardBtn").onclick=()=>{MODE="hard";G=fresh();save();dayIntro();};
+$("contHardBtn").onclick=()=>{MODE="hard";G=load();if(!G){G=fresh();}if(G.day>DAYS)finale();else dayIntro();};
+$("contBtn").onclick=()=>{MODE="normal";G=load();if(!G){G=fresh();}if(G.day>DAYS)finale();else dayIntro();};
 $("openBtn").onclick=openShop;
 $("nextBtn").onclick=dayIntro;
 $("againBtn").onclick=()=>{clear();G=fresh();save();dayIntro();};
 $("copyBtn").onclick=async()=>{
-  const txt=`🌙 달빛 야시장 붕어빵 결과\n칭호: ${G.final.ti}\n7일 총매출: ${won(G.final.t)}\n`+G.hist.map(h=>`${h.day}일차 ${WX[h.wx].e} ${won(h.total)} (판매 ${h.sold}개, 화난 손님 ${h.angry}명)`).join("\n");
+  const txt=`🌙 달빛 야시장 붕어빵 결과${G.hard?" (🔥 하드코어)":""}\n칭호: ${G.final.ti}\n7일 총매출: ${won(G.final.t)}\n`+G.hist.map(h=>`${h.day}일차 ${WX[h.wx].e} ${won(h.total)} (판매 ${h.sold}개, 화난 손님 ${h.angry}명)`).join("\n");
   try{await navigator.clipboard.writeText(txt);toast("결과를 복사했어요! 삐약이한테 붙여 넣어 줘요");}catch(e){toast("복사가 안 됐어요. 화면을 캡처해 줘요!");}
 };
-(function(){const s=load();if(s&&s.day>1&&s.day<=DAYS)$("contBtn").classList.remove("hidden"),$("contBtn").textContent="이어서 하기 ("+s.day+"일차)";})();
+(function(){MODE="normal";let s=load();if(s&&s.day>1&&s.day<=DAYS)$("contBtn").classList.remove("hidden"),$("contBtn").textContent="이어서 하기 ("+s.day+"일차)";
+ MODE="hard";s=load();if(s&&s.day>1&&s.day<=DAYS)$("contHardBtn").classList.remove("hidden"),$("contHardBtn").textContent="이어서 하기 ("+s.day+"일차)";MODE="normal";})();
 
 (function(){const cv=$("stars"),ctx=cv.getContext("2d");let st=[];
 function rs(){cv.width=innerWidth;cv.height=innerHeight;st=Array.from({length:Math.floor(innerWidth*innerHeight/6000)},()=>({x:Math.random()*cv.width,y:Math.random()*cv.height,r:Math.random()*1.3+.2,p:Math.random()*6.28}));}
