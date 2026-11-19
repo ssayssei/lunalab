@@ -175,7 +175,7 @@ h1{margin:10px 0 6px;font-size:clamp(24px,6vw,32px);color:var(--gold);text-shado
     </div>
 
     <div class="actions">
-      <button class="btn sm" id="saveBtn">🖼️ 결과 이미지 저장</button>
+      <button class="btn sm" id="saveBtn">🖼️ 요약 카드 저장</button>
       <button class="btn sm ghost" id="shareBtn">🔗 결과 링크 복사</button>
       <button class="btn sm ghost" id="retryBtn">↺ 다시 하기</button>
     </div>
@@ -472,6 +472,34 @@ $("saveBtn").onclick=async()=>{
     for(const s of st){ctx.globalAlpha=.35+.45*Math.sin(t/900+s.p);ctx.fillStyle="#fff6dc";ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,6.28);ctx.fill();}
     requestAnimationFrame(draw);}
   addEventListener("resize",rs);rs();requestAnimationFrame(draw);
+})();
+
+/* ---------- 결과 전체를 긴 이미지 한 장으로 저장 ---------- */
+(function(){
+  const acts=document.querySelector("#sResult .actions");if(!acts)return;
+  const btn=document.createElement("button");btn.className="btn sm ghost";btn.id="fullSaveBtn";btn.textContent="📜 결과 전체 이미지 저장";
+  acts.insertBefore(btn,acts.children[1]||null);
+  const st=document.createElement("style");
+  st.textContent=".capturing .actions,.capturing .all,.capturing .home{display:none!important}.capturing{animation:none!important;backdrop-filter:none!important}.cap-head,.cap-foot{text-align:center;font-family:'Cinzel',serif;letter-spacing:.2em;color:#b8954a;font-size:13px}.cap-head{margin-bottom:14px}.cap-foot{margin-top:22px;letter-spacing:.05em;color:#8a7cb0}";
+  document.head.appendChild(st);
+  function load(src){return new Promise((res,rej)=>{if(window.html2canvas)return res();const s=document.createElement("script");s.src=src;s.onload=res;s.onerror=rej;document.head.appendChild(s);});}
+  btn.onclick=async()=>{
+    const sec=document.getElementById("sResult"),old=btn.textContent;
+    btn.disabled=true;btn.textContent="이미지 만드는 중…";
+    const head=document.createElement("div");head.className="cap-head";head.textContent="LUNA LAB · 달빛 연구소";
+    const foot=document.createElement("div");foot.className="cap-foot";foot.textContent="ssayssei.github.io/lunalab";
+    try{
+      await load("https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js");
+      try{await document.fonts.ready;}catch(e){}
+      sec.prepend(head);sec.appendChild(foot);sec.classList.add("capturing");
+      await new Promise(r=>setTimeout(r,250));
+      const cv=await html2canvas(sec,{backgroundColor:"#1a1433",scale:2,useCORS:true,logging:false,windowWidth:Math.max(420,sec.offsetWidth+40)});
+      const a=document.createElement("a");a.download=(document.title.split("·")[0].trim()||"달빛연구소")+"_전체결과.png";
+      a.href=cv.toDataURL("image/png");document.body.appendChild(a);a.click();a.remove();
+      (window.toast||function(){})("전체 결과 이미지를 저장했어요! 📜");
+    }catch(e){console.error(e);(window.toast||alert)("이미지를 만들지 못했어요. 인터넷 연결을 확인해 주세요.");}
+    finally{sec.classList.remove("capturing");head.remove();foot.remove();btn.disabled=false;btn.textContent=old;}
+  };
 })();
 </script>
 </body>
