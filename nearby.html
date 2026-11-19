@@ -113,9 +113,9 @@ details summary{cursor:pointer;font-family:"Jua";color:var(--gold);font-size:16p
         <button class="chip" data-v="work">🏢 회사</button>
         <button class="chip" data-v="gps">📱 지금 내 위치</button>
       </div>
-      <div class="irow"><input type="text" id="addrIn" placeholder="주소나 장소 이름으로 찾기 (예: 가산디지털단지역)"><button class="btn sm ghost" id="addrBtn">찾기</button></div>
+      <div class="irow"><input type="text" id="addrIn" placeholder="주소나 장소 이름으로 찾기 (예: 강남역, 판교역)"><button class="btn sm ghost" id="addrBtn">찾기</button></div>
       <div class="here" id="here">위치를 찾는 중…</div>
-      <div class="row" style="justify-content:flex-start;margin-top:8px"><button class="btn sm ghost hidden" id="saveWork">🏢 이 위치를 회사로 저장</button></div>
+      <div class="row" style="justify-content:flex-start;margin-top:8px"><button class="btn sm ghost hidden" id="saveWork">🏢 이 위치를 회사로 저장</button><button class="btn sm ghost hidden" id="forgetWork">🗑️ 저장한 회사 위치 지우기</button></div>
     </section>
 
     <section class="panel">
@@ -167,20 +167,23 @@ details summary{cursor:pointer;font-family:"Jua";color:var(--gold);font-size:16p
     </section>
   </div>
 
-  <div class="foot">✦ LUNA LAB 달빛 연구소 · 달빛 야시장 ✦<br>가게 정보는 카카오맵 기준이에요 · 걸어서 걸리는 시간은 직선거리로 어림잡은 값이에요<br>분위기 추천은 가게 종류로 짐작한 거라, 가기 전에 한 번 확인해 주세요</div>
+  <div class="foot">✦ LUNA LAB 달빛 연구소 · 달빛 야시장 ✦<br>가게 정보는 카카오맵 기준이에요 · 걸어서 걸리는 시간은 직선거리로 어림잡은 값이에요<br>분위기 추천은 가게 종류와 이름으로 짐작한 거라(카카오맵엔 가격대 정보가 없어요), 가기 전에 한 번 확인해 주세요</div>
 </div>
 <div class="toast" id="toast"></div>
 
 <script>
 const $=id=>document.getElementById(id);
-const DEFAULT_WORK={name:"회사",addr:"서울 금천구 가산디지털2로 115"};
+
 const WALK=75,DETOUR=1.25;              // 1분에 75m, 길이 직선보다 25% 정도 더 길다고 어림
 const KIND={"한식":["한식"],"중식":["중식","중국요리"],"일식":["일식","초밥","돈까스","우동","라멘","일본식"],"양식":["양식","이탈리안","스테이크","레스토랑","햄버거","피자"],"분식":["분식","김밥","떡볶이"],"아시안":["아시아","베트남","태국","인도","쌀국수"],"고기":["육류","고기","삼겹살","갈비","곱창","막창"]};
 const WHO={
   solo:{n:"혼자",tag:"혼밥하기 좋아요",plus:["국밥","분식","김밥","라면","패스트푸드","햄버거","돈까스","덮밥","국수","칼국수","백반","도시락","샌드위치","우동","쌀국수","카레","해장국","순대"],minus:["술집","호프","육류","고기","삼겹살","갈비","회","뷔페","한정식","오리","곱창","샤브샤브"]},
   mate:{n:"동료",tag:"동료랑 가기 좋아요",plus:["한식","중식","분식","일식","국밥","찌개","백반","돈까스","국수","쌀국수","샐러드","중국요리","햄버거"],minus:["뷔페","한정식"]},
-  boss:{n:"상사",tag:"상사랑 가기 무난해요",plus:["한정식","일식","샤브샤브","중식","중국요리","정식","생선","낙지","초밥","장어","갈비탕","설렁탕","곰탕","한식"],minus:["분식","패스트푸드","햄버거","술집","호프","치킨","포장마차","김밥","떡볶이","샌드위치"]},
-  client:{n:"거래처",tag:"거래처 모시기 좋아요",plus:["한정식","일식","초밥","회","샤브샤브","이탈리안","양식","스테이크","레스토랑","장어","중국요리","오마카세"],minus:["분식","패스트푸드","햄버거","국밥","술집","호프","치킨","김밥","라면","포장마차","떡볶이","샌드위치","카페"]},
+  boss:{n:"상사",tag:"상사랑 가기 무난해요",plus:["한정식","일식","샤브샤브","중식","중국요리","정식","생선","낙지","초밥","장어","갈비탕","설렁탕","곰탕","한식","이탈리안","양식","보리밥","쌈밥"],minus:["술집","호프","포장마차","삼겹살","곱창","족발"],
+    ban:["마라탕","국밥","해장국","순대","분식","패스트푸드","햄버거","김밥","떡볶이","라면","치킨","포장마차","도시락","샌드위치","토스트","핫도그","편의점"]},
+  client:{n:"거래처",tag:"거래처 모시기 좋아요",plus:["한정식","오마카세","스시","초밥","갓포","한우","소고기","스테이크","이탈리안","프랑스","파인다이닝","다이닝","비스트로","레스토랑","장어","복어","샤브샤브","중국요리","와인","해산물","일식집","일식"],minus:[],
+    need:["한정식","오마카세","스시","초밥","갓포","한우","소고기","스테이크","이탈리안","프랑스","파인다이닝","다이닝","비스트로","레스토랑","장어","복어","샤브샤브","중국요리","와인","해산물","일식집","가이세키","코스"],
+    ban:["국밥","해장국","순대","분식","패스트푸드","햄버거","김밥","떡볶이","라면","치킨","호프","포장마차","도시락","샌드위치","토스트","핫도그","돈까스","라멘","우동","덮밥","백반","찌개","국수","칼국수","쌀국수","카레","족발","보쌈","곱창","막창","삼겹살","뷔페","푸드코트","편의점","마라탕","냉면","만두","짜장","중화요리 배달"]},
   party:{n:"회식",tag:"회식하기 좋아요",plus:["육류","고기","삼겹살","갈비","곱창","막창","오리","해물","회","술집","호프","이자카야","족발","보쌈","치킨","중국요리","샤브샤브"],minus:["분식","패스트푸드","김밥","샌드위치","샐러드","도시락","카페"]}
 };
 const DRINK=["술집","호프","이자카야","포장마차","바(BAR)","와인바","칵테일바"];
@@ -227,14 +230,12 @@ function start(){
   ps=new kakao.maps.services.Places();geo=new kakao.maps.services.Geocoder();
   draw();useWork();
 }
-function setWhere(w,label){S.where=w;S.cache={};$("here").textContent=`📍 ${label}`;$("saveWork").classList.toggle("hidden",S.base==="work");}
+function setWhere(w,label){S.where=w;S.cache={};$("here").textContent=`📍 ${label}`;$("saveWork").classList.toggle("hidden",S.base==="work");$("forgetWork").classList.toggle("hidden",!(S.base==="work"&&S.work));}
 function useWork(){
   S.base="work";draw();
   if(S.work){setWhere(S.work,`${S.work.name} · ${S.work.addr}`);return;}
-  geo.addressSearch(DEFAULT_WORK.addr,(r,st)=>{
-    if(st===kakao.maps.services.Status.OK){S.work={name:DEFAULT_WORK.name,addr:DEFAULT_WORK.addr,lat:+r[0].y,lng:+r[0].x};save("work",S.work);setWhere(S.work,`${S.work.name} · ${S.work.addr}`);}
-    else $("here").textContent="회사 주소를 찾지 못했어요. 아래에서 주소를 직접 찾아 주세요.";
-  });
+  S.where=null;$("saveWork").classList.add("hidden");
+  $("here").innerHTML="🏢 아직 회사 위치를 정하지 않았어요.<br>위에서 회사 주소를 찾은 다음 <b>‘이 위치를 회사로 저장’</b>을 눌러 주세요. (이 브라우저에만 저장돼요)";
 }
 $("baseChips").querySelectorAll(".chip").forEach(b=>b.onclick=()=>{
   if(b.dataset.v==="work"){useWork();return;}
@@ -254,6 +255,7 @@ function findAddr(){
     });
   });
 }
+$("forgetWork").onclick=()=>{S.work=null;save("work",null);useWork();toast("회사 위치를 지웠어요");};
 $("saveWork").onclick=()=>{if(!S.where)return;S.work={name:"회사",addr:S.where.addr||S.where.name,lat:S.where.lat,lng:S.where.lng};save("work",S.work);S.base="work";draw();setWhere(S.work,`회사 · ${S.work.addr}`);toast("🏢 회사 위치를 저장했어요");};
 
 /* ---------- 가게 불러오기 ---------- */
@@ -272,7 +274,7 @@ function has(p,words){return words.some(w=>p.category_name.includes(w));}
 function score(p){
   let s=3;const why=[];
   if(S.type==="FD6"){
-    if(S.who){const W=WHO[S.who];const pl=W.plus.filter(w=>p.category_name.includes(w)).length,mi=W.minus.filter(w=>p.category_name.includes(w)).length;s+=Math.min(pl,2)*2-Math.min(mi,2)*2.5;if(pl)why.push(W.tag);}
+    if(S.who){const W=WHO[S.who],t=txt(p);const pl=W.plus.filter(w=>t.includes(w)).length,mi=W.minus.filter(w=>t.includes(w)).length;s+=Math.min(pl,2)*(S.who==="client"?3:2)-Math.min(mi,2)*2.5;if(pl||W.need)why.push(W.tag);}
     if(S.when==="L"&&has(p,DRINK))s-=4;
   }
   s*=1.15-(+p.distance/radius())*0.3;
@@ -282,8 +284,16 @@ function score(p){
 }
 function emo(p){for(const [w,e] of EMO)if(p.category_name.includes(w))return e;return S.type==="CE7"?"☕":"🍽️";}
 function catShort(p){const a=p.category_name.split(" > ");return a.slice(1).join(" · ")||a[0];}
+function txt(p){return p.category_name+" "+p.place_name;}
+function whoOk(p){
+  if(S.type!=="FD6"||!S.who)return true;const W=WHO[S.who],t=txt(p);
+  if(W.ban&&W.ban.some(w=>t.includes(w)))return false;
+  if(W.need&&!W.need.some(w=>t.includes(w)))return false;
+  if(S.who==="client"&&has(p,["중식"])&&!/코스|차이니즈|궁|루|각|원|레스토랑|다이닝/.test(p.place_name))return false;
+  return true;
+}
 function pool(list){
-  return list.filter(p=>!S.ex[p.id]&&(!$("favOnly").checked||S.fav[p.id])&&(S.type!=="FD6"||!S.kind.size||[...S.kind].some(k=>has(p,KIND[k]))));
+  return list.filter(p=>!S.ex[p.id]&&(!$("favOnly").checked||S.fav[p.id])&&whoOk(p)&&(S.type!=="FD6"||!S.kind.size||[...S.kind].some(k=>has(p,KIND[k]))));
 }
 async function roll(){
   if(!S.where){toast("출발 위치를 먼저 정해 주세요");return;}
@@ -296,7 +306,7 @@ async function roll(){
   if(!cand.length){
     $("rE").className="ball";$("rE").textContent="🤔";
     $("rN").textContent=list.length?"조건에 맞는 가게가 없어요":"근처에서 가게를 못 찾았어요";
-    $("rC").textContent=list.length?"종류나 즐겨찾기 조건을 풀거나, 거리를 늘려 볼까요?":"거리를 늘리거나 위치를 다시 확인해 주세요.";
+    $("rC").textContent=!list.length?"거리를 늘리거나 위치를 다시 확인해 주세요.":S.type==="FD6"&&S.who==="client"?"걸어서 "+S.mins+"분 안엔 거래처 모실 만한 곳이 안 보여요. 15분으로 늘려 보거나, 미리 ⭐ 즐겨찾기해 둔 곳에서 골라 봐요.":"종류나 즐겨찾기 조건을 풀거나, 거리를 늘려 볼까요?";
     drawMap([],null);return;
   }
   let i=0;const iv=setInterval(()=>{const c=cand[Math.floor(Math.random()*cand.length)].p;$("rE").textContent=emo(c);$("rN").textContent=c.place_name;if(++i>12){clearInterval(iv);finish(cand);}},80);
