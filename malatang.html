@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>달빛 마라탕 · 달빛 야시장</title>
+<meta name="description" content="손님 주문대로 재료를 담고 맵기를 맞춰 마라탕을 만들어 보세요. 달빛 야시장 마라탕 가게 게임">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Jua&family=Gowun+Dodum&display=swap" rel="stylesheet">
+<style>
+:root{--gold:#e3c27a;--gold2:#b8954a;--ink:#efe8ff;--dim:#a99cc9;--line:rgba(227,194,122,.25);--red:#ff6b4a;--green:#7fd18f}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%}
+body{font-family:"Gowun Dodum",system-ui,sans-serif;color:var(--ink);background:radial-gradient(ellipse at 50% -10%,#5a2a3e 0%,#1b1433 38%,#0f0b1e 75%) fixed;overflow-x:hidden}
+#stars{position:fixed;inset:0;pointer-events:none;z-index:0}
+.wrap{position:relative;z-index:1;max-width:560px;margin:0 auto;padding:18px 14px 46px}
+.home{display:inline-block;color:var(--dim);text-decoration:none;font-size:13px;border:1px solid var(--line);padding:6px 12px;border-radius:999px;margin-bottom:12px}
+.home:hover{color:var(--gold);border-color:var(--gold)}
+h1,h2,h3,.jua{font-family:"Jua",sans-serif;font-weight:400;margin:0}
+.hidden{display:none!important}
+.center{text-align:center}
+.card{background:rgba(255,255,255,.05);border:1px solid var(--line);border-radius:18px;padding:18px}
+.lab{font-family:"Cinzel",serif;letter-spacing:.25em;font-size:12px;color:var(--gold2)}
+.lamp{display:flex;justify-content:center;gap:18px;font-size:22px;margin-bottom:6px}
+.lamp span{display:inline-block;animation:sw 2.6s ease-in-out infinite}.lamp span:nth-child(2){animation-delay:.4s}.lamp span:nth-child(3){animation-delay:.8s}
+@keyframes sw{0%,100%{transform:rotate(-6deg)}50%{transform:rotate(6deg)}}
+.btn{font-family:"Jua",sans-serif;font-size:17px;border:none;border-radius:14px;padding:12px 20px;cursor:pointer;background:linear-gradient(135deg,#ffb38a,#d9553b);color:#fff;transition:transform .08s}
+.btn:active{transform:scale(.97)}
+.btn.ghost{background:transparent;color:var(--gold);border:1px solid var(--gold2)}
+.btn.sm{font-size:15px;padding:9px 14px}
+.row{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:14px}
+.top{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:10px}
+.stat{background:rgba(255,255,255,.05);border:1px solid var(--line);border-radius:12px;padding:7px 9px}
+.stat small{display:block;font-size:12px;color:var(--dim)}
+.stat b{font-family:"Jua";font-weight:400;font-size:18px}
+.line{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-bottom:10px}
+.cust{background:rgba(255,255,255,.04);border:1px solid var(--line);border-radius:12px;padding:8px 9px;min-height:118px;font-size:12.5px;line-height:1.5}
+.cust.now{border:2px solid #ffb38a;background:rgba(255,120,80,.10)}
+.cust.vip{border-color:var(--gold)}
+.cust .nm{font-family:"Jua";font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cust .tg{font-size:11px;color:#ffb38a}
+.cust .sp{color:var(--red);font-weight:700}
+.pb{height:5px;border-radius:3px;background:rgba(255,255,255,.1);margin-top:6px;overflow:hidden}
+.pb i{display:block;height:100%}
+.bowl{background:rgba(0,0,0,.28);border:1px solid var(--line);border-radius:16px;padding:12px;margin-bottom:10px;min-height:92px}
+.bowl-h{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.bowl-h b{font-family:"Jua";font-weight:400;font-size:17px;color:#ffb38a}
+.bitems{display:flex;flex-wrap:wrap;gap:6px}
+.bitems button{font:inherit;font-size:13px;border:1px solid rgba(255,179,138,.5);background:rgba(255,120,80,.12);color:var(--ink);border-radius:999px;padding:4px 10px;cursor:pointer}
+.bitems .empty{color:var(--dim);font-size:13px}
+.ings{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;margin-bottom:10px}
+.ings button{font:inherit;border:1px solid var(--line);background:rgba(255,255,255,.05);color:var(--ink);border-radius:12px;padding:8px 2px;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.ings button:active{transform:scale(.95)}
+.ings button span{display:block;font-size:24px;line-height:1.1}
+.ings button small{font-size:11.5px}
+.spice{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:10px}
+.spice button{font-family:"Jua";font-size:14px;border:1px solid var(--line);background:rgba(255,255,255,.05);color:var(--ink);border-radius:12px;padding:8px 2px;cursor:pointer}
+.spice button.on{background:linear-gradient(135deg,#ffb38a,#d9553b);border-color:transparent;color:#fff}
+.act{display:grid;grid-template-columns:1fr 2fr;gap:8px}
+.msg{min-height:44px;margin:10px 0 0;font-size:14px;color:#ffcfb8}
+.sum{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:14px 0}
+.sum div{background:rgba(255,255,255,.06);border-radius:12px;padding:8px 10px;font-size:13px;color:var(--dim);text-align:left}
+.sum b{display:block;font-family:"Jua";font-weight:400;font-size:20px;color:var(--ink)}
+.toast{position:fixed;left:50%;top:14px;transform:translateX(-50%);background:#2a2050;border:1px solid var(--gold2);color:var(--ink);padding:8px 16px;border-radius:999px;font-size:14px;opacity:0;transition:.25s;pointer-events:none;z-index:9}
+.toast.show{opacity:1}
+.pop{animation:pop .35s ease}
+@keyframes pop{0%{transform:scale(1)}50%{transform:scale(1.06)}100%{transform:scale(1)}}
+.foot{text-align:center;color:#6f6390;font-size:12px;margin-top:22px}
+@media (max-width:420px){.ings button span{font-size:21px}.cust{font-size:12px}}
+</style>
+</head>
+<body>
+<canvas id="stars"></canvas>
+<div class="wrap">
+<a class="home" href="market.html">← 달빛 야시장</a>
+
+<section id="sStart" class="card center">
+  <div class="lamp"><span>🏮</span><span>🏮</span><span>🏮</span></div>
+  <div class="lab">LUNA LAB · NIGHT MARKET</div>
+  <div style="font-size:54px;margin-top:6px">🌶️🍲</div>
+  <h1 style="font-size:30px;color:#ffb38a;margin-top:6px">달빛 마라탕</h1>
+  <p class="jua" style="color:var(--gold2);margin:4px 0 0">야시장 골목 끝, 빨간 등불 아래 마라탕집</p>
+  <p class="dim" style="color:var(--dim);line-height:1.8;font-size:15px;margin:14px 0 4px">손님 주문표를 보고 재료를 담고,<br>맵기 단계까지 딱 맞춰서 내보내세요!<br>90초 동안 얼마나 팔 수 있을까요?</p>
+  <details style="text-align:left;margin-top:12px;font-size:14px;line-height:1.75">
+    <summary class="jua" style="cursor:pointer;color:var(--gold)">만드는 법 보기</summary>
+    <p style="margin:8px 0 0">① 빨간 테두리 손님이 지금 주문한 손님이에요<br>② 재료 버튼을 누르면 그릇에 하나씩 담겨요 (그릇 속 재료를 누르면 하나 빼요)<br>③ 맵기 단계를 고르고 <b>"마라탕 내보내기"</b>!<br>④ 주문이랑 똑같으면 팁까지, 조금 틀리면 손님 표정이 변해요<br>⑤ 기다리다 지친 손님은 화내고 가 버려요</p>
+  </details>
+  <div class="row"><button class="btn" id="startBtn">가게 문 열기 🏮</button></div>
+</section>
+
+<section id="sPlay" class="hidden">
+  <div class="top">
+    <div class="stat"><small>남은 시간</small><b id="tm">90</b></div>
+    <div class="stat"><small>매출</small><b id="earn">0원</b></div>
+    <div class="stat"><small>만족 손님</small><b id="hp">0명</b></div>
+    <div class="stat"><small>화난 손님</small><b id="ag">0명</b></div>
+  </div>
+  <div class="line" id="line"></div>
+  <div class="bowl" id="bowl">
+    <div class="bowl-h"><b>🍲 내 그릇</b><span id="bSpice" style="font-size:13px;color:var(--dim)">맵기 미선택</span></div>
+    <div class="bitems" id="bItems"></div>
+  </div>
+  <div class="ings" id="ings"></div>
+  <div class="spice" id="spice"></div>
+  <div class="act"><button class="btn ghost sm" id="clearBtn">🗑️ 비우기</button><button class="btn" id="serveBtn">🍲 마라탕 내보내기</button></div>
+  <p class="msg" id="msg"></p>
+</section>
+
+<section id="sEnd" class="card center hidden">
+  <div style="font-size:58px" id="eIcon">🌶️</div>
+  <p class="jua" style="color:var(--gold2);margin:4px 0 0">영업 종료!</p>
+  <h1 style="font-size:28px;color:#ffb38a;margin-top:4px" id="eTitle"></h1>
+  <p style="color:var(--dim);line-height:1.7;margin:8px 0 0" id="eDesc"></p>
+  <div class="sum" id="eSum"></div>
+  <div class="row"><button class="btn" id="againBtn">한 번 더 영업 🔥</button><button class="btn ghost" id="copyBtn">결과 복사</button></div>
+</section>
+
+<div class="foot">✦ LUNA LAB 달빛 연구소 · 달빛 야시장 ✦</div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const $=id=>document.getElementById(id);
+const ING=[["분모자","🟤"],["청경채","🥬"],["숙주","🌱"],["소고기","🥩"],["양고기","🍖"],["어묵","🍥"],["메추리알","🥚"],["푸주","🟨"],["버섯","🍄"],["옥수수면","🍜"]];
+const SPICE=["순한맛","1단계","2단계","불맛"];
+const NAMES=[["🧑‍💼","퇴근한 회사원"],["🧑‍🎓","시험 끝난 학생"],["👩‍💻","야근 탈출 개발자"],["🧔","단골 아저씨"],["👵","매운 거 좋아 할머니"],["🧑‍🍳","옆 가게 사장님"],["🧑‍🎤","공연 끝난 가수"],["👮","순찰 중 경찰관"],["🧑‍🚀","우주에서 온 손님"],["🦊","여우 손님"]];
+const SPECIAL=[
+ {at:30,e:"🐥",n:"알바생 삐약이",say:"삐약이는 매운 거 못 먹어요!",ord:{"메추리알":2,"옥수수면":1,"청경채":1},sp:0},
+ {at:58,e:"🐱",n:"말하는 고양이",say:"냥… 어묵 많이 주라냥.",ord:{"어묵":2,"메추리알":1,"버섯":1},sp:1}
+];
+const LEN=90;
+let G=null,raf=0;
+function rnd(n){return Math.floor(Math.random()*n);}
+function won(n){return Math.round(n).toLocaleString("ko-KR")+"원";}
+function toast(t){const el=$("toast");el.textContent=t;el.classList.add("show");clearTimeout(el._h);el._h=setTimeout(()=>el.classList.remove("show"),1500);}
+function say(t){$("msg").textContent=t;}
+
+function makeOrder(){
+  const elapsed=LEN-G.left,n=3+(Math.random()<.45?1:0)+(elapsed>45&&Math.random()<.4?1:0);
+  const pool=[...ING].sort(()=>Math.random()-.5).slice(0,n),ord={};
+  pool.forEach(([k])=>ord[k]=Math.random()<.32?2:1);
+  const r=Math.random(),sp=r<.15?0:r<.5?1:r<.85?2:3;
+  return{ord,sp};
+}
+function spawn(sp){
+  if(G.cust.length>=3)return false;
+  G.cid++;
+  let c;
+  if(sp){c={id:G.cid,e:sp.e,n:sp.n,ord:{...sp.ord},sp:sp.sp,vip:true,say:sp.say};}
+  else{const [e,n]=NAMES[rnd(NAMES.length)],o=makeOrder();c={id:G.cid,e,n,ord:o.ord,sp:o.sp};}
+  const items=Object.values(c.ord).reduce((a,b)=>a+b,0);
+  c.max=c.p=20+items*2.6;G.cust.push(c);
+  if(c.say)toast(c.e+" "+c.say);
+  drawLine();return true;
+}
+function ordText(c){return Object.entries(c.ord).map(([k,v])=>`${ING.find(x=>x[0]===k)[1]}${k}${v>1?"×"+v:""}`).join(" ");}
+function drawLine(){
+  const L=$("line");L.innerHTML="";
+  for(let i=0;i<3;i++){
+    const c=G.cust[i],d=document.createElement("div");
+    if(c){const r=c.p/c.max;d.className="cust"+(i===0?" now":"")+(c.vip?" vip":"");
+      d.innerHTML=`<div class="nm">${c.e} ${c.n}</div>${i===0?'<div class="tg">▶ 지금 주문</div>':""}<div>${ordText(c)}</div><div class="sp">🌶️ ${SPICE[c.sp]}</div><div class="pb"><i style="width:${Math.max(0,r*100)}%;background:${r<.3?"var(--red)":r<.6?"var(--gold)":"var(--green)"}"></i></div>`;}
+    else{d.className="cust";d.innerHTML='<div style="color:var(--dim);text-align:center;padding-top:40px">빈 자리</div>';}
+    L.appendChild(d);
+  }
+}
+function drawBowl(){
+  const e=Object.entries(G.bowl).filter(([,v])=>v>0);
+  $("bItems").innerHTML=e.length?e.map(([k,v])=>`<button data-k="${k}">${ING.find(x=>x[0]===k)[1]} ${k} ${v}</button>`).join(""):'<span class="empty">재료를 눌러서 담아 주세요</span>';
+  $("bItems").querySelectorAll("button").forEach(b=>b.onclick=()=>{G.bowl[b.dataset.k]--;drawBowl();});
+  $("bSpice").textContent=G.sp===null?"맵기 미선택":"🌶️ "+SPICE[G.sp];
+  $("spice").querySelectorAll("button").forEach((b,i)=>b.classList.toggle("on",i===G.sp));
+}
+function upd(){$("tm").textContent=Math.ceil(Math.max(0,G.left));$("earn").textContent=won(G.earn);$("hp").textContent=G.happy+"명";$("ag").textContent=G.angry+"명";}
+function serve(){
+  const c=G.cust[0];if(!c){say("아직 손님이 없어요. 잠깐만 기다려요!");return;}
+  if(G.sp===null){say("맵기 단계를 먼저 골라 주세요! 🌶️");return;}
+  let diff=Math.abs(c.sp-G.sp);
+  const keys=new Set([...Object.keys(c.ord),...Object.keys(G.bowl)]);
+  keys.forEach(k=>diff+=Math.abs((c.ord[k]||0)-(G.bowl[k]||0)));
+  const items=Object.values(c.ord).reduce((a,b)=>a+b,0),price=3000+items*1200;
+  let got=0,txt;
+  if(diff===0){const tip=Math.round(2000*c.p/c.max/100)*100*(c.vip?2:1);got=price+tip;G.perfect++;G.happy++;G.tips+=tip;txt=`😍 완벽해요! ${c.e} ${c.n} 대만족, 팁 ${won(tip)}`;}
+  else if(diff===1){got=price;G.happy++;txt=`🙂 거의 완벽! ${c.e} ${c.n} 만족 (한 군데만 달랐어요)`;}
+  else if(diff<=3){got=Math.round(price/2/100)*100;txt=`😐 음… ${c.e} ${c.n} 주문이랑 좀 달라요. 반값만 받았어요`;}
+  else{G.angry++;txt=`😡 이거 제가 시킨 거 아닌데요?! ${c.e} ${c.n}이 화났어요`;}
+  G.earn+=got;G.bowls++;G.cust.shift();G.bowl={};G.sp=null;
+  say(txt);$("bowl").classList.remove("pop");void $("bowl").offsetWidth;$("bowl").classList.add("pop");
+  drawLine();drawBowl();upd();
+}
+function loop(now){
+  const dt=Math.min(.1,(now-G.last)/1000);G.last=now;G.left-=dt;G.spawnT-=dt;
+  const el=LEN-G.left;
+  SPECIAL.forEach(s=>{if(!G.done[s.n]&&el>=s.at&&spawn(s))G.done[s.n]=1;});
+  if(G.spawnT<=0){spawn(null);G.spawnT=G.cust.length<=1?2.5:Math.max(5,8.5-el/25)+Math.random()*3;}
+  G.cust.forEach(c=>c.p-=dt);
+  for(let i=G.cust.length-1;i>=0;i--)if(G.cust[i].p<=0){const c=G.cust[i];G.angry++;say(`😤 ${c.e} ${c.n}이 기다리다 지쳐서 가 버렸어요…`);G.cust.splice(i,1);}
+  drawLine();upd();
+  if(G.left<=0){end();return;}
+  raf=requestAnimationFrame(loop);
+}
+function start(){
+  G={left:LEN,last:performance.now(),spawnT:0,cust:[],bowl:{},sp:null,earn:0,tips:0,happy:0,angry:0,perfect:0,bowls:0,cid:0,done:{}};
+  $("ings").innerHTML=ING.map(([k,e])=>`<button data-k="${k}"><span>${e}</span><small>${k}</small></button>`).join("");
+  $("ings").querySelectorAll("button").forEach(b=>b.addEventListener("pointerdown",()=>{const k=b.dataset.k;if((G.bowl[k]||0)>=3){say("한 재료는 3개까지만 담을 수 있어요");return;}G.bowl[k]=(G.bowl[k]||0)+1;drawBowl();}));
+  $("spice").innerHTML=SPICE.map((s,i)=>`<button>${"🌶️".repeat(i)||"🥛"} ${s}</button>`).join("");
+  $("spice").querySelectorAll("button").forEach((b,i)=>b.onclick=()=>{G.sp=i;drawBowl();});
+  say("🏮 영업 시작! 빨간 테두리 손님 주문부터 만들어요");
+  drawBowl();drawLine();upd();
+  ["sStart","sEnd"].forEach(s=>$(s).classList.add("hidden"));$("sPlay").classList.remove("hidden");
+  cancelAnimationFrame(raf);raf=requestAnimationFrame(loop);scrollTo({top:0,behavior:"smooth"});
+}
+function end(){
+  let ic,ti,de;const t=G.earn;
+  if(t>=110000){ic="👑";ti="전설의 마라 장인";de="야시장에 '마라 장인'이 나타났다는 소문이 퍼졌어요. 이제 손님들이 맵기를 말하기도 전에 당신이 알아요!";}
+  else if(t>=75000){ic="🔥";ti="줄 서는 마라탕집";de="빨간 등불 아래 줄이 골목 끝까지 섰어요. 국물 맛 소문이 제대로 났어요!";}
+  else if(t>=40000){ic="🌶️";ti="동네 마라 맛집";de="단골손님이 하나둘 생기기 시작했어요. 조금만 더 빠르면 줄 서는 집도 금방!";}
+  else{ic="🥢";ti="새내기 마라탕 사장님";de="아직은 재료 찾느라 바쁘지만, 국물 맛은 확실해요. 한 번 더 해 보면 금방 늘어요!";}
+  $("eIcon").textContent=ic;$("eTitle").textContent=ti;$("eDesc").textContent=de;
+  $("eSum").innerHTML=`<div>총매출<b>${won(t)}</b></div><div>그중 팁<b>${won(G.tips)}</b></div><div>내보낸 그릇<b>${G.bowls}그릇</b></div><div>완벽한 그릇<b>${G.perfect}그릇</b></div><div>만족한 손님<b>${G.happy}명</b></div><div>화난 손님<b>${G.angry}명</b></div>`;
+  G.title=ti;$("sPlay").classList.add("hidden");$("sEnd").classList.remove("hidden");scrollTo({top:0,behavior:"smooth"});
+}
+$("startBtn").onclick=start;$("againBtn").onclick=start;
+$("serveBtn").onclick=serve;
+$("clearBtn").onclick=()=>{G.bowl={};G.sp=null;drawBowl();say("그릇을 비웠어요");};
+$("copyBtn").onclick=async()=>{
+  const txt=`🌶️ 달빛 마라탕 결과\n칭호: ${G.title}\n총매출: ${won(G.earn)} (팁 ${won(G.tips)})\n완벽한 그릇 ${G.perfect} / 내보낸 그릇 ${G.bowls}\n만족 ${G.happy}명 · 화남 ${G.angry}명`;
+  try{await navigator.clipboard.writeText(txt);toast("결과를 복사했어요! 🔗");}catch(e){toast("복사가 안 됐어요. 화면을 캡처해 주세요!");}
+};
+(function(){const cv=$("stars"),ctx=cv.getContext("2d");let s=[];
+function rs(){cv.width=innerWidth;cv.height=innerHeight;s=Array.from({length:Math.floor(innerWidth*innerHeight/6000)},()=>({x:Math.random()*cv.width,y:Math.random()*cv.height,r:Math.random()*1.3+.2,p:Math.random()*6.28}));}
+function draw(t){ctx.clearRect(0,0,cv.width,cv.height);for(const p of s){ctx.globalAlpha=.35+.45*Math.sin(t/900+p.p);ctx.fillStyle="#fff6dc";ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,6.28);ctx.fill();}requestAnimationFrame(draw);}
+addEventListener("resize",rs);rs();requestAnimationFrame(draw);})();
+</script>
+</body>
+</html>
