@@ -121,6 +121,8 @@ body.luna-mini .cab{padding:10px}
         </div>
         <div class="card goal" id="goal">다음 경품까지<div class="gb"><i id="gbar"></i></div></div>
         <button class="btn sm ghost" id="pauseBtn">⏸ 잠깐 멈춤</button>
+        <button class="btn sm ghost" id="giveBtn" title="이번 판을 끝내고 경품 받기">🏳️ 이번 판 포기</button>
+        <div class="card" style="padding:8px 12px"><div class="lb">SPEED</div><div id="spdTag" style="font-family:Jua,sans-serif;font-size:17px;color:#fff">🐢 보통</div></div>
       </div>
     </div>
     <div class="pad" id="pad">
@@ -199,7 +201,7 @@ function merge(){
       full.forEach(y=>{B.splice(y,1);B.unshift(Array(W).fill(0));});
       flashRows=[];lock=false;
       const n=full.length;sc+=[0,100,300,500,800][n]*lv;ln+=n;
-      const nl=Math.floor(ln/10)+1;if(nl>lv){lv=nl;talk(`레벨 ${lv}! 블록이 점점 빨라져요~ 🔥`);restart();}
+      const nl=Math.floor(ln/10)+1;if(nl>lv){const ps=stage(lv);lv=nl;const ns=stage(lv);talk(ns>ps?(ns===2?`레벨 ${lv}! 🔥 지옥 구간 돌입!! 살아서 돌아와요 😱`:`레벨 ${lv}! 🐇 빠름 구간이에요~ 집중!`):`레벨 ${lv}! 블록이 점점 빨라져요~ ⚡`);if(ns>ps)toast(STAGE[ns]+" 구간 돌입!");drawSpd();restart();}
       if(n===4)talk("테트리스!!! 네 줄 한 방에 펑~ 🎉");else if(n>=2)talk(["오 깔끔해요! ✨","두 줄 이상 좋아요~ 👍","손님 손이 빠르네요! ⚡"][Math.floor(Math.random()*3)]);
       upd();spawn();draw();
     },160);
@@ -240,13 +242,17 @@ function draw(){
 }
 function drawNext(){nc.clearRect(0,0,72,48);if(!nxt)return;const m=nxt.m,s=14,ox=(72-m[0].length*s)/2,oy=(48-m.length*s)/2;
   m.forEach((r,y)=>r.forEach((v,x)=>{if(v){nc.fillStyle=COL[nxt.k];nc.fillRect(ox+x*s+1,oy+y*s+1,s-2,s-2);}}));}
-function speed(){return Math.max(90,720-(lv-1)*65);}
+/* 속도는 레벨 따라 자동으로: 보통(1~3) → 빠름(4~7) → 지옥(8~) */
+function stage(l){return l>=8?2:l>=4?1:0;}
+const STAGE=["🐢 보통","🐇 빠름","🔥 지옥"];
+function speed(){return Math.max(45,Math.round(650*Math.pow(.8,lv-1)));}
+function drawSpd(){const t=$("spdTag");t.textContent=STAGE[stage(lv)];t.style.color=["#fff","#9fe6ff","#ff8a7a"][stage(lv)];}
 function restart(){clearInterval(tm);tm=setInterval(drop,speed());}
 
 function start(){
   B=Array.from({length:H},()=>Array(W).fill(0));sc=0;ln=0;lv=1;nxt=null;bag=[];gotPrize=null;flashRows=[];lock=false;
   on=true;pause=false;upd();$("ov").classList.add("hidden");$("pauseBtn").textContent="⏸ 잠깐 멈춤";
-  talk("코인 들어갔다~ 화이팅! 🪙");spawn();draw();restart();
+  drawSpd();talk("코인 들어갔다~ 화이팅! 🪙 레벨이 오르면 점점 빨라져요!");spawn();draw();restart();
 }
 function over(){
   on=false;clearInterval(tm);
@@ -298,7 +304,14 @@ function toast(m){const t=$("toast");t.textContent=m;t.classList.add("show");cle
 
 addEventListener("resize",size);
 B=Array.from({length:H},()=>Array(W).fill(0));
-size();renderShelf();upd();
+let giveT=0;
+$("giveBtn").onclick=()=>{
+  if(!on){toast("게임 중일 때만 포기할 수 있어요");return;}
+  if(Date.now()-giveT>2000){giveT=Date.now();toast("한 번 더 누르면 이번 판을 끝내요 🏳️");return;}
+  giveT=0;if(pause){pause=false;}over();
+  talk(sc>=500?"포기도 용기예요! 지금 점수만큼 경품 챙겨 가요 🎁":"이번 판은 여기까지~ 한 판 더 해요! 🪙");
+};
+size();renderShelf();upd();drawSpd();
 
 /* ---------- 별 배경 ---------- */
 (function(){
