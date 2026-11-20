@@ -350,25 +350,35 @@ function draw(t){ctx.clearRect(0,0,cv.width,cv.height);for(const p of s){ctx.glo
 addEventListener("resize",rs);rs();requestAnimationFrame(draw);})();
 </script>
 <script>
-/* ===== 달빛 야시장 · 단속반 & 미니모드 (파일 안에 내장) =====
-   🚨 단속반: 작은 창(미니모드)으로 옮기고, 원래 창은 엑셀 화면으로 위장
-   미니 창에서 🚨 또는 B 키: 엑셀 화면으로 잠깐 숨기기 (다시 누르거나 클릭하면 복귀) */
+/* ===== 달빛 야시장 · 미니모드 & 단속반 (파일 안에 내장) =====
+   🪟 미니 / M 키: 이 창 그대로 작고 촘촘하게 보기 (브라우저 창을 줄여서 구석에 두고 쓰기 좋게)
+                  설정은 이 브라우저에 저장돼서 다른 가게로 가도 유지돼요
+   🚨 단속반 / B 키: 엑셀 화면으로 휙 숨기기 (다시 누르거나 클릭하면 복귀) */
 (function(){
-  const MINI=new URLSearchParams(location.search).has("mini");
+  const KEY="luna_mini_mode";
   const FAKE="2026_11월_정산_최종_v3(수정).xlsx";
   const realTitle=document.title;
+  let pref=false;try{pref=localStorage.getItem(KEY)==="1";}catch(e){}
   const st=document.createElement("style");
   st.textContent=`
-  #lunaRaid{position:fixed;right:12px;bottom:12px;z-index:9998;border:1px solid rgba(255,107,122,.7);background:rgba(40,14,30,.88);color:#ffd6dc;
-    font:700 13px/1 "Noto Serif KR",serif;padding:9px 13px;border-radius:999px;cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,.4)}
-  #lunaRaid:hover{background:rgba(120,20,40,.9);color:#fff}
-  #lunaRaid .siren{display:inline-block;animation:lunaSiren 1.4s infinite}
+  #lunaBar{position:fixed;right:12px;bottom:12px;z-index:9998;display:flex;gap:6px}
+  #lunaBar button{border:1px solid rgba(227,194,122,.45);background:rgba(27,20,51,.9);color:#efe8ff;font:700 13px/1 "Noto Serif KR",serif;
+    padding:9px 12px;border-radius:999px;cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,.4)}
+  #lunaBar button:hover{border-color:#e3c27a;color:#fff}
+  #lunaBar #lunaRaid{border-color:rgba(255,107,122,.7);background:rgba(40,14,30,.9);color:#ffd6dc}
+  #lunaBar .siren{display:inline-block;animation:lunaSiren 1.4s infinite}
   @keyframes lunaSiren{0%,100%{transform:rotate(0)}25%{transform:rotate(-12deg)}75%{transform:rotate(12deg)}}
-  body.luna-mini #lunaRaid{right:8px;bottom:8px;padding:7px 10px;font-size:12px}
-  body.luna-mini{zoom:.86}
+  body.luna-mini #lunaBar{right:6px;bottom:6px;gap:4px}
+  body.luna-mini #lunaBar button{padding:6px 9px;font-size:12px}
+  body.luna-mini{zoom:.72}
   body.luna-mini[data-mini-zoom="off"]{zoom:1}
-  body.luna-mini .foot,body.luna-mini .lamp,body.luna-mini .keys{display:none!important}
+  body.luna-mini .wrap{max-width:440px!important;padding-top:8px!important;padding-bottom:56px!important}
+  body.luna-mini .foot,body.luna-mini .lamp,body.luna-mini .keys,body.luna-mini header .sub,body.luna-mini details{display:none!important}
+  body.luna-mini .home{position:static!important;display:inline-block;margin-bottom:8px}
+  body.luna-mini header{margin-bottom:12px!important}
   #lunaCover{position:fixed;inset:0;z-index:9999;background:#f3f3f3;color:#222;font:13px/1.4 -apple-system,"Malgun Gothic","Apple SD Gothic Neo",sans-serif;overflow:auto;zoom:1}
+  body.luna-mini #lunaCover{zoom:1.39}
+  body.luna-mini[data-mini-zoom="off"] #lunaCover{zoom:1}
   #lunaCover .xb{background:#217346;color:#fff;padding:8px 14px;display:flex;justify-content:space-between;gap:10px;white-space:nowrap}
   #lunaCover .xm{display:flex;gap:14px;padding:6px 14px;background:#fff;border-bottom:1px solid #ddd;color:#444;font-size:12px}
   #lunaCover .xf{padding:4px 14px;background:#fff;border-bottom:1px solid #ddd;color:#555;font-size:12px;font-family:Consolas,monospace}
@@ -378,7 +388,7 @@ addEventListener("resize",rs);rs();requestAnimationFrame(draw);})();
   #lunaCover td:first-child{text-align:left}
   #lunaCover tr:last-child td{font-weight:700;background:#f7f7f7}
   #lunaToast{position:fixed;left:50%;top:14px;transform:translateX(-50%);z-index:9997;background:#2a1030;border:1px solid #ff6b7a;color:#ffe;
-    padding:9px 16px;border-radius:999px;font:700 13px "Noto Serif KR",serif;opacity:0;transition:.3s;pointer-events:none}
+    padding:9px 16px;border-radius:999px;font:700 13px "Noto Serif KR",serif;opacity:0;transition:.3s;pointer-events:none;white-space:nowrap}
   #lunaToast.show{opacity:1}`;
   document.head.appendChild(st);
 
@@ -395,7 +405,7 @@ addEventListener("resize",rs);rs();requestAnimationFrame(draw);})();
     return h+`<tr><td>합계</td>${T.map(v=>`<td>${v.toLocaleString()}</td>`).join("")}<td></td></tr></table>`;
   }
   function toast(m){let t=document.getElementById("lunaToast");if(!t){t=document.createElement("div");t.id="lunaToast";document.body.appendChild(t);}
-    t.textContent=m;t.classList.add("show");clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove("show"),1600);}
+    t.textContent=m;t.classList.add("show");clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove("show"),1800);}
   const covered=()=>!!document.getElementById("lunaCover");
   function cover(){
     if(covered())return;
@@ -406,40 +416,26 @@ addEventListener("resize",rs);rs();requestAnimationFrame(draw);})();
     const d=document.getElementById("lunaCover");if(!d)return;
     d.remove();document.title=realTitle;window.dispatchEvent(new Event("luna:uncover"));toast("휴… 단속반 갔다~ 😮‍💨");
   }
-  function goMini(){
-    const u=new URL(location.href);["r","a"].forEach(k=>u.searchParams.delete(k));u.searchParams.set("mini","1");
-    const w=380,h=660,L=Math.max(0,(screen.availWidth||1200)-w-30);
-    let win=null;
-    try{win=window.open(u.toString(),"luna_mini",`popup=yes,width=${w},height=${h},left=${L},top=60,resizable=yes,scrollbars=yes`);}catch(e){}
-    if(!win){cover();toast("작은 창이 막혔어요 · 대신 엑셀로 숨었어요 🙈");return;}
-    try{win.focus();}catch(e){}
-    window.dispatchEvent(new Event("luna:cover"));
-    let id=setTimeout(()=>{},0);while(id>0){clearTimeout(id);clearInterval(id);id--;}
-    document.title=FAKE;document.body.innerHTML="";document.body.className="";document.body.style.cssText="margin:0";
-    const d=document.createElement("div");d.id="lunaCover";d.innerHTML=coverHTML();d.title="클릭하면 원래 화면으로 돌아가요";
-    d.addEventListener("click",()=>location.reload());document.body.appendChild(d);
+  function setMini(on,say){
+    document.body.classList.toggle("luna-mini",on);
+    try{localStorage.setItem(KEY,on?"1":"0");}catch(e){}
+    const m=document.getElementById("lunaMini");if(m)m.textContent=on?"🔍 크게":"🪟 미니";
+    window.dispatchEvent(new Event("resize"));
+    if(say)toast(on?"미니 모드! 브라우저 창을 작게 줄여서 구석에 두세요 🤫":"원래 크기로 돌아왔어요");
   }
   function init(){
-    if(MINI){
-      document.body.classList.add("luna-mini");
-      document.querySelectorAll("a[href]").forEach(a=>{
-        const href=a.getAttribute("href");
-        if(!href||/^(https?:|mailto:|#|javascript:)/i.test(href))return;
-        if(href==="./"||/index\.html/.test(href)){a.setAttribute("href","market.html?mini=1");return;}
-        a.setAttribute("href",href+(href.includes("?")?"&":"?")+"mini=1");
-      });
-    }
-    const b=document.createElement("button");b.id="lunaRaid";b.type="button";
-    b.innerHTML=MINI?'<span class="siren">🚨</span>':'<span class="siren">🚨</span> 단속반';
-    b.title=MINI?"엑셀 화면으로 숨기 (B)":"작은 창으로 옮기고 이 화면은 숨기기";
-    b.addEventListener("click",e=>{e.stopPropagation();MINI?cover():goMini();});
-    document.body.appendChild(b);
+    const bar=document.createElement("div");bar.id="lunaBar";
+    bar.innerHTML='<button type="button" id="lunaMini" title="이 창을 작고 촘촘하게 보기 (M)">🪟 미니</button><button type="button" id="lunaRaid" title="엑셀 화면으로 숨기 (B)"><span class="siren">🚨</span> 단속반</button>';
+    document.body.appendChild(bar);
+    document.getElementById("lunaMini").addEventListener("click",e=>{e.stopPropagation();setMini(!document.body.classList.contains("luna-mini"),true);});
+    document.getElementById("lunaRaid").addEventListener("click",e=>{e.stopPropagation();cover();});
+    setMini(pref,false);
     document.addEventListener("keydown",e=>{
-      if(e.key!=="b"&&e.key!=="B")return;
       const t=e.target;if(t&&(t.tagName==="INPUT"||t.tagName==="TEXTAREA"||t.isContentEditable))return;
-      e.preventDefault();e.stopImmediatePropagation();covered()?uncover():cover();
+      if(e.key==="b"||e.key==="B"){e.preventDefault();e.stopImmediatePropagation();covered()?uncover():cover();}
+      else if((e.key==="m"||e.key==="M")&&!covered()){e.preventDefault();e.stopImmediatePropagation();setMini(!document.body.classList.contains("luna-mini"),true);}
+      else if(e.key==="Escape"&&covered())uncover();
     },true);
-    document.addEventListener("keydown",e=>{if(e.key==="Escape"&&covered())uncover();});
   }
   if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",init);else init();
 })();
