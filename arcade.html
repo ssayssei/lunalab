@@ -3,12 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-<title>달빛 오락 부스 · 달빛 야시장</title>
+<title>달빛 오락실 · 달빛 야시장</title>
 <link rel="icon" href="favicon.ico" sizes="any">
 <link rel="icon" type="image/png" href="favicon.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <meta name="description" content="야시장 골목 끝 레트로 오락기에서 블록 쌓고 경품 받아 가세요!">
-<meta property="og:title" content="달빛 오락 부스 🕹️ · 달빛 야시장">
+<meta property="og:title" content="달빛 오락실 🕹️ · 달빛 야시장">
 <meta property="og:description" content="블록 쌓기 한 판! 점수만큼 경품을 드려요">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Noto+Serif+KR:wght@400;600;700&family=Jua&display=swap" rel="stylesheet">
@@ -96,7 +96,7 @@ header{text-align:center;margin-bottom:18px}
 
   <header>
     <div class="no">NIGHT MARKET · SHOP No.05</div>
-    <div class="sign">🕹️ 달빛 오락 부스</div>
+    <div class="sign">🕹️ 달빛 오락실</div>
     <div class="sub">야시장 골목 끝, 네온사인이 깜빡이는 낡은 오락기 한 대.<br>블록을 쌓아 줄을 지우고, 점수만큼 경품을 받아 가세요!</div>
     <div class="boss"><span class="face">🐥</span><span id="bossTalk">어서 와요~ 한 판 해 보고 가요! 점수 높으면 대왕 펭귄 인형 드려요!</span></div>
   </header>
@@ -281,7 +281,7 @@ function togglePause(force){
     h+=`<tr><td>${r}</td><td>${a.toLocaleString()}</td><td>${b.toLocaleString()}</td><td>${(a-b).toLocaleString()}</td><td>${f.toLocaleString()}</td><td>${(b-f).toLocaleString()}</td><td>${i%4?"":"확인 필요"}</td></tr>`;});
   $("workT").innerHTML=h;
 })();
-function toggleWork(){const w=$("work");const hide=w.classList.contains("hidden");if(hide){togglePause(true);w.classList.remove("hidden");document.title="2026_11월_정산_최종_v3(수정).xlsx";}else{w.classList.add("hidden");document.title="달빛 오락 부스 · 달빛 야시장";}}
+function toggleWork(){const w=$("work");const hide=w.classList.contains("hidden");if(hide){togglePause(true);w.classList.remove("hidden");document.title="2026_11월_정산_최종_v3(수정).xlsx";}else{w.classList.add("hidden");document.title="달빛 오락실 · 달빛 야시장";}}
 $("work").onclick=toggleWork;
 $("hideBtn").onclick=toggleWork;
 
