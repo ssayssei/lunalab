@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>달빛 숲속 테스트 · 달빛 연구소</title>
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="description" content="달빛 숲길에서 고른 선택으로 알아보는 내 마음속 숲의 주인">
+<meta property="og:title" content="달빛 숲속 테스트 🌲 · 달빛 연구소">
+<meta property="og:description" content="달빛 숲길에서 고른 선택으로 내 마음속 숲의 주인을 만나요">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Noto+Serif+KR:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0f0b1e;--bg2:#1b1433;--gold:#e3c27a;--gold2:#b8954a;--ink:#efe8ff;--dim:#a99cc9}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%}
+body{font-family:"Noto Serif KR",serif;color:var(--ink);
+  background:radial-gradient(ellipse at 50% -10%,#3a2a6b 0%,var(--bg2) 35%,var(--bg) 75%);background-attachment:fixed;overflow-x:hidden}
+#stars{position:fixed;inset:0;pointer-events:none;z-index:0}
+.wrap{position:relative;z-index:1;max-width:620px;margin:0 auto;padding:62px 16px 60px}
+.home{position:absolute;top:14px;left:16px;color:var(--dim);text-decoration:none;font-size:13px;border:1px solid rgba(227,194,122,.25);padding:6px 12px;border-radius:999px;transition:.2s}
+.home:hover{color:var(--gold);border-color:var(--gold)}
+.panel{background:rgba(255,255,255,.04);border:1px solid rgba(227,194,122,.22);border-radius:18px;padding:26px 22px;backdrop-filter:blur(4px);animation:fade .45s ease}
+@keyframes fade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.hidden{display:none!important}
+.center{text-align:center}
+.lab-no{font-family:"Cinzel",serif;font-size:12px;letter-spacing:.25em;color:var(--gold2)}
+h1{margin:10px 0 6px;font-size:clamp(24px,6vw,32px);color:var(--gold);text-shadow:0 0 16px rgba(227,194,122,.3)}
+.intro-ani{font-size:34px;letter-spacing:6px;margin:18px 0}
+.intro-ani span{display:inline-block;animation:bob 2.4s ease-in-out infinite}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+.desc{color:var(--dim);line-height:1.8;font-size:15px;margin:0 0 22px}
+.btn{display:inline-block;border:none;cursor:pointer;font:inherit;font-weight:700;font-size:16px;padding:13px 28px;border-radius:12px;color:#1a1230;background:linear-gradient(135deg,#f3dc9f,var(--gold2));box-shadow:0 6px 20px rgba(227,194,122,.25);transition:.2s;text-decoration:none}
+.btn:hover{transform:translateY(-2px);box-shadow:0 10px 26px rgba(227,194,122,.35)}
+.btn.ghost{background:transparent;color:var(--gold);border:1px solid var(--gold2);box-shadow:none}
+.btn.sm{font-size:14px;padding:10px 18px}
+/* progress */
+.prog-top{display:flex;justify-content:space-between;align-items:center;font-size:13px;color:var(--dim);margin-bottom:8px}
+.back{background:none;border:none;color:var(--dim);font:inherit;font-size:13px;cursor:pointer;padding:0}
+.back:hover{color:var(--gold)}
+.back:disabled{visibility:hidden}
+.bar{height:6px;border-radius:99px;background:rgba(255,255,255,.08);overflow:hidden;margin-bottom:22px}
+.bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--gold2),#f3dc9f);border-radius:99px;transition:width .35s}
+.qnum{font-family:"Cinzel",serif;color:var(--gold);letter-spacing:.15em;font-size:13px}
+.qtext{font-size:19px;font-weight:700;line-height:1.6;margin:8px 0 20px;word-break:keep-all}
+.opts{display:flex;flex-direction:column;gap:10px}
+.opt{text-align:left;border:1px solid rgba(227,194,122,.3);background:rgba(0,0,0,.2);color:var(--ink);padding:14px 16px;border-radius:12px;cursor:pointer;font:inherit;font-size:15px;line-height:1.5;transition:.18s;word-break:keep-all}
+.opt:hover{border-color:var(--gold);background:rgba(227,194,122,.08);transform:translateX(3px)}
+.opt.sel{background:linear-gradient(135deg,var(--gold),var(--gold2));color:#1a1230;border-color:transparent;font-weight:700}
+.opt .badge{float:right;font-size:12px;font-weight:700;background:#1a1230;color:var(--gold);border-radius:999px;padding:1px 8px;margin-left:8px}
+.qhint{font-size:13px;color:var(--dim);margin:-10px 0 16px}
+.qnext{margin-top:18px;text-align:center}
+.qnext .btn:disabled{opacity:.35;cursor:default;transform:none;box-shadow:none}
+/* loading */
+.loading{padding:50px 0}
+.loading .spin{font-size:46px;display:inline-block;animation:spin 1.2s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading p{color:var(--dim);margin-top:16px}
+/* result */
+.r-label{color:var(--dim);font-size:14px}
+.r-emoji{font-size:96px;line-height:1;margin:14px 0 6px;filter:drop-shadow(0 0 22px rgba(227,194,122,.35));animation:pop .6s cubic-bezier(.3,1.6,.5,1)}
+@keyframes pop{from{transform:scale(.3);opacity:0}to{transform:scale(1);opacity:1}}
+.r-title{color:#f1dca8;font-size:15px;margin:4px 0 2px}
+.r-name{font-size:30px;color:var(--gold);margin:0;font-weight:700}
+.tags{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:14px 0 4px}
+.tags span{font-size:13px;padding:4px 11px;border-radius:999px;background:rgba(227,194,122,.14);color:#f1dca8}
+.r-desc{line-height:1.85;font-size:15px;margin:16px 0 4px;word-break:keep-all}
+.box{border-left:3px solid var(--gold);padding:12px 14px;margin-top:14px;background:rgba(0,0,0,.18);border-radius:0 12px 12px 0}
+.box h3{margin:0 0 4px;font-size:15px;color:var(--gold)}
+.box p{margin:0;line-height:1.75;font-size:14px;word-break:keep-all}
+.match{display:flex;gap:10px;margin-top:14px}
+.match div{flex:1;text-align:center;padding:12px 8px;border-radius:12px;background:rgba(0,0,0,.22);font-size:13px;color:var(--dim)}
+.match b{display:block;font-size:30px;margin:4px 0 2px}
+.match em{font-style:normal;color:var(--ink);font-size:14px;font-weight:700}
+.scores{margin-top:18px}
+.scores h3{font-size:15px;color:var(--gold);margin:0 0 10px}
+.srow{display:flex;align-items:center;gap:10px;margin-bottom:8px;font-size:14px}
+.srow .nm{width:86px;flex-shrink:0}
+.srow .sb{flex:1;height:8px;border-radius:99px;background:rgba(255,255,255,.08);overflow:hidden}
+.srow .sb i{display:block;height:100%;background:linear-gradient(90deg,var(--gold2),#f3dc9f);border-radius:99px;width:0;transition:width .9s ease}
+.srow .pc{width:40px;text-align:right;color:var(--dim);font-size:13px}
+.actions{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:24px}
+.toast{position:fixed;left:50%;bottom:30px;transform:translateX(-50%) translateY(20px);background:#2a2050;border:1px solid var(--gold2);color:var(--ink);padding:10px 18px;border-radius:999px;font-size:14px;opacity:0;transition:.3s;z-index:10;pointer-events:none}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.all{margin-top:28px}
+.all h3{text-align:center;color:var(--gold);font-size:15px;margin:0 0 12px}
+.all-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.all-grid button{background:rgba(0,0,0,.2);border:1px solid rgba(227,194,122,.2);border-radius:12px;padding:10px 4px;color:var(--ink);font:inherit;font-size:12px;cursor:pointer;transition:.2s}
+.all-grid button:hover,.all-grid button.on{border-color:var(--gold);background:rgba(227,194,122,.1)}
+.all-grid b{display:block;font-size:26px;font-weight:400}
+.foot{text-align:center;color:#6f6390;font-size:12px;margin-top:30px}
+@media (max-width:480px){.qtext{font-size:17px}.r-emoji{font-size:80px}.panel{padding:22px 16px}}
+
+.scene{font-size:13px;color:var(--dim);line-height:1.7;margin:0 0 4px;word-break:keep-all;font-style:italic}
+.opt .oe{font-size:22px;margin-right:8px;vertical-align:-3px}
+.story{margin-top:20px;border:1px solid var(--gold2);border-radius:14px;padding:16px;background:linear-gradient(160deg,rgba(227,194,122,.10),rgba(255,255,255,.02))}
+.story h3{font-size:15px;color:var(--gold);margin:0 0 8px}
+.story p{margin:0;line-height:1.9;font-size:14px;word-break:keep-all}
+.path{margin-top:20px}.path h3{font-size:15px;color:var(--gold);margin:0 0 10px}
+.prow{display:flex;gap:12px;align-items:flex-start;padding:10px 12px;border-radius:12px;background:rgba(0,0,0,.18);margin-bottom:8px}
+.prow .pe{font-size:28px;line-height:1;flex-shrink:0;width:34px;text-align:center}
+.prow .pl{font-size:12px;color:var(--gold2);letter-spacing:.02em}
+.prow .pn{font-size:14px;font-weight:700;margin:1px 0 3px}
+.prow .pm{font-size:13px;color:var(--dim);line-height:1.6;word-break:keep-all}
+.moon{margin-top:16px;text-align:center;padding:16px;border-radius:14px;background:rgba(227,194,122,.08);border:1px dashed rgba(227,194,122,.4)}
+.moon b{display:block;color:var(--gold);font-size:14px;margin-bottom:6px}
+.moon p{margin:0;font-size:15px;line-height:1.8;word-break:keep-all;color:#f1dca8}
+.trees{font-size:30px;letter-spacing:4px;margin:18px 0}
+.trees span{display:inline-block;animation:bob 2.6s ease-in-out infinite}
+</style>
+</head>
+<body>
+<canvas id="stars"></canvas>
+<div class="wrap">
+  <a class="home" href="./">← 달빛 연구소</a>
+
+  <section id="sIntro" class="panel center">
+    <div class="lab-no">LUNA LAB · No.06</div>
+    <h1>달빛 숲속 테스트</h1>
+    <div class="trees"><span>🌲</span><span style="animation-delay:.2s">🍄</span><span style="animation-delay:.4s">🌕</span><span style="animation-delay:.6s">🦉</span><span style="animation-delay:.8s">🌲</span></div>
+    <p class="desc">달빛이 비치는 밤, 당신은 숲길을 걷고 있어요.<br>장면마다 가장 끌리는 하나를 골라 주세요.<br>깊게 고민하지 말고 직감으로! 🌙</p>
+    <button class="btn" id="startBtn">숲으로 들어가기 🌲</button>
+  </section>
+
+  <section id="sQuiz" class="panel hidden">
+    <div class="prog-top"><button class="back" id="backBtn">← 이전</button><span id="progTxt">1 / 6</span></div>
+    <div class="bar"><i id="barFill"></i></div>
+    <div class="qnum" id="qNum">SCENE 1</div>
+    <p class="scene" id="qScene"></p>
+    <div class="qtext" id="qText"></div>
+    <div class="opts" id="opts"></div>
+  </section>
+
+  <section id="sLoad" class="panel center loading hidden">
+    <span class="spin">🌕</span>
+    <p>달님이 당신의 숲길을 비추는 중…</p>
+  </section>
+
+  <section id="sResult" class="panel hidden">
+    <div class="center">
+      <div class="r-label" id="rLabel">당신 마음속 숲의 주인은</div>
+      <div class="r-emoji" id="rEmoji"></div>
+      <div class="r-title" id="rTitle"></div>
+      <h2 class="r-name" id="rName"></h2>
+      <div class="tags" id="rTags"></div>
+    </div>
+    <p class="r-desc" id="rDesc"></p>
+    <div class="box"><h3>🔎 현실에서 이런 모습, 있지 않나요?</h3><ul class="life" id="rLife"></ul></div>
+    <div class="box"><h3>✦ 이 숲의 장점</h3><p id="rGood"></p></div>
+    <div class="box"><h3>☾ 이런 점은 조심해요</h3><p id="rBad"></p></div>
+    <div class="match">
+      <div>잘 맞는 숲 친구<b id="mBestE"></b><em id="mBest"></em></div>
+      <div>채워 주면 좋은 기운<b id="mNeedE"></b><em id="mNeed"></em></div>
+    </div>
+
+    <div id="myBox">
+      <div class="story"><h3>📖 나의 숲길 이야기</h3><p id="storyTxt"></p></div>
+      <div class="path"><h3>🗺️ 장면마다 숨은 의미</h3><div id="pathRows"></div></div>
+      <div class="scores"><h3>내 숲의 기운 성분표</h3><div id="scoreRows"></div></div>
+    </div>
+    <div class="moon"><b>🌕 달님의 한마디</b><p id="moonTxt"></p></div>
+
+    <div class="actions">
+      <button class="btn sm" id="saveBtn">🖼️ 요약 카드 저장</button>
+      <button class="btn sm ghost" id="shareBtn">🔗 결과 링크 복사</button>
+      <button class="btn sm ghost" id="retryBtn">↺ 다시 하기</button>
+    </div>
+    <div class="all">
+      <h3>다른 숲의 주인도 구경하기</h3>
+      <div class="all-grid" id="allGrid"></div>
+    </div>
+  </section>
+
+  <div class="foot">✦ LUNA LAB 달빛 연구소 ✦ 재미로 보는 테스트예요</div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+/* ---------- 숲의 주인 4유형 ---------- */
+const T={
+  fire:{e:"🍄",n:"반딧불 몽상가",h:"#c9e56b",t:"작은 반짝임에서 행복을 찾는 숲의 요정",tags:["호기심","소확행","자유로움"],
+    d:"거창한 목표보다 오늘 하루의 작은 반짝임에서 힘을 얻는 타입이에요. 궁금한 게 생기면 일단 해 보고, 재미있는 걸 발견하면 주변에 신나게 공유해요. 당신이 지나간 자리엔 늘 작은 불빛이 남아요.",
+    life:["새로 나온 간식이나 신상 굿즈를 보면 그냥 지나치지 못한다","갑자기 꽂힌 취미가 생기면 며칠 밤을 새워 파고든다","힘든 날에도 웃긴 짤 하나에 금방 기분이 풀린다"],
+    g:"어떤 상황에서도 재미를 찾아내서 쉽게 꺾이지 않아요. 주변 사람들에게 활기를 나눠 줘요.",
+    b:"관심이 여기저기 흩어지면 마무리가 약해질 수 있어요. 반짝이는 것 중 하나는 끝까지 키워 보세요.",
+    best:"stream",need:"cabin",
+    moon:"반딧불은 작아도 어둠 속에서 길을 비춰요. 당신의 작은 즐거움들이 생각보다 큰 빛이 되고 있어요. 오늘도 좋아하는 걸 하나쯤은 꼭 하기로 해요 ✨"},
+  stream:{e:"🌊",n:"시냇물 위로가",h:"#7cc8e8",t:"마음의 결을 읽어 주는 숲의 치유자",tags:["공감","연결","다정함"],
+    d:"사람의 마음이 어떻게 흐르는지 잘 알아채는 타입이에요. 말하지 않아도 누가 힘든지 눈치채고, 곁에 조용히 있어 주는 것만으로 위로가 돼요. 당신에게 가장 소중한 건 진심이 통하는 관계예요.",
+    life:["친구가 '괜찮아'라고 해도 목소리만 듣고 안 괜찮은 걸 안다","고민 상담을 하다 보면 어느새 새벽이다","좋아하는 사람이 좋아하는 걸 기억했다가 챙겨 준다"],
+    g:"따뜻한 공감 능력 덕분에 사람들이 당신 곁에서 편안함을 느껴요. 관계를 오래 지켜 가는 힘이 있어요.",
+    b:"남의 감정까지 다 안고 가면 정작 내가 지쳐요. 시냇물도 가끔은 고여서 쉬어야 맑아져요.",
+    best:"fire",need:"fog",
+    moon:"남을 위로하는 사람일수록 위로받을 자격도 커요. 이번엔 당신이 누군가의 등에 기대 볼 차례예요. 손 내밀면 잡아 줄 사람이 분명 있어요 💛"},
+  cabin:{e:"🏮",n:"오두막 지킴이",h:"#f0b45a",t:"따뜻한 불을 꺼뜨리지 않는 숲의 수호자",tags:["안정감","책임감","내 사람"],
+    d:"내 공간, 내 사람, 내가 지켜 온 것들을 소중히 여기는 타입이에요. 화려하진 않아도 늘 같은 자리에서 따뜻한 불을 켜 두고 있어서, 지친 사람들이 자연스럽게 당신에게 돌아와요. 꾸준함이 당신의 가장 큰 무기예요.",
+    life:["단골 가게가 생기면 메뉴도 거의 같은 걸 시킨다","약속이나 마감은 웬만하면 꼭 지킨다","집에 와서 씻고 이불 속에 들어가면 그제야 마음이 놓인다"],
+    g:"믿고 기댈 수 있는 사람이라 주변에서 신뢰를 많이 받아요. 한 번 시작한 건 끝까지 지켜 내요.",
+    b:"익숙한 것만 지키다 보면 좋은 기회를 놓칠 수 있어요. 가끔은 오두막 문을 열고 바깥바람도 쐬어 봐요.",
+    best:"fog",need:"fire",
+    moon:"당신이 켜 둔 불빛 덕분에 길을 찾은 사람이 많아요. 그 불을 지키느라 지치지 않게, 오늘은 당신 자신을 위해 장작 하나를 더 넣어 주세요 🕯️"},
+  fog:{e:"🌫️",n:"안개 너머 탐험가",h:"#b9a6f0",t:"끝이 보이지 않는 길에 설레는 숲의 개척자",tags:["가능성","변화","모험심"],
+    d:"정해진 길보다 아직 아무도 가 보지 않은 길에 마음이 끌리는 타입이에요. 막막해 보이는 상황에서도 '저 너머엔 뭐가 있을까?' 궁금해하고, 결국 새로운 문을 찾아내요. 지금 머무는 곳보다 더 넓은 세상을 꿈꾸고 있어요.",
+    life:["지금 하는 일 말고 다른 길도 있지 않을까 자주 상상한다","여행지나 새로운 분야를 검색하다가 시간이 훌쩍 간다","남들이 다 하는 방식보다 나만의 방법을 찾고 싶다"],
+    g:"변화를 두려워하지 않아서 새로운 환경에서도 금방 길을 찾아요. 막힌 상황을 뚫는 힘이 있어요.",
+    b:"안개 속을 너무 오래 걸으면 방향을 잃을 수 있어요. 작은 이정표 하나를 정해 두고 걸어가 보세요.",
+    best:"cabin",need:"stream",
+    moon:"안개는 걷힐 때가 되면 걷혀요. 지금 앞이 잘 안 보여도 괜찮아요. 당신이 고른 길 끝에는 분명 새로운 문이 기다리고 있어요 🗝️"}
+};
+const ORDER=["fire","stream","cabin","fog"];
+
+/* ---------- 장면 (보기마다 유형 k, 의미 m, 이야기 조각 s) ---------- */
+const Q=[
+  {c:"내가 끌리는 것",sc:"달빛이 비치는 밤, 숲길을 걷다 보니 길이 네 갈래로 나뉘었어요.",q:"가장 끌리는 길은?",o:[
+    {e:"🍄",t:"반딧불이가 반짝이며 날아다니는 버섯 길",k:"fire",m:"작은 반짝임과 재미. 일상 속 소소한 즐거움에서 에너지를 얻어요.",s:"반딧불이가 반짝이는 버섯 길을 따라 걷다가"},
+    {e:"🌊",t:"졸졸 시냇물 소리가 들리는 물가 길",k:"stream",m:"마음의 흐름. 감정을 나누고 공감할 때 살아 있음을 느껴요.",s:"시냇물 소리가 들리는 물가 길을 따라 걷다가"},
+    {e:"🏮",t:"저 멀리 따뜻한 불빛이 보이는 오두막 길",k:"cabin",m:"따뜻한 안식처. 편안한 내 자리와 내 사람이 가장 중요해요.",s:"따뜻한 불빛이 보이는 오두막 길을 따라 걷다가"},
+    {e:"🌫️",t:"안개가 자욱해서 끝이 안 보이는 신비한 길",k:"fog",m:"아직 모르는 가능성. 정해진 길보다 새로운 걸 열어 보고 싶어요.",s:"안개가 자욱한 신비한 길을 따라 걷다가"}]},
+  {c:"마음속 가장 소중한 것",sc:"걷다 보니 발밑에서 무언가 반짝! 하고 빛났어요.",q:"주워 보니 그건…?",o:[
+    {e:"🗝️",t:"녹슨 열쇠",k:"fog",m:"해답과 기회. 막힌 문이 열리는 순간을 기다리고 있어요.",s:"발밑에서 녹슨 열쇠를 주웠어요."},
+    {e:"💌",t:"누군가 떨어뜨린 편지",k:"stream",m:"마음이 통하는 연결. 진심을 주고받는 관계가 제일 소중해요.",s:"발밑에서 누군가 떨어뜨린 편지를 주웠어요."},
+    {e:"🪞",t:"작고 동그란 손거울",k:"fire",m:"나 자신. 남의 기준보다 나다운 모습을 지키고 싶어요.",s:"발밑에서 작고 동그란 손거울을 주웠어요."},
+    {e:"🌰",t:"반짝이는 씨앗 하나",k:"cabin",m:"꾸준한 성장. 천천히 키워 가는 것들의 가치를 알아요.",s:"발밑에서 반짝이는 씨앗 하나를 주웠어요."}]},
+  {c:"어려움을 넘는 방식",sc:"숲을 지나니 커다란 호수가 길을 막고 있어요. 건너편으로 가야 해요.",q:"어떻게 건널까?",o:[
+    {e:"🚣",t:"낡은 나룻배를 타고 직접 노를 젓는다",k:"fog",m:"직접 부딪혀 보기. 낡은 배라도 내 손으로 노를 저어 나아가요.",s:"낡은 나룻배를 직접 저어 호수를 건넜고,"},
+    {e:"🦢",t:"커다란 백조가 태워 주겠대",k:"stream",m:"도움을 받을 줄 아는 지혜. 믿을 만한 존재에게 기대는 게 더 빠르다는 걸 알아요.",s:"커다란 백조의 등에 올라 호수를 건넜고,"},
+    {e:"🌉",t:"멀리 돌아가지만 튼튼한 다리로 걸어간다",k:"cabin",m:"돌아가도 안전하게. 확실한 길을 차근차근 밟아 가요.",s:"멀리 돌아 튼튼한 다리로 호수를 건넜고,"},
+    {e:"🏊",t:"그냥 헤엄쳐서 건넌다!",k:"fire",m:"일단 뛰어들기. 고민보다 몸이 먼저 움직이는 용기가 있어요.",s:"첨벙! 헤엄쳐서 호수를 건넜고,"}]},
+  {c:"곁에 두고 싶은 사람",sc:"호수 건너편에서 숲의 동물 하나가 말을 걸어와요. '같이 갈래?'",q:"나에게 말을 건 동물은?",o:[
+    {e:"🦉",t:"눈이 반짝이는 부엉이",k:"cabin",m:"지혜로운 조언자. 차분하게 길을 알려 주는 사람이 곁에 있으면 좋겠어요.",s:"건너편에서 지혜로운 부엉이를 만났어요."},
+    {e:"🦊",t:"꼬리가 복슬복슬한 여우",k:"fire",m:"재치 있는 친구. 같이 있으면 웃음이 끊이지 않는 사람이 좋아요.",s:"건너편에서 장난기 많은 여우를 만났어요."},
+    {e:"🦌",t:"눈망울이 촉촉한 사슴",k:"stream",m:"다정한 사람. 말하지 않아도 마음을 알아주는 사람이 필요해요.",s:"건너편에서 다정한 사슴을 만났어요."},
+    {e:"🐺",t:"든든한 은빛 늑대",k:"fog",m:"든든한 동료. 낯선 길도 함께 달려 줄 사람을 찾고 있어요.",s:"건너편에서 든든한 은빛 늑대를 만났어요."}]},
+  {c:"지금 나에게 필요한 것",sc:"숲의 가장 깊은 곳에 다다르자 달님이 내려와 선물을 하나 건네요.",q:"달님의 선물은?",o:[
+    {e:"✨",t:"손바닥 위에서 반짝이는 별가루",k:"fire",m:"반짝이는 즐거움. 요즘 설레는 일이 조금 부족했나 봐요.",s:"달님이 반짝이는 별가루를 선물해 주었어요."},
+    {e:"🫖",t:"김이 모락모락 나는 따뜻한 차 한 잔",k:"stream",m:"위로와 휴식. 마음을 녹여 줄 따뜻함이 필요해요.",s:"달님이 따뜻한 차 한 잔을 건네주었어요."},
+    {e:"🕯️",t:"절대 꺼지지 않는 작은 촛불",k:"cabin",m:"흔들리지 않는 안정. 마음 놓을 수 있는 확실함이 필요해요.",s:"달님이 꺼지지 않는 촛불을 선물해 주었어요."},
+    {e:"🎐",t:"바람이 불면 노래하는 풍경",k:"fog",m:"새로운 바람. 지금과는 다른 변화가 필요한 때예요.",s:"달님이 바람에 노래하는 풍경을 선물해 주었어요."}]},
+  {c:"앞으로의 나",sc:"이제 숲을 나설 시간이에요. 마지막으로 뒤를 돌아보았어요.",q:"숲은 어떤 모습이었어?",o:[
+    {e:"🌸",t:"어느새 꽃이 가득 피어 있었다",k:"fire",m:"활짝 피어나는 나. 하고 싶은 걸 마음껏 즐기는 시간이 다가와요.",s:"숲을 나서며 돌아보니 어느새 꽃이 가득 피어 있었어요."},
+    {e:"🌈",t:"숲 위로 무지개가 걸려 있었다",k:"stream",m:"함께 빛나는 나. 좋은 사람들과 더 깊이 이어지게 될 거예요.",s:"숲을 나서며 돌아보니 숲 위로 무지개가 걸려 있었어요."},
+    {e:"🌙",t:"처음처럼 고요한 달빛이 비추고 있었다",k:"cabin",m:"단단해진 나. 지금 지키는 것들이 더 튼튼한 뿌리가 돼요.",s:"숲을 나서며 돌아보니 고요한 달빛이 숲을 감싸고 있었어요."},
+    {e:"🌅",t:"숲 너머로 해가 떠오르고 있었다",k:"fog",m:"새로 시작하는 나. 새로운 문이 열리는 시기가 다가오고 있어요.",s:"숲을 나서며 돌아보니 숲 너머로 해가 떠오르고 있었어요."}]}
+];
+
+/* ---------- 상태 ---------- */
+const $=id=>document.getElementById(id);
+let idx=0,answers=[],lastAnswers=null,lastKey=null;
+function show(id){["sIntro","sQuiz","sLoad","sResult"].forEach(s=>$(s).classList.toggle("hidden",s!==id));scrollTo({top:0,behavior:"smooth"});}
+
+function renderQ(){
+  const item=Q[idx];
+  $("progTxt").textContent=`${idx+1} / ${Q.length}`;
+  $("barFill").style.width=`${idx/Q.length*100}%`;
+  $("qNum").textContent=`SCENE ${idx+1}`;
+  $("qScene").textContent=item.sc;
+  $("qText").textContent=item.q;
+  $("backBtn").disabled=idx===0;
+  const box=$("opts");box.innerHTML="";
+  item.o.forEach((op,i)=>{
+    const b=document.createElement("button");b.className="opt"+(answers[idx]===i?" sel":"");
+    b.innerHTML=`<span class="oe">${op.e}</span>${op.t}`;
+    b.onclick=()=>pick(i);box.appendChild(b);
+  });
+  $("sQuiz").style.animation="none";void $("sQuiz").offsetWidth;$("sQuiz").style.animation="";
+}
+function pick(i){
+  answers[idx]=i;
+  [...$("opts").children].forEach((b,j)=>b.classList.toggle("sel",j===i));
+  setTimeout(()=>{
+    if(idx<Q.length-1){idx++;renderQ();}
+    else{$("barFill").style.width="100%";show("sLoad");setTimeout(finish,1700);}
+  },260);
+}
+function counts(ans){const s={};ORDER.forEach(k=>s[k]=0);ans.forEach((a,qi)=>s[Q[qi].o[a].k]++);return s;}
+function finish(){
+  const s=counts(answers),mx=Math.max(...Object.values(s));
+  const tied=ORDER.filter(k=>s[k]===mx);
+  const first=Q[0].o[answers[0]].k;
+  let key=tied.includes(first)?first:null;
+  if(!key){for(let qi=Q.length-1;qi>=0;qi--){const k=Q[qi].o[answers[qi]].k;if(tied.includes(k)){key=k;break;}}}
+  lastAnswers=[...answers];lastKey=key;
+  history.replaceState(null,"",`?r=${key}&a=${answers.join("")}`);
+  showResult(key,true);
+}
+function showResult(key,mine){
+  const a=T[key];
+  $("rLabel").textContent=mine?"당신 마음속 숲의 주인은":"이 숲의 주인은";
+  $("rEmoji").textContent=a.e;
+  $("rEmoji").style.animation="none";void $("rEmoji").offsetWidth;$("rEmoji").style.animation="";
+  $("rTitle").textContent=a.t;$("rName").textContent=a.n;$("rName").style.color=a.h;
+  $("rTags").innerHTML=a.tags.map(t=>`<span>#${t}</span>`).join("");
+  $("rDesc").textContent=a.d;
+  $("rLife").innerHTML=a.life.map(t=>`<li>${t}</li>`).join("");
+  $("rGood").textContent=a.g;$("rBad").textContent=a.b;
+  $("mBestE").textContent=T[a.best].e;$("mBest").textContent=T[a.best].n;
+  $("mNeedE").textContent=T[a.need].e;$("mNeed").textContent=T[a.need].n;
+  $("moonTxt").textContent=a.moon;
+  const my=$("myBox");
+  if(mine&&lastAnswers){
+    my.classList.remove("hidden");
+    const ops=lastAnswers.map((x,qi)=>Q[qi].o[x]);
+    $("storyTxt").textContent=`${ops[0].s} ${ops[1].s} ${ops[2].s} ${ops[3].s} ${ops[3].e} 친구와 함께 숲 가장 깊은 곳에 다다르자 ${ops[4].s} ${ops[5].s}`;
+    $("pathRows").innerHTML=ops.map((op,qi)=>`<div class="prow"><span class="pe">${op.e}</span><div><div class="pl">SCENE ${qi+1} · ${Q[qi].c}</div><div class="pn">${op.t}</div><div class="pm">${op.m}</div></div></div>`).join("");
+    const s=counts(lastAnswers);
+    $("scoreRows").innerHTML=ORDER.slice().sort((x,y)=>s[y]-s[x]).map(k=>{const p=Math.round(s[k]/Q.length*100);
+      return `<div class="srow"><span class="nm">${T[k].e} ${T[k].n.split(" ").pop()}</span><span class="sb"><i data-w="${p}" style="background:${T[k].h}"></i></span><span class="pc">${p}%</span></div>`;}).join("");
+    setTimeout(()=>document.querySelectorAll(".srow .sb i").forEach(i=>i.style.width=i.dataset.w+"%"),80);
+  } else my.classList.add("hidden");
+  $("retryBtn").textContent=lastAnswers?"↺ 다시 하기":"🌲 나도 테스트하기";
+  $("allGrid").innerHTML=ORDER.map(k=>`<button data-k="${k}" class="${k===key?"on":""}"><b>${T[k].e}</b>${T[k].n}</button>`).join("");
+  $("allGrid").querySelectorAll("button").forEach(b=>b.onclick=()=>{const k=b.dataset.k;showResult(k,!!lastAnswers&&k===lastKey);});
+  show("sResult");
+}
+
+$("startBtn").onclick=()=>{idx=0;answers=[];show("sQuiz");renderQ();};
+$("backBtn").onclick=()=>{if(idx>0){idx--;renderQ();}};
+$("retryBtn").onclick=()=>{history.replaceState(null,"",location.pathname);lastAnswers=null;lastKey=null;idx=0;answers=[];show("sQuiz");renderQ();};
+
+function toast(m){const t=$("toast");t.textContent=m;t.classList.add("show");clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove("show"),2000);}
+window.toast=toast;
+$("shareBtn").onclick=async()=>{
+  const k=lastKey||new URLSearchParams(location.search).get("r")||"fire";
+  const url=`${location.origin}${location.pathname}?r=${k}`;
+  const text=`내 마음속 숲의 주인은 ${T[k].e} ${T[k].n}! 너의 숲에는 누가 살고 있을까? 🌲`;
+  try{
+    if(navigator.share&&/Mobi|Android|iPhone/i.test(navigator.userAgent)){await navigator.share({title:"달빛 숲속 테스트 · 달빛 연구소",text,url});return;}
+    await navigator.clipboard.writeText(`${text}\n${url}`);toast("링크를 복사했어요! 🔗");
+  }catch(e){
+    const ta=document.createElement("textarea");ta.value=`${text}\n${url}`;document.body.appendChild(ta);ta.select();
+    try{document.execCommand("copy");toast("링크를 복사했어요! 🔗");}catch(_){toast("복사에 실패했어요");}
+    ta.remove();
+  }
+};
+
+/* ---------- 요약 카드 저장 ---------- */
+function wrap(ctx,text,x,y,maxW,lh){
+  let line="",lines=[];
+  for(const ch of text){const t=line+ch;if(ctx.measureText(t).width>maxW&&line){lines.push(line);line=ch;}else line=t;}
+  if(line)lines.push(line);
+  lines.forEach((l,i)=>ctx.fillText(l,x,y+i*lh));return y+lines.length*lh;
+}
+$("saveBtn").onclick=async()=>{
+  const k=ORDER.find(x=>$("rName").textContent===T[x].n)||"fire";
+  const a=T[k],mine=!$("myBox").classList.contains("hidden");
+  try{await document.fonts.ready;}catch(e){}
+  const W=1080,H=1350,c=document.createElement("canvas");c.width=W;c.height=H;const x=c.getContext("2d");
+  const g=x.createRadialGradient(W/2,-100,50,W/2,300,1300);g.addColorStop(0,"#3a2a6b");g.addColorStop(.35,"#1b1433");g.addColorStop(1,"#0f0b1e");
+  x.fillStyle=g;x.fillRect(0,0,W,H);
+  for(let i=0;i<180;i++){x.globalAlpha=Math.random()*.6+.2;x.fillStyle="#fff6dc";x.beginPath();x.arc(Math.random()*W,Math.random()*H,Math.random()*2+.4,0,6.28);x.fill();}
+  x.globalAlpha=1;
+  x.strokeStyle="rgba(227,194,122,.45)";x.lineWidth=3;x.strokeRect(50,50,W-100,H-100);
+  x.textAlign="center";
+  x.fillStyle="#b8954a";x.font='700 30px "Cinzel", serif';x.fillText("LUNA LAB  ·  달빛 연구소",W/2,130);
+  x.fillStyle="#a99cc9";x.font='400 36px "Noto Serif KR", serif';x.fillText("내 마음속 숲의 주인은",W/2,205);
+  x.save();x.shadowColor=a.h;x.shadowBlur=70;x.font='170px "Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif';x.fillText(a.e,W/2,410);x.restore();
+  x.fillStyle="#f1dca8";let tf=38;do{x.font=`600 ${tf}px "Noto Serif KR", serif`;tf-=2;}while(x.measureText(a.t).width>W-180&&tf>24);x.fillText(a.t,W/2,500);
+  x.fillStyle=a.h;x.font='700 80px "Noto Serif KR", serif';x.fillText(a.n,W/2,600);
+  x.font='600 32px "Noto Serif KR", serif';x.fillStyle="#f1dca8";x.fillText(a.tags.map(t=>"#"+t).join("   "),W/2,665);
+  x.textAlign="left";x.fillStyle="#efe8ff";x.font='400 32px "Noto Serif KR", serif';
+  let y=wrap(x,a.d,120,745,W-240,50);
+  if(mine&&lastAnswers){
+    y=Math.max(y+40,1060);
+    x.textAlign="center";x.fillStyle="#a99cc9";x.font='400 28px "Noto Serif KR", serif';x.fillText("나의 숲길",W/2,y);
+    const ops=lastAnswers.map((v,qi)=>Q[qi].o[v]),n=ops.length,step=(W-240)/(n-1);
+    x.strokeStyle="rgba(227,194,122,.4)";x.lineWidth=2;x.setLineDash([6,8]);x.beginPath();x.moveTo(120,y+70);x.lineTo(W-120,y+70);x.stroke();x.setLineDash([]);
+    ops.forEach((op,i)=>{const cx=120+i*step;x.fillStyle="#1b1433";x.beginPath();x.arc(cx,y+70,42,0,6.28);x.fill();
+      x.strokeStyle="#e3c27a";x.lineWidth=2;x.stroke();
+      x.font='44px "Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif';x.fillStyle="#fff";x.fillText(op.e,cx,y+86);});
+  }
+  x.textAlign="center";x.fillStyle="#6f6390";x.font='400 26px "Noto Serif KR", serif';x.fillText("ssayssei.github.io/lunalab",W/2,1255);
+  const link=document.createElement("a");link.download=`달빛연구소_숲속테스트_${a.n}.png`;
+  link.href=c.toDataURL("image/png");document.body.appendChild(link);link.click();link.remove();
+  toast("이미지를 저장했어요! 🖼️");
+};
+
+/* ---------- 공유 링크로 들어온 경우 ---------- */
+(function(){
+  const p=new URLSearchParams(location.search),r=p.get("r"),a=p.get("a");
+  if(r&&T[r]){
+    if(a&&/^[0-3]{6}$/.test(a)){lastAnswers=a.split("").map(Number);lastKey=r;showResult(r,true);}
+    else showResult(r,false);
+  }
+})();
+
+/* ---------- 별 배경 ---------- */
+(function(){
+  const cv=$("stars"),ctx=cv.getContext("2d");let st=[];
+  function rs(){cv.width=innerWidth;cv.height=innerHeight;
+    st=Array.from({length:Math.floor(innerWidth*innerHeight/6000)},()=>({x:Math.random()*cv.width,y:Math.random()*cv.height,r:Math.random()*1.3+.2,p:Math.random()*6.28}));}
+  function draw(t){ctx.clearRect(0,0,cv.width,cv.height);
+    for(const s of st){ctx.globalAlpha=.35+.45*Math.sin(t/900+s.p);ctx.fillStyle="#fff6dc";ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,6.28);ctx.fill();}
+    requestAnimationFrame(draw);}
+  addEventListener("resize",rs);rs();requestAnimationFrame(draw);
+})();
+
+/* ---------- 결과 전체를 긴 이미지 한 장으로 저장 ---------- */
+(function(){
+  const acts=document.querySelector("#sResult .actions");if(!acts)return;
+  const btn=document.createElement("button");btn.className="btn sm ghost";btn.id="fullSaveBtn";btn.textContent="📜 결과 전체 이미지 저장";
+  acts.insertBefore(btn,acts.children[1]||null);
+  const st=document.createElement("style");
+  st.textContent=".capturing .actions,.capturing .all,.capturing .home{display:none!important}.capturing{animation:none!important;backdrop-filter:none!important}.cap-head,.cap-foot{text-align:center;font-family:'Cinzel',serif;letter-spacing:.2em;color:#b8954a;font-size:13px}.cap-head{margin-bottom:14px}.cap-foot{margin-top:22px;letter-spacing:.05em;color:#8a7cb0;font-family:'Noto Serif KR',serif}";
+  document.head.appendChild(st);
+  function load(src){return new Promise((res,rej)=>{if(window.html2canvas)return res();const s=document.createElement("script");s.src=src;s.onload=res;s.onerror=rej;document.head.appendChild(s);});}
+  btn.onclick=async()=>{
+    const sec=document.getElementById("sResult"),old=btn.textContent;
+    btn.disabled=true;btn.textContent="이미지 만드는 중…";
+    const head=document.createElement("div");head.className="cap-head";head.textContent="LUNA LAB · 달빛 연구소";
+    const foot=document.createElement("div");foot.className="cap-foot";foot.textContent="ssayssei.github.io/lunalab";
+    try{
+      await load("https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js");
+      try{await document.fonts.ready;}catch(e){}
+      sec.prepend(head);sec.appendChild(foot);sec.classList.add("capturing");
+      await new Promise(r=>setTimeout(r,250));
+      const cv=await html2canvas(sec,{backgroundColor:"#1a1433",scale:2,useCORS:true,logging:false,windowWidth:Math.max(420,sec.offsetWidth+40)});
+      const a=document.createElement("a");a.download=(document.title.split("·")[0].trim()||"달빛연구소")+"_전체결과.png";
+      a.href=cv.toDataURL("image/png");document.body.appendChild(a);a.click();a.remove();
+      (window.toast||function(){})("전체 결과 이미지를 저장했어요! 📜");
+    }catch(e){console.error(e);(window.toast||alert)("이미지를 만들지 못했어요. 인터넷 연결을 확인해 주세요.");}
+    finally{sec.classList.remove("capturing");head.remove();foot.remove();btn.disabled=false;btn.textContent=old;}
+  };
+})();
+
+</script>
+</body>
+</html>
