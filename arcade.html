@@ -450,9 +450,9 @@ const LunaRank=(function(){
   function init(opt){
     G=Object.assign({game:"game",title:"게임",unit:"점",subLabel:""},opt);css();
     const p=new URLSearchParams(location.search).get("vs");
-    if(p){const o=b64d(p);if(o&&o.g===G.game&&typeof o.s==="number"&&o.s>=0&&o.s<5e6)vs={n:String(o.n||"친구").slice(0,10),s:Math.round(o.s)};}
+    if(p){const o=b64d(p);if(o&&(o.g===G.game||(G.games||[]).includes(o.g))&&typeof o.s==="number"&&o.s>=0&&o.s<5e6)vs={n:String(o.n||"친구").slice(0,10),s:Math.round(o.s),g:o.g};}
     box=document.createElement("section");box.className="lr";
-    box.innerHTML=`<h3>🏆 ${esc(G.title)} 랭킹 TOP 10</h3><p class="lr-d">한 판 끝나면 랭킹에 등록하거나 🔗 도전장을 보낼 수 있어요</p><div class="lr-result"></div><ol></ol><div class="lr-list-msg empty"></div>`;
+    box.innerHTML=`<h3>🏆 ${esc(G.board||G.title+" 랭킹")} TOP 10</h3><p class="lr-d">한 판 끝나면 랭킹에 등록하거나 🔗 도전장을 보낼 수 있어요</p><div class="lr-result"></div><ol></ol><div class="lr-list-msg empty"></div>`;
     (G.mount||document.body).appendChild(box);
     if(vs&&G.banner){
       const b=document.createElement("div");b.className="lr-vs";b.id="lrVs";
@@ -461,13 +461,18 @@ const LunaRank=(function(){
     }
     drawList();
   }
+  function setGame(game,board,title){
+    G.game=game;if(board)G.board=board;if(title)G.title=title;last=null;sent=false;
+    const h=box.querySelector("h3");if(h)h.textContent=`🏆 ${G.board||G.title+" 랭킹"} TOP 10`;
+    drawResult();drawList();
+  }
   function progress(score){
     if(!vs)return;const s=document.getElementById("lrVsSub");if(!s)return;
     const d=vs.s-score;s.textContent=d>0?`${fmt(d)}${G.unit} 남았어요! 🔥`:`🎉 ${vs.n} 점수를 넘었어요! 그대로 끝까지!`;
   }
   function gameOver(score,sub){last={score:Math.round(score),sub:Math.round(sub||0)};sent=false;drawResult();}
   function reset(){last=null;sent=false;if(box)drawResult();progress(0);}
-  return{init,progress,gameOver,reset,target:()=>vs,ready:READY};
+  return{init,setGame,progress,gameOver,reset,target:()=>vs,ready:READY};
 })();
 window.LunaRank=LunaRank;
 LunaRank.init({game:"arcade",title:"달빛 오락실",unit:"점",subLabel:"줄",mount:document.getElementById("rankMount"),banner:document.querySelector(".cab")});
