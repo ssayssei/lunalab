@@ -370,13 +370,13 @@ addEventListener("resize",rs);rs();requestAnimationFrame(dr);})();
 </script>
 <script>
 /* ===== 달빛 야시장 · 미니모드 & 단속반 (파일 안에 내장) =====
-   🪟 미니 / M 키: 이 창 그대로 작고 촘촘하게 보기 (브라우저 창을 줄여서 구석에 두고 쓰기 좋게)
-                  설정은 이 브라우저에 저장돼서 다른 가게로 가도 유지돼요
+   🪟 미니 / M 키: 작은 창을 따로 열어서 거기서 하기 (창 열기가 막히면 이 창을 작고 촘촘하게)
    🚨 단속반 / B 키: 엑셀 화면으로 휙 숨기기 (다시 누르거나 클릭하면 복귀) */
 (function(){
   const KEY="luna_mini_mode";
   const FAKE="2026_11월_정산_최종_v3(수정).xlsx";
   const realTitle=document.title;
+  const POP=new URLSearchParams(location.search).has("mini");
   let pref=false;try{pref=localStorage.getItem(KEY)==="1";}catch(e){}
   const st=document.createElement("style");
   st.textContent=`
@@ -435,24 +435,47 @@ addEventListener("resize",rs);rs();requestAnimationFrame(dr);})();
     const d=document.getElementById("lunaCover");if(!d)return;
     d.remove();document.title=realTitle;window.dispatchEvent(new Event("luna:uncover"));toast("휴… 단속반 갔다~ 😮‍💨");
   }
+  /* 🪟 미니: 먼저 작은 창을 따로 열어 보고, 막히면 이 창을 미니 모드로 */
+  function openPopup(){
+    const u=new URL(location.href);["r","a","vs"].forEach(k=>{if(k!=="vs")u.searchParams.delete(k);});u.searchParams.set("mini","1");
+    const w=400,h=720,L=Math.max(0,(screen.availWidth||1200)-w-24),T=Math.max(0,(screen.availHeight||800)-h-50);
+    let win=null;try{win=window.open(u.toString(),"luna_mini",`popup=yes,width=${w},height=${h},left=${L},top=${T},resizable=yes,scrollbars=yes`);}catch(e){}
+    if(!win)return false;
+    try{win.focus();}catch(e){}
+    window.dispatchEvent(new Event("luna:cover"));
+    let id=setTimeout(()=>{},0);while(id>0){clearTimeout(id);clearInterval(id);id--;}
+    document.body.innerHTML="";document.body.className="";
+    document.body.style.cssText="margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;background:#0f0b1e;color:#efe8ff;font-family:'Gowun Dodum',sans-serif;text-align:center";
+    const d=document.createElement("div");
+    d.innerHTML='<div style="font-size:46px">🪟</div><div style="font-family:Jua,sans-serif;font-size:22px;color:#f6c98a;margin:8px 0">작은 창에서 하는 중이에요</div><div style="font-size:14px;color:#a99cc9;line-height:1.8">이 창은 닫아도 돼요 👋<br>작은 창이 안 보이면 작업 표시줄을 확인해 주세요</div><button id="lunaBack" style="margin-top:16px;font:inherit;font-size:14px;color:#f6c98a;background:transparent;border:1px solid rgba(246,201,138,.5);border-radius:10px;padding:8px 14px;cursor:pointer">↩ 이 창에서 계속하기</button>';
+    document.body.appendChild(d);document.title="🪟 작은 창에서 하는 중";
+    document.getElementById("lunaBack").onclick=()=>location.reload();
+    return true;
+  }
+  function miniClick(){
+    if(POP){setMini(!document.body.classList.contains("luna-mini"),false);return;}
+    if(document.body.classList.contains("luna-mini")){setMini(false,true);return;}
+    if(!openPopup())setMini(true,true);
+  }
   function setMini(on,say){
     document.body.classList.toggle("luna-mini",on);
-    try{localStorage.setItem(KEY,on?"1":"0");}catch(e){}
+    if(!POP){try{localStorage.setItem(KEY,on?"1":"0");}catch(e){}}
     const m=document.getElementById("lunaMini");if(m)m.textContent=on?"🔍 크게":"🪟 미니";
     window.dispatchEvent(new Event("resize"));
-    if(say)toast(on?"미니 모드! 브라우저 창을 작게 줄여서 구석에 두세요 🤫":"원래 크기로 돌아왔어요");
+    if(say)toast(on?"작은 창이 막혀서 이 창을 미니 모드로 바꿨어요 · 창을 작게 줄여서 써요 🤫":"원래 크기로 돌아왔어요");
   }
   function init(){
     const bar=document.createElement("div");bar.id="lunaBar";
     bar.innerHTML='<button type="button" id="lunaMini" title="이 창을 작고 촘촘하게 보기 (M)">🪟 미니</button><button type="button" id="lunaRaid" title="엑셀 화면으로 숨기 (B)"><span class="siren">🚨</span> 단속반</button>';
     document.body.appendChild(bar);
-    document.getElementById("lunaMini").addEventListener("click",e=>{e.stopPropagation();setMini(!document.body.classList.contains("luna-mini"),true);});
+    document.getElementById("lunaMini").addEventListener("click",e=>{e.stopPropagation();miniClick();});
     document.getElementById("lunaRaid").addEventListener("click",e=>{e.stopPropagation();cover();});
-    setMini(pref,false);
+    setMini(POP||pref,false);
+    if(POP){document.title="🏮";document.querySelectorAll("a[href]").forEach(a=>{const h=a.getAttribute("href");if(!h||/^(https?:|mailto:|#|javascript:)/i.test(h))return;if(h==="./"||/index\.html/.test(h)){a.setAttribute("href","market.html?mini=1");return;}a.setAttribute("href",h+(h.includes("?")?"&":"?")+"mini=1");});}
     document.addEventListener("keydown",e=>{
       const t=e.target;if(t&&(t.tagName==="INPUT"||t.tagName==="TEXTAREA"||t.isContentEditable))return;
       if(e.key==="b"||e.key==="B"){e.preventDefault();e.stopImmediatePropagation();covered()?uncover():cover();}
-      else if((e.key==="m"||e.key==="M")&&!covered()){e.preventDefault();e.stopImmediatePropagation();setMini(!document.body.classList.contains("luna-mini"),true);}
+      else if((e.key==="m"||e.key==="M")&&!covered()){e.preventDefault();e.stopImmediatePropagation();miniClick();}
       else if(e.key==="Escape"&&covered())uncover();
     },true);
   }
