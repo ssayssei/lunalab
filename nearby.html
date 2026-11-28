@@ -52,6 +52,7 @@ input::placeholder{color:#7d7099}
 .btn.ghost{background:transparent;color:var(--gold);border:1px solid var(--gold2)}
 .btn.sm{font-size:14px;padding:9px 14px}
 .row{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:12px}
+.chip .x{margin-left:6px;opacity:.55;font-size:13px}.chip .x:hover{opacity:1}
 .here{font-size:14px;color:#f1dca8;margin-top:10px;line-height:1.6}
 .toggle{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--dim);margin-top:12px;cursor:pointer}
 .toggle input{width:18px;height:18px;accent-color:#c98a3e}
@@ -112,13 +113,10 @@ details summary{cursor:pointer;font-family:"Jua";color:var(--gold);font-size:16p
   <div id="app" class="hidden">
     <section class="panel">
       <p class="q">📍 어디서 출발해요?</p>
-      <div class="chips" id="baseChips">
-        <button class="chip" data-v="work">🏢 회사</button>
-        <button class="chip" data-v="gps">📱 지금 내 위치</button>
-      </div>
-      <div class="irow"><input type="text" id="addrIn" placeholder="주소나 장소 이름으로 찾기 (예: 강남역, 판교역)"><button class="btn sm ghost" id="addrBtn">찾기</button></div>
+      <div class="chips" id="baseChips"></div>
+      <div class="irow"><input type="text" id="addrIn" placeholder="🔎 주소나 장소 이름으로 찾기 (예: 강남역, 판교역)"><button class="btn sm ghost" id="addrBtn">찾기</button></div>
+      <div class="irow hidden" id="saveRow"><input type="text" id="placeName" maxlength="10" placeholder="이 위치 이름 (예: 회사, 집)"><button class="btn sm" id="placeSave">💾 저장</button></div>
       <div class="here" id="here">위치를 찾는 중…</div>
-      <div class="row" style="justify-content:flex-start;margin-top:8px"><button class="btn sm ghost hidden" id="saveWork">🏢 이 위치를 회사로 저장</button><button class="btn sm ghost hidden" id="forgetWork">🗑️ 저장한 회사 위치 지우기</button></div>
     </section>
 
     <section class="panel">
@@ -165,7 +163,9 @@ details summary{cursor:pointer;font-family:"Jua";color:var(--gold);font-size:16p
       <details><summary>⭐ 즐겨찾기 · 🙅 뺀 가게 관리</summary>
         <p class="qs" style="margin:10px 0 4px">⭐ 즐겨찾기</p><div class="list" id="favList"></div>
         <p class="qs" style="margin:14px 0 4px">🙅 다음부터 안 나오는 가게</p><div class="list" id="exList"></div>
-        <div class="row" style="justify-content:flex-start"><button class="btn sm ghost" id="resetKey">🔑 카카오 키 다시 입력</button></div>
+        <p class="qs" style="margin:16px 0 4px">📦 다른 브라우저로 옮기기</p>
+        <p class="qs" style="margin:0 0 6px">즐겨찾기 · 뺀 가게 · 저장한 출발 위치를 링크 하나에 담아요. 다른 브라우저(집 컴퓨터, 휴대폰)에서 그 링크를 열면 그대로 들어가요.</p>
+        <div class="row" style="justify-content:flex-start;gap:8px;flex-wrap:wrap"><button class="btn sm ghost" id="moveCopy">🔗 옮기기 링크 복사</button><button class="btn sm ghost" id="resetKey">🔑 카카오 키 다시 입력</button></div>
       </details>
     </section>
   </div>
@@ -176,6 +176,7 @@ details summary{cursor:pointer;font-family:"Jua";color:var(--gold);font-size:16p
 
 <script>
 const $=id=>document.getElementById(id);
+const esc=t=>String(t==null?"":t).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]));
 
 const WALK=75,DETOUR=1.25;              // 1분에 75m, 길이 직선보다 25% 정도 더 길다고 어림
 const KIND={"한식":["한식"],"중식":["중식","중국요리"],"일식":["일식","초밥","돈까스","우동","라멘","일본식"],"양식":["양식","이탈리안","스테이크","레스토랑","햄버거","피자"],"분식":["분식","김밥","떡볶이"],"아시안":["아시아","베트남","태국","인도","쌀국수"],"고기":["육류","고기","삼겹살","갈비","곱창","막창"]};
@@ -198,14 +199,14 @@ const EMO=[["국밥","🍲"],["찌개","🍲"],["분식","🌶️"],["김밥","�
 /* ---------- 저장 (이 브라우저에만) ---------- */
 function load(k,d){try{const v=localStorage.getItem("luna_nb_"+k);return v?JSON.parse(v):d;}catch(e){return d;}}
 function save(k,v){try{localStorage.setItem("luna_nb_"+k,JSON.stringify(v));}catch(e){}}
-let S={base:"work",where:null,work:load("work",null),when:new Date().getHours()<15?"L":"D",mins:null,type:"FD6",who:null,kind:new Set(),
+let S={base:null,where:null,when:new Date().getHours()<15?"L":"D",mins:null,type:"FD6",who:null,kind:new Set(),
   fav:load("fav",{}),ex:load("ex",{}),recent:[],cache:{},last:null};
 S.mins=S.when==="L"?10:15;
 
 function toast(m){const t=$("toast");t.textContent=m;t.classList.add("show");clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove("show"),1800);}
 function segPick(box,key,cb){$(box).querySelectorAll(".chip").forEach(b=>b.onclick=()=>{S[key]=b.dataset.v;draw();cb&&cb(b.dataset.v);});}
 function draw(){
-  [["when","when"],["mins","mins"],["type","type"],["who","who"],["baseChips","base"]].forEach(([box,key])=>$(box).querySelectorAll(".chip").forEach(b=>b.classList.toggle("on",String(S[key])===b.dataset.v)));
+  [["when","when"],["mins","mins"],["type","type"],["who","who"]].forEach(([box,key])=>$(box).querySelectorAll(".chip").forEach(b=>b.classList.toggle("on",String(S[key])===b.dataset.v)));
   $("foodOpts").classList.toggle("hidden",S.type!=="FD6");
   $("kind").querySelectorAll(".chip").forEach(b=>b.classList.toggle("on",S.kind.has(b.dataset.v)));
 }
@@ -234,35 +235,65 @@ let ps,geo,map,markers=[],circle=null,overlay=null;
 function start(){
   $("setup").classList.add("hidden");$("app").classList.remove("hidden");
   ps=new kakao.maps.services.Places();geo=new kakao.maps.services.Geocoder();
-  draw();useWork();
+  draw();takeMove();startPlace();
 }
-function setWhere(w,label){S.where=w;S.cache={};$("here").textContent=`📍 ${label}`;$("saveWork").classList.toggle("hidden",S.base==="work");$("forgetWork").classList.toggle("hidden",!(S.base==="work"&&S.work));}
-function useWork(){
-  S.base="work";draw();
-  if(S.work){setWhere(S.work,`${S.work.name} · ${S.work.addr}`);return;}
-  S.where=null;$("saveWork").classList.add("hidden");
-  $("here").innerHTML="🏢 아직 회사 위치를 정하지 않았어요.<br>위에서 회사 주소를 찾은 다음 <b>‘이 위치를 회사로 저장’</b>을 눌러 주세요. (이 브라우저에만 저장돼요)";
+function setWhere(w,label){S.where=w;S.cache={};$("here").textContent=label;}
+/* ---------- 출발 위치 (내 위치 · 주소 검색 · 저장한 곳) ---------- */
+let PLACES=load("places",null),FOUND=null;
+if(!PLACES){PLACES=[];const w=load("work",null);if(w&&isFinite(w.lat))PLACES.push({n:"회사",lat:w.lat,lng:w.lng,addr:w.addr||""});save("places",PLACES);}
+const pEmo=n=>/회사|사무실|오피스/.test(n)?"🏢":/집|home/i.test(n)?"🏠":/학교/.test(n)?"🏫":"📍";
+function drawPlaces(){
+  $("baseChips").innerHTML=`<button class="chip ${S.base==="gps"?"on":""}" data-v="gps">📱 지금 내 위치</button>`+
+    PLACES.map((p,i)=>`<button class="chip ${S.base==="p"+i?"on":""}" data-v="p${i}">${pEmo(p.n)} ${esc(p.n)}<span class="x" data-del="${i}" title="지우기">✕</span></button>`).join("");
+  $("baseChips").querySelectorAll(".chip").forEach(b=>b.onclick=e=>{
+    const del=e.target.dataset&&e.target.dataset.del;
+    if(del!=null){const p=PLACES[+del];
+      if(e.target.dataset.c!=="1"){e.target.dataset.c="1";e.target.textContent="지울까요?";setTimeout(()=>drawPlaces(),2500);return;}
+      PLACES.splice(+del,1);save("places",PLACES);
+      if(S.base==="p"+del){S.base=null;S.where=null;$("here").textContent="📍 출발 위치를 골라 주세요";}
+      else if(S.base&&S.base[0]==="p"&&+S.base.slice(1)>+del)S.base="p"+(+S.base.slice(1)-1);
+      drawPlaces();toast(`🗑️ '${p.n}'을(를) 지웠어요`);return;}
+    if(b.dataset.v==="gps")useGps();else usePlace(+b.dataset.v.slice(1));
+  });
 }
-$("baseChips").querySelectorAll(".chip").forEach(b=>b.onclick=()=>{
-  if(b.dataset.v==="work"){useWork();return;}
-  S.base="gps";draw();$("here").textContent="📱 내 위치를 확인하는 중…";
+function usePlace(i){
+  const p=PLACES[i];if(!p)return;
+  S.base="p"+i;save("lastPlace",p.n);$("saveRow").classList.add("hidden");drawPlaces();
+  setWhere({lat:p.lat,lng:p.lng,name:p.n,addr:p.addr},`${pEmo(p.n)} ${p.n}에서 출발`+(p.addr?` · ${p.addr}`:""));
+}
+function useGps(){
+  S.base="gps";S.where=null;drawPlaces();$("saveRow").classList.add("hidden");$("here").textContent="📱 내 위치를 확인하는 중…";
   if(!navigator.geolocation){$("here").textContent="이 브라우저에선 위치를 쓸 수 없어요. 주소로 찾아 주세요.";return;}
-  navigator.geolocation.getCurrentPosition(p=>setWhere({lat:p.coords.latitude,lng:p.coords.longitude,name:"지금 내 위치"},"지금 내 위치"),
-    ()=>{$("here").textContent="위치 권한이 없어서 못 찾았어요. 주소로 찾아 주세요.";},{enableHighAccuracy:true,timeout:8000});
-});
+  navigator.geolocation.getCurrentPosition(p=>{if(S.base!=="gps")return;save("lastPlace","__gps");setWhere({lat:p.coords.latitude,lng:p.coords.longitude,name:"지금 내 위치"},"📱 지금 내 위치에서 출발");},
+    ()=>{if(S.base!=="gps")return;$("here").textContent="위치 권한이 없어서 못 찾았어요. 주소로 찾아 주세요.";},{enableHighAccuracy:true,timeout:8000});
+}
 $("addrBtn").onclick=findAddr;$("addrIn").onkeydown=e=>{if(e.key==="Enter")findAddr();};
+function found(w){FOUND=w;S.base="addr";drawPlaces();setWhere(w,`📍 ${w.name}에서 출발`+(w.addr&&w.addr!==w.name?` · ${w.addr}`:""));
+  $("saveRow").classList.remove("hidden");$("placeName").value="";$("placeName").focus();}
 function findAddr(){
   const q=$("addrIn").value.trim();if(!q){toast("주소나 장소 이름을 적어 주세요");return;}
+  if(!geo){toast("지도를 아직 불러오지 못했어요. 잠시 뒤에 다시 눌러 주세요");return;}
   geo.addressSearch(q,(r,st)=>{
-    if(st===kakao.maps.services.Status.OK){S.base="addr";draw();setWhere({lat:+r[0].y,lng:+r[0].x,name:q,addr:r[0].address_name},q);return;}
+    if(st===kakao.maps.services.Status.OK){found({lat:+r[0].y,lng:+r[0].x,name:q,addr:r[0].address_name});return;}
     ps.keywordSearch(q,(d,st2)=>{
-      if(st2===kakao.maps.services.Status.OK){S.base="addr";draw();setWhere({lat:+d[0].y,lng:+d[0].x,name:d[0].place_name,addr:d[0].road_address_name||d[0].address_name},d[0].place_name);}
+      if(st2===kakao.maps.services.Status.OK)found({lat:+d[0].y,lng:+d[0].x,name:d[0].place_name,addr:d[0].road_address_name||d[0].address_name});
       else $("here").textContent="그 이름으로는 못 찾았어요. 다르게 적어 볼래요?";
     });
   });
 }
-$("forgetWork").onclick=()=>{S.work=null;save("work",null);useWork();toast("회사 위치를 지웠어요");};
-$("saveWork").onclick=()=>{if(!S.where)return;S.work={name:"회사",addr:S.where.addr||S.where.name,lat:S.where.lat,lng:S.where.lng};save("work",S.work);S.base="work";draw();setWhere(S.work,`회사 · ${S.work.addr}`);toast("🏢 회사 위치를 저장했어요");};
+function savePlace(){
+  if(!FOUND)return;const n=$("placeName").value.trim().slice(0,10);
+  if(!n){toast("이름을 적어 주세요 (예: 회사, 집)");$("placeName").focus();return;}
+  const p={n,lat:FOUND.lat,lng:FOUND.lng,addr:FOUND.addr||FOUND.name};
+  const j=PLACES.findIndex(x=>x.n===n);if(j>=0)PLACES[j]=p;else{if(PLACES.length>=8){toast("저장은 8곳까지예요. 안 쓰는 곳을 ✕로 지워 주세요");return;}PLACES.push(p);}
+  save("places",PLACES);$("addrIn").value="";FOUND=null;usePlace(j>=0?j:PLACES.length-1);toast(`💾 '${n}' 저장했어요! 다음부터 바로 골라요`);
+}
+$("placeSave").onclick=savePlace;$("placeName").onkeydown=e=>{if(e.key==="Enter")savePlace();};
+function startPlace(){
+  const last=load("lastPlace",null),i=PLACES.findIndex(p=>p.n===last);
+  if(i>=0)usePlace(i);else if(PLACES.length)usePlace(0);
+  else{drawPlaces();$("here").innerHTML="📍 주소를 찾거나 📱 내 위치를 눌러 주세요.<br>자주 가는 곳은 이름을 붙여 저장할 수 있어요 (이 브라우저에만 저장돼요)";}
+}
 
 /* ---------- 가게 불러오기 ---------- */
 function radius(){return Math.round(S.mins*WALK/DETOUR);}
@@ -359,9 +390,28 @@ function drawMap(list,pick){
 }
 function drawLists(){
   const f=Object.entries(S.fav),e=Object.entries(S.ex);
-  $("favList").innerHTML=f.length?f.map(([id,v])=>`<div><span>⭐ ${v.n} <small style="color:var(--dim)">${v.c||""}</small></span><button data-id="${id}" data-t="fav">빼기</button></div>`).join(""):'<p class="qs">아직 없어요. 마음에 드는 가게에서 ☆를 눌러 주세요.</p>';
-  $("exList").innerHTML=e.length?e.map(([id,v])=>`<div><span>🙅 ${v.n}</span><button data-id="${id}" data-t="ex">다시 넣기</button></div>`).join(""):'<p class="qs">아직 없어요.</p>';
+  $("favList").innerHTML=f.length?f.map(([id,v])=>`<div><span>⭐ ${esc(v.n)} <small style="color:var(--dim)">${esc(v.c||"")}</small></span><button data-id="${esc(id)}" data-t="fav">빼기</button></div>`).join(""):'<p class="qs">아직 없어요. 마음에 드는 가게에서 ☆를 눌러 주세요.</p>';
+  $("exList").innerHTML=e.length?e.map(([id,v])=>`<div><span>🙅 ${esc(v.n)}</span><button data-id="${esc(id)}" data-t="ex">다시 넣기</button></div>`).join(""):'<p class="qs">아직 없어요.</p>';
   document.querySelectorAll(".list button").forEach(b=>b.onclick=()=>{const o=b.dataset.t==="fav"?S.fav:S.ex;delete o[b.dataset.id];save(b.dataset.t,o);drawLists();});
+}
+/* ---------- 다른 브라우저로 옮기기 ---------- */
+const b64e=o=>btoa(String.fromCharCode(...new TextEncoder().encode(JSON.stringify(o)))).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,"");
+const b64d=t=>JSON.parse(new TextDecoder().decode(Uint8Array.from(atob(t.replace(/-/g,"+").replace(/_/g,"/")),c=>c.charCodeAt(0))));
+$("moveCopy").onclick=async()=>{
+  if(!Object.keys(S.fav).length&&!Object.keys(S.ex).length&&!PLACES.length){toast("옮길 게 아직 없어요");return;}
+  const url=location.href.split("#")[0].split("?")[0]+"#move="+b64e({v:1,f:S.fav,e:S.ex,p:PLACES});
+  try{await navigator.clipboard.writeText(url);toast("🔗 링크를 복사했어요! 다른 브라우저 주소창에 붙여 넣어 주세요");}
+  catch(e){prompt("이 링크를 복사해서 다른 브라우저에서 열어 주세요",url);}
+};
+function takeMove(){
+  const m=location.hash.match(/^#move=([\w-]+)/);if(!m)return;
+  history.replaceState(null,"",location.href.split("#")[0]);
+  let d;try{d=b64d(m[1]);}catch(e){toast("옮기기 링크가 잘렸거나 이상해요 😢");return;}
+  const nf=Object.keys(d.f||{}).filter(k=>!S.fav[k]).length,ne=Object.keys(d.e||{}).filter(k=>!S.ex[k]).length;
+  Object.assign(S.fav,d.f||{});Object.assign(S.ex,d.e||{});save("fav",S.fav);save("ex",S.ex);
+  let np=0;(d.p||[]).forEach(p=>{if(!p||!p.n||!isFinite(p.lat))return;const j=PLACES.findIndex(x=>x.n===p.n);if(j>=0)PLACES[j]=p;else if(PLACES.length<8){PLACES.push(p);np++;}});
+  save("places",PLACES);drawLists();
+  setTimeout(()=>toast(`📦 가져왔어요! 즐겨찾기 ${nf} · 뺀 가게 ${ne} · 출발 위치 ${np}곳`),300);
 }
 $("go").onclick=roll;$("again").onclick=roll;
 $("copy").onclick=async()=>{
